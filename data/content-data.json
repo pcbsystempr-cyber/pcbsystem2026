@@ -1,0 +1,117 @@
+{
+  "biblioteca": [
+    {
+      "id": "biblioteca_1",
+      "filename": "image1.png",
+      "path": "galeriabiblioteca/image1.png",
+      "title": "Foto de la biblioteca 1",
+      "description": "",
+      "dateAdded": "2026-01-31T00:00:00.000Z"
+    },
+    {
+      "id": "biblioteca_2",
+      "filename": "image2.png",
+      "path": "galeriabiblioteca/image2.png",
+      "title": "Foto de la biblioteca 2",
+      "description": "",
+      "dateAdded": "2026-01-31T00:00:00.000Z"
+    },
+    {
+      "id": "biblioteca_3",
+      "filename": "image3.png",
+      "path": "galeriabiblioteca/image3.png",
+      "title": "Foto de la biblioteca 3",
+      "description": "",
+      "dateAdded": "2026-01-31T00:00:00.000Z"
+    },
+    {
+      "id": "biblioteca_4",
+      "filename": "image4.png",
+      "path": "galeriabiblioteca/image4.png",
+      "title": "Foto de la biblioteca 4",
+      "description": "",
+      "dateAdded": "2026-01-31T00:00:00.000Z"
+    },
+    {
+      "id": "biblioteca_5",
+      "filename": "image5.png",
+      "path": "galeriabiblioteca/image5.png",
+      "title": "Foto de la biblioteca 5",
+      "description": "",
+      "dateAdded": "2026-01-31T00:00:00.000Z"
+    }
+  ],
+  "comedor": [
+    {
+      "id": "comedor_1769970209800",
+      "filename": "menu1.jpeg",
+      "path": "galeriacomedor/menu1.jpeg",
+      "title": "Menu del Viernes 30 de enero de 2026",
+      "description": "Desde el primer aroma te atrapa 🤤. Un revoltillo calientito y cremoso abre el apetito, acompañado de frutas frescas y jugosas que explotan en dulzura. Al almuerzo, arroz esponjoso, habichuelas guisadas con calabaza llenas de sabor, y una carne de cerdo tierna y jugosa que se deshace en cada bocado… frutas frescas para cerrar como se merece. Huele rico, se ve brutal y sabe mejor. ¡Pasa y aprovecha! 🍎🔥",
+      "dateAdded": "2026-02-01T18:23:29.800Z",
+      "isExternal": false
+    },
+    {
+      "id": "comedor_1769971987480",
+      "filename": "menu2.jpeg",
+      "path": "galeriacomedor/menu2.jpeg",
+      "title": "Menu del Lunes 2 de febrero de 2026",
+      "description": "😋🔥 Prepárate… porque esto da hambre de verdad 🔥😋\n\nHoy el comedor se luce 👨‍🍳✨: una farina calientita y cremosa, con queso que se derrite suavemente, acompañada de peras frescas y melocotón dulce que despiertan el apetito desde temprano 🤤.\nY cuando llega el almuerzo… pollo guisado bien jugoso, arroz amarillo esponjoso, habichuelas llenas de sabor, brócoli con queso, maíz tierno y leche fresca para completar una comida que alimenta el cuerpo y alegra el día 🥘🍗🥦🥛\n\n👉 Huele rico, se ve brutal y sabe mejor. No te lo pierdas. Pasa y aprovecha. 🍽️🔥",
+      "dateAdded": "2026-02-01T18:53:07.480Z",
+      "isExternal": false
+    },
+    {
+      "id": "comedor_1770342922294",
+      "filename": "menu4.jpeg",
+      "path": "galeriacomedor/menu4.jpeg",
+      "title": "Menú del viernes 6 de febrero de 2026",
+      "description": "🤤🔥 Advertencia: leer esto con el estómago vacío es peligroso 🔥🤤\nEl viernes arranca con una avena calientita y cremosa, abrazada por un pan sobao recién suave, salsa de manzana dulce y peras frescas y jugosas que despiertan el apetito desde el primer bocado 😋.\nY al almuerzo… el antojo se sale de control: una hamburguer jugosa y bien hecha, con tomate fresco y lechuga crujiente, acompañada de un jugo bien frío que refresca y completa la experiencia 🍔🥬🥤\n\n👉 Se ve brutal, huele mejor y sabe a viernes feliz. Pasa, siéntate y disfrútalo. No te lo pierdas. 🔥🍽️",
+      "dateAdded": "2026-02-06T01:55:22.294Z",
+      "isExternal": false
+    }
+  ],
+  "promociones": [
+    {
+      "id": "promociones_1769971491191",
+      "filename": "image3.jpeg",
+      "path": "galeriadepromociones/image3.jpeg",
+      "title": "Programa de actividades en el mes Ocupacional.",
+      "description": "¡No te pierdas nada, sigue nuestro programa de acitivades!",
+      "dateAdded": "2026-02-01T18:44:51.191Z",
+      "isExternal": false
+    },
+    {
+      "id": "promociones_1769973093576",
+      "filename": "image5.jpeg",
+      "path": "galeriadepromociones/image5.jpeg",
+      "title": "¡Felicidades en el mes del amor y la amistad!",
+      "description": "En este Mes del Amor y la Amistad, recordemos que nuestra escuela no solo enseña materias, sino que forma corazones.\nAquí aprendemos a respetarnos, a apoyarnos y a crecer juntos, aun en los días difíciles.\nQue cada saludo, cada gesto y cada palabra sean una muestra de amor, amistad y orgullo por ser parte de esta gran familia escolar.\n💕 Porque cuando hay unión, hay fuerza… y cuando hay amor, todo es posible.",
+      "dateAdded": "2026-02-01T19:11:33.576Z",
+      "isExternal": false
+    },
+    {
+      "id": "promociones_1770936530754",
+      "filename": "Image 2026-02-12 at 9.33.49 AM.jpeg",
+      "path": "galeriadepromociones/Image 2026-02-12 at 9.33.49 AM.jpeg",
+      "title": "Salida al medio día ",
+      "description": "Reunión profesional según el calendario del DE",
+      "dateAdded": "2026-02-12T22:48:50.754Z",
+      "isExternal": false
+    }
+  ],
+  "avisos": [],
+  "menu_comedor": {
+    "desayuno": [
+      "Farina",
+      "Queso",
+      "Melocotón",
+      "Leche"
+    ],
+    "almuerzo": [],
+    "menuImage": {
+      "id": "comedor_1770342922294",
+      "src": "galeriacomedor/menu4.jpeg",
+      "timestamp": 1771792274632
+    }
+  }
+}
