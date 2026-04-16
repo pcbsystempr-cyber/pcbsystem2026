@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Control - Escuela Superior Vocacional Pablo Colón Berdecia</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            min-height: 100vh;
+            color: #1e293b;
+            line-height: 1.6;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c5282 0%, #1a365d 100%);
+            color: white;
+            padding: 2.5rem 0;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            position: relative;
+            overflow: hidden;
+        }
+        .header > * {
+    position: relative;
+    z-index: 2;
+}
+
+       .hamburger-menu {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: rgba(255, 255, 255, 0.12);
+    border: none;
+    cursor: pointer;
+    padding: 0.6rem;
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+    z-index: 1001;
+}
+
+        .hamburger-menu:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .hamburger-icon {
+            width: 24px;
+            height: 18px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .hamburger-line {
+            width: 100%;
+            height: 2px;
+            background-color: white;
+            transition: all 0.3s ease;
+        }
+
+        .hamburger-menu.open .hamburger-line:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+
+        .hamburger-menu.open .hamburger-line:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger-menu.open .hamburger-line:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -6px);
+        }
+
+       .menu-dropdown {
+    position: absolute;
+    top: 4.2rem;
+    right: 1rem;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    min-width: 220px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+    z-index: 1002;
+}
+
+        .menu-dropdown.open {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .menu-item {
+            display: block;
+            padding: 1rem 1.5rem;
+            color: #374151;
+            text-decoration: none;
+            font-weight: 500;
+            transition: background-color 0.3s ease;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .menu-item:hover {
+            background-color: #f3f4f6;
+        }
+
+        .menu-item:last-child {
+            border-bottom: none;
+            color: #dc2626;
+        }
+
+        .menu-item:last-child:hover {
+            background-color: #fef2f2;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="white" opacity="0.1"/><circle cx="75" cy="75" r="1" fill="white" opacity="0.1"/><circle cx="50" cy="50" r="0.5" fill="white" opacity="0.05"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+            pointer-events: none;
+        }
+        
+
+        .school-name {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.5px;
+            position: relative;
+        }
+
+        .department-name {
+            font-size: 1.3rem;
+            opacity: 0.95;
+            font-weight: 400;
+            position: relative;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 4rem auto;
+            padding: 0 1.5rem;
+        }
+
+        .dashboard-card {
+            background: white;
+            border-radius: 16px;
+            padding: 3rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e2e8f0;
+            text-align: center;
+        }
+
+        .welcome-message {
+            color: #2c5282;
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+        }
+
+        .user-info {
+            color: #6b7280;
+            font-size: 1.1rem;
+            margin-bottom: 3rem;
+        }
+
+        .dashboard-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .dashboard-btn {
+            background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%);
+            color: white;
+            padding: 2rem;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: block;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dashboard-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .dashboard-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(29, 78, 216, 0.3);
+        }
+
+        .dashboard-btn:hover::before {
+            left: 100%;
+        }
+
+        .dashboard-btn:active {
+            transform: translateY(-1px);
+        }
+
+        .btn-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .btn-grades {
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+        }
+
+        .btn-grades:hover {
+            box-shadow: 0 8px 25px rgba(5, 150, 105, 0.3);
+        }
+
+        .btn-requests {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        }
+
+        .btn-requests:hover {
+            box-shadow: 0 8px 25px rgba(245, 158, 11, 0.3);
+        }
+
+        .btn-inventory {
+            background: linear-gradient(135deg, #7c3aed 0%, #8b5cf6 100%);
+        }
+
+        .btn-inventory:hover {
+            box-shadow: 0 8px 25px rgba(124, 58, 237, 0.3);
+        }
+
+        .logout-btn {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 2rem;
+        }
+
+        .logout-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(220, 38, 38, 0.4);
+        }
+
+        .footer {
+            text-align: center;
+            padding: 3rem 0 2rem;
+            color: #6b7280;
+            margin-top: 4rem;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .school-name {
+                font-size: 1.8rem;
+            }
+
+            .department-name {
+                font-size: 1.1rem;
+            }
+
+            .container {
+                margin: 2rem auto;
+                padding: 0 1rem;
+            }
+
+            .dashboard-card {
+                padding: 2rem 1.5rem;
+            }
+
+            .welcome-message {
+                font-size: 1.7rem;
+            }
+
+            .dashboard-buttons {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .dashboard-btn {
+                padding: 1.5rem;
+                font-size: 1.1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header {
+                padding: 2rem 0;
+            }
+
+            .school-name {
+                font-size: 1.5rem;
+            }
+
+            .department-name {
+                font-size: 1rem;
+            }
+
+            .dashboard-card {
+                padding: 1.5rem 1rem;
+            }
+
+            .welcome-message {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <button class="hamburger-menu" id="hamburgerMenu">
+            <div class="hamburger-icon">
+                <div class="hamburger-line"></div>
+                <div class="hamburger-line"></div>
+                <div class="hamburger-line"></div>
+            </div>
+        </button>
+        <div class="school-name">Escuela Superior Vocacional Pablo Colón Berdecia</div>
+        <div class="department-name">Departamento de Tecnología - COMPUTEC</div>
+
+        <div class="menu-dropdown" id="menuDropdown">
+            <a href="calificaciones.html" class="menu-item">📊 Ver Calificaciones</a>
+            <a href="solicitudes.html" class="menu-item">🔧 Ver Solicitudes de Servicios</a>
+            <a href="inventario.html" class="menu-item">📦 Añadir Inventario</a>
+            <a href="index.html" class="menu-item" onclick="logout()">🚪 Cerrar Sesión</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="dashboard-card">
+            <h1 class="welcome-message">¡Bienvenido al Panel de Control!</h1>
+            <p class="user-info" id="userInfo">Usuario autenticado</p>
+
+            <div class="dashboard-buttons">
+                <a href="calificaciones.html" class="dashboard-btn btn-grades">
+                    <span class="btn-icon">📊</span>
+                    Ver Calificaciones
+                </a>
+
+                <a href="solicitudes.html" class="dashboard-btn btn-requests">
+                    <span class="btn-icon">🔧</span>
+                    Ver Solicitudes de Servicios
+                </a>
+
+                <a href="inventario.html" class="dashboard-btn btn-inventory">
+                    <span class="btn-icon">📦</span>
+                    Añadir Inventario
+                </a>
+            </div>
+
+            <!-- Estadísticas del Sitio -->
+            <div class="stats-section" id="statsSection" style="margin: 2rem auto; max-width: 900px; padding: 0 1.5rem;">
+                <div style="background: white; padding: 1.5rem; border-radius: 12px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);">
+                    <h2 style="color: #2c5282; margin-bottom: 1rem; font-weight: 600; text-align: center;">Estadísticas del Sitio</h2>
+                    
+                    <!-- Stats principales -->
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
+                        <div style="text-align: center; padding: 1rem; background: #f8fafc; border-radius: 8px;">
+                            <div style="font-size: 2rem; font-weight: 700; color: #8b5cf6; margin-bottom: 0.5rem;" id="totalVisits">0</div>
+                            <div style="color: #6b7280; font-size: 0.85rem;">Visitas Totales</div>
+                        </div>
+                        <div style="text-align: center; padding: 1rem; background: #f8fafc; border-radius: 8px;">
+                            <div style="font-size: 2rem; font-weight: 700; color: #06b6d4; margin-bottom: 0.5rem;" id="todayVisits">0</div>
+                            <div style="color: #6b7280; font-size: 0.85rem;">Visitas Hoy</div>
+                        </div>
+                        <div style="text-align: center; padding: 1rem; background: #f8fafc; border-radius: 8px;">
+                            <div style="font-size: 2rem; font-weight: 700; color: #f97316; margin-bottom: 0.5rem;" id="mobileVisits">0</div>
+                            <div style="color: #6b7280; font-size: 0.85rem;">Móvil</div>
+                        </div>
+                        <div style="text-align: center; padding: 1rem; background: #f8fafc; border-radius: 8px;">
+                            <div style="font-size: 2rem; font-weight: 700; color: #10b981; margin-bottom: 0.5rem;" id="desktopVisits">0</div>
+                            <div style="color: #6b7280; font-size: 0.85rem;">Escritorio</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Stats de solicitudes -->
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem;">
+                        <div style="text-align: center; padding: 1rem; background: #ecfdf5; border-radius: 8px;">
+                            <div style="font-size: 2rem; font-weight: 700; color: #059669; margin-bottom: 0.5rem;" id="totalRequests">0</div>
+                            <div style="color: #6b7280; font-size: 0.85rem;">Solicitudes Totales</div>
+                        </div>
+                        <div style="text-align: center; padding: 1rem; background: #fef3c7; border-radius: 8px;">
+                            <div style="font-size: 2rem; font-weight: 700; color: #d97706; margin-bottom: 0.5rem;" id="pendingRequests">0</div>
+                            <div style="color: #6b7280; font-size: 0.85rem;">Pendientes</div>
+                        </div>
+                        <div style="text-align: center; padding: 1rem; background: #dbeafe; border-radius: 8px;">
+                            <div style="font-size: 2rem; font-weight: 700; color: #2563eb; margin-bottom: 0.5rem;" id="inProgressRequests">0</div>
+                            <div style="color: #6b7280; font-size: 0.85rem;">En Proceso</div>
+                        </div>
+                        <div style="text-align: center; padding: 1rem; background: #f0fdf4; border-radius: 8px;">
+                            <div style="font-size: 2rem; font-weight: 700; color: #16a34a; margin-bottom: 0.5rem;" id="completedRequests">0</div>
+                            <div style="color: #6b7280; font-size: 0.85rem;">Completadas</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="logout-btn" id="logoutBtn">Cerrar Sesión</button>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>Escuela Superior Vocacional Pablo Colón Berdecia © <span id="year"></span></p>
+        <p>Departamento de Tecnología - COMPUTEC</p>
+    </div>
+
+    <script type="module">
+        import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+
+        const supabase = createClient(
+          "https://alqdcxtzwximorkkyecp.supabase.co",
+          "sb_publishable_V6kHfLnjsyODWSgJXJ9igg_gv1QPebb"
+        );
+
+        document.getElementById("year").textContent = new Date().getFullYear();
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check authentication
+            const adminAuthenticated = localStorage.getItem('admin_authenticated');
+            const techAuthenticated = localStorage.getItem('tech_authenticated');
+
+            if (!adminAuthenticated && !techAuthenticated) {
+                // Not authenticated, redirect to home
+                window.location.href = 'index.html';
+                return;
+            }
+
+            // Display user info
+            const userInfo = document.getElementById('userInfo');
+            if (adminAuthenticated) {
+                const username = localStorage.getItem('admin_username');
+                userInfo.textContent = `Sesión de Administrador - ${username}`;
+            } else if (techAuthenticated) {
+                const username = localStorage.getItem('tech_username');
+                userInfo.textContent = `Sesión de Técnico - ${username}`;
+            }
+
+            // Cargar estadísticas de visitantes
+            loadVisitorStats();
+        });
+
+        async function loadVisitorStats() {
+            const today = new Date().toISOString().split('T')[0];
+            
+            // Total de visitas
+            const { count: totalVisits } = await supabase
+                .from('visitas')
+                .select('*', { count: 'exact', head: true });
+            
+            // Visitas de hoy
+            const { count: todayVisits } = await supabase
+                .from('visitas')
+                .select('*', { count: 'exact', head: true })
+                .gte('fecha_visita', today + 'T00:00:00')
+                .lte('fecha_visita', today + 'T23:59:59');
+            
+            // Visitas desde móvil
+            const { count: mobileVisits } = await supabase
+                .from('visitas')
+                .select('*', { count: 'exact', head: true })
+                .eq('dispositivo', 'Móvil');
+            
+            // Visitas desde escritorio
+            const { count: desktopVisits } = await supabase
+                .from('visitas')
+                .select('*', { count: 'exact', head: true })
+                .eq('dispositivo', 'Escritorio');
+            
+            // Total solicitudes
+            const { count: totalRequests } = await supabase
+                .from('solicitudes_servicio')
+                .select('*', { count: 'exact', head: true });
+            
+            // Solicitudes pendientes
+            const { count: pendingRequests } = await supabase
+                .from('solicitudes_servicio')
+                .select('*', { count: 'exact', head: true })
+                .eq('estado', 'Pendiente');
+            
+            // Solicitudes en proceso
+            const { count: inProgressRequests } = await supabase
+                .from('solicitudes_servicio')
+                .select('*', { count: 'exact', head: true })
+                .eq('estado', 'En Proceso');
+            
+            // Solicitudes completadas
+            const { count: completedRequests } = await supabase
+                .from('solicitudes_servicio')
+                .select('*', { count: 'exact', head: true })
+                .eq('estado', 'Completada');
+            
+            // Actualizar UI
+            document.getElementById('totalVisits').textContent = totalVisits || 0;
+            document.getElementById('todayVisits').textContent = todayVisits || 0;
+            document.getElementById('mobileVisits').textContent = mobileVisits || 0;
+            document.getElementById('desktopVisits').textContent = desktopVisits || 0;
+            document.getElementById('totalRequests').textContent = totalRequests || 0;
+            document.getElementById('pendingRequests').textContent = pendingRequests || 0;
+            document.getElementById('inProgressRequests').textContent = inProgressRequests || 0;
+            document.getElementById('completedRequests').textContent = completedRequests || 0;
+        }
+
+        // Hamburger menu functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const hamburgerMenu = document.getElementById('hamburgerMenu');
+            const menuDropdown = document.getElementById('menuDropdown');
+            const logoutBtn = document.getElementById('logoutBtn');
+
+            // Logout button
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', function() {
+                    localStorage.removeItem('admin_authenticated');
+                    localStorage.removeItem('admin_username');
+                    localStorage.removeItem('tech_authenticated');
+                    localStorage.removeItem('tech_username');
+                    window.location.href = 'index.html';
+                });
+            }
+
+            hamburgerMenu.addEventListener('click', function() {
+                hamburgerMenu.classList.toggle('open');
+                menuDropdown.classList.toggle('open');
+            });
+
+            // Close menu when clicking outside
+            document.addEventListener('click', function(event) {
+                if (!hamburgerMenu.contains(event.target) && !menuDropdown.contains(event.target)) {
+                    hamburgerMenu.classList.remove('open');
+                    menuDropdown.classList.remove('open');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Calificaciones de Maestros - Escuela Superior Vocacional Pablo Colon Berdecia</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{
+      font-family:'Inter','Segoe UI',system-ui,sans-serif;
+      background:linear-gradient(135deg,#f8fafc 0%,#f1f5f9 100%);
+      min-height:100vh;color:#1e293b;line-height:1.6;padding:2rem
+    }
+    h1{text-align:center;color:#2c5282;margin-bottom:2rem;font-weight:600}
+    .top-bar{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:1.5rem}
+    .back-btn{
+      display:inline-block;background:linear-gradient(135deg,#2c5282 0%,#4299e1 100%);
+      color:white;padding:.75rem 1.5rem;border-radius:8px;text-decoration:none;font-weight:600
+    }
+    .filters{
+      display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;
+      margin-bottom:1.5rem;background:white;padding:1rem;border-radius:12px;
+      box-shadow:0 4px 15px rgba(0,0,0,.08)
+    }
+    .filters input{
+      width:100%;padding:.85rem 1rem;border:2px solid #e2e8f0;border-radius:10px;
+      font-size:.95rem;font-family:inherit
+    }
+    table{
+      width:100%;border-collapse:collapse;background:white;border-radius:12px;overflow:hidden;
+      box-shadow:0 4px 15px rgba(0,0,0,.08)
+    }
+    thead{background:#f8fafc}
+    th,td{
+      padding:1rem;text-align:left;font-weight:500;color:#374151;border-bottom:2px solid #e2e8f0;
+      vertical-align:top
+    }
+    tbody tr:hover{background-color:#eef2ff}
+    .star{color:#fbbf24;font-size:1.2rem;margin-right:.1rem}
+    .no-ratings{text-align:center;margin-top:3rem;font-size:1.2rem;color:#6b7280}
+    .comments{color:#4a5568;font-size:.9rem;margin-top:.25rem;font-style:italic}
+    .date{color:#64748b;font-size:.85rem}
+    .btn-details,.btn-delete{
+      color:white;padding:.5rem 1rem;border:none;border-radius:6px;font-size:.9rem;font-weight:600;
+      cursor:pointer;transition:all .3s ease;margin-right:.5rem
+    }
+    .btn-details{background:linear-gradient(135deg,#10b981 0%,#059669 100%)}
+    .btn-delete{background:linear-gradient(135deg,#ef4444 0%,#dc2626 100%)}
+    .modal{
+      display:none;position:fixed;z-index:1000;inset:0;background-color:rgba(0,0,0,.5)
+    }
+    .modal-content{
+      background-color:white;margin:5% auto;padding:2rem;border-radius:12px;width:90%;max-width:700px;
+      max-height:80vh;overflow-y:auto;box-shadow:0 10px 30px rgba(0,0,0,.3)
+    }
+    .modal-header{
+      display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;
+      border-bottom:2px solid #e2e8f0;padding-bottom:1rem
+    }
+    .modal-title{color:#2c5282;font-size:1.5rem;font-weight:600;margin:0}
+    .close{color:#6b7280;font-size:2rem;font-weight:bold;cursor:pointer}
+    .detail-item{margin-bottom:1rem;display:flex;align-items:flex-start;gap:1rem}
+    .detail-label{font-weight:600;color:#374151;min-width:180px}
+    .detail-value{color:#6b7280;flex:1}
+    .signature-img{max-width:100%;height:auto;border:1px solid #e2e8f0;border-radius:8px}
+    @media (max-width:768px){
+      body{padding:1rem}
+      table{display:block;overflow-x:auto}
+      .detail-item{flex-direction:column;gap:.35rem}
+      .detail-label{min-width:auto}
+    }
+  </style>
+</head>
+<body>
+  <div class="top-bar">
+    <a href="dashboard.html" class="back-btn">← Volver al Panel de Administración</a>
+  </div>
+
+  <h1>Calificaciones de Maestros</h1>
+
+  <div class="filters">
+    <input type="text" id="filterTechnician" placeholder="Buscar por técnico">
+    <input type="text" id="filterTeacher" placeholder="Buscar por maestro">
+    <input type="date" id="filterDate">
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Técnico</th>
+        <th>Maestro</th>
+        <th>Calificación</th>
+        <th>Comentarios</th>
+        <th>Fecha</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody id="ratingsTableBody"></tbody>
+  </table>
+
+  <div id="noRatingsMessage" class="no-ratings" style="display:none;">
+    No hay calificaciones registradas aún.
+  </div>
+
+  <div class="modal" id="detailsModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title">Detalles de la Calificación</h2>
+        <span class="close" id="closeModal">&times;</span>
+      </div>
+      <div class="modal-body" id="modalBody"></div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+
+    const supabase = createClient(
+      "https://alqdcxtzwximorkkyecp.supabase.co",
+      "sb_publishable_V6kHfLnjsyODWSgJXJ9igg_gv1QPebb"
+    );
+
+    const tbody = document.getElementById('ratingsTableBody');
+    const noRatingsMessage = document.getElementById('noRatingsMessage');
+    const filterTechnician = document.getElementById('filterTechnician');
+    const filterTeacher = document.getElementById('filterTeacher');
+    const filterDate = document.getElementById('filterDate');
+
+    let allRatings = [];
+
+    function normalize(value) {
+      return (value || '').toString().trim().toLowerCase();
+    }
+
+    function renderStars(rating) {
+      let stars = '';
+      for (let i = 1; i <= 5; i++) {
+        stars += `<span class="star">${i <= rating ? '★' : '☆'}</span>`;
+      }
+      return stars;
+    }
+
+    function applyFilters() {
+      const techValue = normalize(filterTechnician.value);
+      const teacherValue = normalize(filterTeacher.value);
+      const dateValue = filterDate.value;
+
+      const filtered = allRatings.filter(item => {
+        const techMatch = !techValue || normalize(item.technician).includes(techValue);
+        const teacherMatch = !teacherValue || normalize(item.teacher).includes(teacherValue);
+        const itemDate = item.date ? new Date(item.date).toISOString().slice(0, 10) : '';
+        const dateMatch = !dateValue || itemDate === dateValue;
+        return techMatch && teacherMatch && dateMatch;
+      });
+
+      renderTable(filtered);
+    }
+
+    function renderTable(ratings) {
+      tbody.innerHTML = '';
+
+      if (!ratings.length) {
+        noRatingsMessage.style.display = 'block';
+        return;
+      }
+
+      noRatingsMessage.style.display = 'none';
+
+      ratings.forEach(rating => {
+        const tr = document.createElement('tr');
+
+        tr.innerHTML = `
+          <td>${rating.technician || 'N/A'}</td>
+          <td>${rating.teacher || 'N/A'}</td>
+          <td>${renderStars(rating.rating || 0)}</td>
+          <td>${rating.observations ? `<div class="comments">${rating.observations}</div>` : '-'}</td>
+          <td class="date">${rating.date ? new Date(rating.date).toLocaleString() : ''}</td>
+          <td>
+            <button class="btn-details" data-id="${rating.id}">Ver Detalles</button>
+            <button class="btn-delete" data-delete-id="${rating.id}">Eliminar</button>
+          </td>
+        `;
+
+        tbody.appendChild(tr);
+      });
+
+      document.querySelectorAll('.btn-details').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const id = Number(btn.dataset.id);
+          const rating = allRatings.find(r => r.id === id);
+          if (rating) showDetailsModal(rating);
+        });
+      });
+
+      document.querySelectorAll('.btn-delete').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          const id = Number(btn.dataset.deleteId);
+          const confirmed = confirm('¿Seguro que deseas eliminar esta calificación?');
+          if (!confirmed) return;
+
+          const { error } = await supabase
+            .from('calificaciones_servicio')
+            .delete()
+            .eq('id', id);
+
+          if (error) {
+            alert('No se pudo eliminar: ' + error.message);
+            return;
+          }
+
+          await loadRatings();
+        });
+      });
+    }
+
+   function showDetailsModal(rating) {
+  const modal = document.getElementById('detailsModal');
+  const modalBody = document.getElementById('modalBody');
+
+  modalBody.innerHTML = `
+    <div class="detail-item">
+      <div class="detail-label">Nombre del Técnico:</div>
+      <div class="detail-value">${rating.technician || 'N/A'}</div>
+    </div>
+
+    <div class="detail-item">
+      <div class="detail-label">Nombre del Maestro:</div>
+      <div class="detail-value">${rating.teacher || 'N/A'}</div>
+    </div>
+
+    <div class="detail-item">
+      <div class="detail-label">Tiempo / Fecha:</div>
+      <div class="detail-value">${rating.time || 'N/A'}</div>
+    </div>
+
+    <div class="detail-item">
+      <div class="detail-label">Servicio Realizado:</div>
+      <div class="detail-value">${rating.service || 'N/A'}</div>
+    </div>
+
+    <div class="detail-item">
+      <div class="detail-label">Solución Implementada:</div>
+      <div class="detail-value">${rating.solution || 'N/A'}</div>
+    </div>
+
+    <div class="detail-item">
+      <div class="detail-label">Observaciones:</div>
+      <div class="detail-value">${rating.observations || '-'}</div>
+    </div>
+
+    <div class="detail-item">
+      <div class="detail-label">Estado del Servicio:</div>
+      <div class="detail-value">${rating.service_status || 'N/A'}</div>
+    </div>
+
+    <div class="detail-item">
+      <div class="detail-label">Fecha del Servicio:</div>
+      <div class="detail-value">${rating.service_date || 'N/A'}</div>
+    </div>
+
+    <div class="detail-item">
+      <div class="detail-label">Firma del Técnico:</div>
+      <div class="detail-value">
+        ${rating.technician_signature
+          ? `<img src="${rating.technician_signature}" alt="Firma del Técnico" class="signature-img" />`
+          : 'No disponible'}
+      </div>
+    </div>
+
+    <div class="detail-item">
+      <div class="detail-label">Firma del Maestro:</div>
+      <div class="detail-value">
+        ${rating.signature
+          ? `<img src="${rating.signature}" alt="Firma del Maestro" class="signature-img" />`
+          : 'No disponible'}
+      </div>
+    </div>
+
+    <div class="detail-item">
+      <div class="detail-label">Calificación:</div>
+      <div class="detail-value">${'★'.repeat(rating.rating || 0) + '☆'.repeat(5 - (rating.rating || 0))}</div>
+    </div>
+
+    <div class="detail-item">
+      <div class="detail-label">Fecha de Registro:</div>
+      <div class="detail-value">${rating.date ? new Date(rating.date).toLocaleString() : ''}</div>
+    </div>
+  `;
+
+  modal.style.display = 'block';
+}
+
+    async function loadRatings() {
+      const { data, error } = await supabase
+        .from('calificaciones_servicio')
+        .select('*')
+        .order('date', { ascending: false });
+
+      if (error) {
+        console.error(error);
+        noRatingsMessage.style.display = 'block';
+        noRatingsMessage.textContent = 'Error al cargar las calificaciones.';
+        return;
+      }
+
+      allRatings = data || [];
+      applyFilters();
+    }
+
+    document.getElementById('closeModal').onclick = () => {
+      document.getElementById('detailsModal').style.display = 'none';
+    };
+
+    window.onclick = (event) => {
+      const modal = document.getElementById('detailsModal');
+      if (event.target === modal) {
+        modal.style.display = 'none';
+      }
+    };
+
+    filterTechnician.addEventListener('input', applyFilters);
+    filterTeacher.addEventListener('input', applyFilters);
+    filterDate.addEventListener('change', applyFilters);
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      await loadRatings();
+
+      supabase
+        .channel('calificaciones-realtime')
+        .on(
+          'postgres_changes',
+          { event: '*', schema: 'public', table: 'calificaciones_servicio' },
+          async () => {
+            await loadRatings();
+          }
+        )
+        .subscribe();
+    });
+  </script>
+</body>
+</html>

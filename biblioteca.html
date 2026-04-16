@@ -1,0 +1,1175 @@
+<!DOCTYPE html>
+<html lang="es" id="htmlRoot">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Biblioteca Digital – Escuela Superior Vocacional Pablo Colón Berdecia</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="dark-mode-fix-v2.css?v=2">
+  <link rel="stylesheet" href="dropdown-fix.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <script src="translations.js"></script>
+  
+  <style>
+    /* Hero Section - Estilo consistente */
+    .hero {
+      background: linear-gradient(135deg, rgba(102, 126, 234, 0.85) 0%, rgba(118, 75, 162, 0.85) 100%),
+        url('images14.jpeg') center center no-repeat;
+      background-size: cover;
+      background-attachment: scroll;
+      background-position: center center;
+      padding: 5rem 0 6rem;
+      position: relative;
+      overflow: hidden;
+      min-height: 650px;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="%23ffffff" fill-opacity="0.1" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,122.7C672,117,768,139,864,154.7C960,171,1056,181,1152,165.3C1248,149,1344,107,1392,85.3L1440,64L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>') no-repeat bottom;
+      background-size: cover;
+      opacity: 0.3;
+      pointer-events: none;
+    }
+
+    body.dark-mode .hero {
+      background: linear-gradient(135deg, rgba(11, 18, 32, 0.85) 0%, rgba(15, 23, 42, 0.85) 100%),
+        url('images14.jpeg') center center no-repeat;
+      background-size: cover;
+    }
+
+    /* Estilos para Reserva de Espacios */
+    .space-reservation-section {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      padding: 3rem 0;
+      margin: 3rem 0;
+      border-radius: 20px;
+    }
+
+    .reservation-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+
+    .space-card {
+      background: white;
+      border-radius: 16px;
+      padding: 1.5rem;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .space-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 12px 32px rgba(0,0,0,0.15);
+    }
+
+    body.dark-mode .space-card {
+      background: rgba(17, 24, 39, 0.95);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+    }
+
+    .space-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+
+    .space-card h3 {
+      color: #667eea;
+      margin-bottom: 0.5rem;
+    }
+
+    body.dark-mode .space-card h3 {
+      color: #38bdf8;
+    }
+
+    /* Modal de Reserva */
+    .reservation-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.7);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .reservation-modal.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: white;
+      border-radius: 20px;
+      padding: 2rem;
+      max-width: 500px;
+      width: 90%;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    body.dark-mode .modal-content {
+      background: #1e293b;
+      color: #e5e7eb;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      color: #334155;
+    }
+
+    body.dark-mode .form-group label {
+      color: #e5e7eb;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 0.75rem;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      font-size: 1rem;
+    }
+
+    body.dark-mode .form-group input,
+    body.dark-mode .form-group select,
+    body.dark-mode .form-group textarea {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: rgba(56, 189, 248, 0.3);
+      color: #e5e7eb;
+    }
+
+    /* ===== CALENDARIO ===== */
+    .calendar-container {
+      background: white;
+      border-radius: 18px;
+      padding: 1.75rem;
+      margin-top: 2rem;
+      box-shadow: 0 6px 24px rgba(0,0,0,0.08);
+    }
+    body.dark-mode .calendar-container {
+      background: rgba(17, 24, 39, 0.97);
+      border: 1px solid rgba(56, 189, 248, 0.2);
+    }
+
+    /* Header con nav + título + botón Hoy */
+    .calendar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.25rem;
+    }
+    .calendar-nav-btn {
+      background: #667eea;
+      color: white;
+      border: none;
+      padding: 0.55rem 1.1rem;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 1.1rem;
+      transition: background 0.2s;
+    }
+    .calendar-nav-btn:hover { background: #5a6fd6; }
+    .cal-month-center { display: flex; flex-direction: column; align-items: center; gap: 0.35rem; }
+    .cal-month-title  { margin: 0; font-size: 1.4rem; font-weight: 800; color: #1e293b; }
+    body.dark-mode .cal-month-title { color: #e5e7eb; }
+    .cal-today-btn {
+      background: rgba(102,126,234,0.1);
+      color: #667eea;
+      border: 1.5px solid rgba(102,126,234,0.35);
+      padding: 0.18rem 0.85rem;
+      border-radius: 20px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .cal-today-btn:hover { background: #667eea; color: white; border-color: #667eea; }
+    body.dark-mode .cal-today-btn { color: #38bdf8; border-color: rgba(56,189,248,0.3); }
+    body.dark-mode .cal-today-btn:hover { background: #38bdf8; color: #0f172a; }
+
+    /* Grid */
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 5px;
+    }
+    .calendar-day-header {
+      text-align: center;
+      font-weight: 700;
+      padding: 0.6rem 0.25rem;
+      background: #f1f5f9;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      color: #64748b;
+      letter-spacing: 0.03em;
+    }
+    body.dark-mode .calendar-day-header {
+      background: rgba(31, 41, 55, 0.7);
+      color: #38bdf8;
+    }
+
+    /* Celda de día base */
+    .calendar-day {
+      border: 1.5px solid #e5e7eb;
+      border-radius: 10px;
+      padding: 0.4rem 0.45rem;
+      background: white;
+      min-height: 88px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: flex-start;
+      transition: all 0.18s;
+      cursor: default;
+      overflow: hidden;
+    }
+    body.dark-mode .calendar-day {
+      background: rgba(31, 41, 55, 0.45);
+      border-color: rgba(56, 189, 248, 0.12);
+      color: #e5e7eb;
+    }
+    .calendar-day:hover {
+      background: #f8fafc;
+      border-color: #a5b4fc;
+      box-shadow: 0 2px 8px rgba(102,126,234,0.1);
+    }
+    body.dark-mode .calendar-day:hover {
+      background: rgba(56,189,248,0.07);
+      border-color: #38bdf8;
+    }
+
+    /* Día de hoy */
+    .calendar-day.today {
+      border: 2px solid #667eea;
+      background: rgba(102, 126, 234, 0.06);
+    }
+    .calendar-day.today .day-num {
+      background: #667eea;
+      color: white;
+      border-radius: 50%;
+      width: 22px;
+      height: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+    }
+    body.dark-mode .calendar-day.today { border-color: #38bdf8; background: rgba(56,189,248,0.08); }
+    body.dark-mode .calendar-day.today .day-num { background: #38bdf8; color: #0f172a; }
+
+    /* Días CON eventos — cursor pointer + efecto hover elevado */
+    .calendar-day.has-events { cursor: pointer; }
+    .calendar-day.has-events:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+    }
+
+    /* COLOR POR TIPO DE EVENTO */
+    .calendar-day.day-act  {
+      background: rgba(251,191,36,0.08);
+      border-color: #fcd34d;
+      border-left: 4px solid #f59e0b;
+    }
+    .calendar-day.day-apr  {
+      background: rgba(16,185,129,0.08);
+      border-color: #6ee7b7;
+      border-left: 4px solid #10b981;
+    }
+    .calendar-day.day-pend {
+      background: rgba(148,163,184,0.1);
+      border-color: #cbd5e1;
+      border-left: 4px solid #94a3b8;
+    }
+    .calendar-day.day-mix  {
+      background: rgba(102,126,234,0.08);
+      border-color: #c7d2fe;
+      border-left: 4px solid #667eea;
+    }
+    body.dark-mode .calendar-day.day-act  { background: rgba(251,191,36,0.1);  border-color: rgba(251,191,36,0.3);  border-left-color: #f59e0b; }
+    body.dark-mode .calendar-day.day-apr  { background: rgba(16,185,129,0.1);  border-color: rgba(16,185,129,0.3);  border-left-color: #10b981; }
+    body.dark-mode .calendar-day.day-pend { background: rgba(148,163,184,0.1); border-color: rgba(148,163,184,0.3); border-left-color: #94a3b8; }
+    body.dark-mode .calendar-day.day-mix  { background: rgba(102,126,234,0.1); border-color: rgba(102,126,234,0.3); border-left-color: #667eea; }
+
+    /* Número del día */
+    .day-num {
+      font-weight: 700;
+      font-size: 0.85rem;
+      color: #334155;
+      line-height: 1;
+      margin-bottom: 4px;
+      min-width: 22px;
+      text-align: center;
+    }
+    body.dark-mode .day-num { color: #e2e8f0; }
+
+    /* Contenedor de pills */
+    .day-pills { display: flex; flex-direction: column; gap: 2px; width: 100%; }
+
+    /* Pills de evento con texto visible */
+    .event-pill {
+      font-size: 0.66rem;
+      font-weight: 600;
+      padding: 2px 5px;
+      border-radius: 4px;
+      width: 100%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      line-height: 1.5;
+      display: block;
+    }
+    .event-pill.act  { background: #fef3c7; color: #92400e; }
+    .event-pill.apr  { background: #d1fae5; color: #065f46; }
+    .event-pill.pend { background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; }
+    .event-pill.more { background: #f3f4f6; color: #6b7280; font-style: italic; text-align: center; }
+    body.dark-mode .event-pill.act  { background: rgba(251,191,36,0.18); color: #fde68a; }
+    body.dark-mode .event-pill.apr  { background: rgba(16,185,129,0.18); color: #6ee7b7; }
+    body.dark-mode .event-pill.pend { background: rgba(148,163,184,0.12); color: #94a3b8; border-color: rgba(148,163,184,0.2); }
+    body.dark-mode .event-pill.more { background: rgba(255,255,255,0.06); color: #9ca3af; }
+
+    /* Leyenda mejorada con cuadros de color */
+    .cal-legend {
+      display: flex;
+      gap: 1.25rem;
+      flex-wrap: wrap;
+      margin-top: 1.25rem;
+      padding-top: 1rem;
+      border-top: 1px solid #f1f5f9;
+      font-size: 0.82rem;
+      color: #64748b;
+    }
+    body.dark-mode .cal-legend { border-color: rgba(56,189,248,0.1); }
+    .cal-legend span { display: flex; align-items: center; gap: 6px; }
+    .leg-dot {
+      width: 12px; height: 12px;
+      border-radius: 3px;
+      display: inline-block;
+      flex-shrink: 0;
+    }
+    .leg-dot.act  { background: #f59e0b; }
+    .leg-dot.apr  { background: #10b981; }
+    .leg-dot.pend { background: #94a3b8; }
+    .leg-dot.mix  { background: #667eea; }
+
+    /* Botón Dashboard Bibliotecaria */
+    .btn-dashboard-link {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      background: rgba(255,255,255,0.15); color: white;
+      border: 2px solid rgba(255,255,255,0.55); padding: 0.55rem 1.3rem;
+      border-radius: 10px; text-decoration: none; font-weight: 700;
+      font-size: 0.92rem; transition: all 0.3s; margin-top: 1rem;
+    }
+    .btn-dashboard-link:hover { background: rgba(255,255,255,0.28); border-color: white; }
+
+    /* Recursos Educativos */
+    .resources-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+
+    .resource-link-card {
+      background: white;
+      border-radius: 12px;
+      padding: 1.5rem;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      transition: all 0.3s;
+      text-decoration: none;
+      color: inherit;
+      display: block;
+    }
+
+    .resource-link-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+    }
+
+    body.dark-mode .resource-link-card {
+      background: rgba(17, 24, 39, 0.95);
+      border: 1px solid rgba(56, 189, 248, 0.2);
+    }
+
+    .resource-link-card i {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      color: #667eea;
+    }
+
+    body.dark-mode .resource-link-card i {
+      color: #38bdf8;
+    }
+
+    /* ===== VERIFICAR ESTATUS DE SOLICITUD ===== */
+    .verify-section {
+      background: linear-gradient(135deg, #0ea5e9 0%, #0369a1 100%);
+      padding: 3.5rem 0;
+      margin: 3rem 0;
+      border-radius: 20px;
+      scroll-margin-top: 80px;
+    }
+    .verify-card {
+      background: white;
+      border-radius: 18px;
+      padding: 2.25rem;
+      max-width: 680px;
+      margin: 0 auto;
+      box-shadow: 0 16px 48px rgba(0,0,0,0.18);
+    }
+    body.dark-mode .verify-card {
+      background: rgba(17,24,39,0.97);
+      border: 1px solid rgba(14,165,233,0.25);
+    }
+
+    /* Pills de tipo de búsqueda */
+    .search-type-pills { display: flex; gap: 0.5rem; margin-bottom: 1.25rem; flex-wrap: wrap; }
+    .stype-pill {
+      flex: 1; min-width: 120px;
+      padding: 0.55rem 0.75rem;
+      border: 2px solid #e2e8f0; border-radius: 10px;
+      background: white; color: #64748b;
+      font-size: 0.88rem; font-weight: 700;
+      cursor: pointer; text-align: center;
+      transition: all 0.2s; font-family: inherit;
+    }
+    .stype-pill:hover { border-color: #0ea5e9; color: #0369a1; }
+    .stype-pill.active { background: #0ea5e9; border-color: #0ea5e9; color: white; box-shadow: 0 2px 8px rgba(14,165,233,0.3); }
+    body.dark-mode .stype-pill { background: rgba(255,255,255,0.05); border-color: rgba(14,165,233,0.2); color: #94a3b8; }
+    body.dark-mode .stype-pill.active { background: #0ea5e9; color: white; }
+
+    /* Input y botón de búsqueda */
+    .search-input-row { display: flex; gap: 0.75rem; }
+    .search-main-input {
+      flex: 1; padding: 0.82rem 1rem;
+      border: 2px solid #e2e8f0; border-radius: 10px;
+      font-size: 1rem; font-family: inherit;
+      transition: border-color 0.2s; background: white; color: #1e293b;
+    }
+    .search-main-input:focus { outline: none; border-color: #0ea5e9; }
+    body.dark-mode .search-main-input { background: rgba(255,255,255,0.05); border-color: rgba(14,165,233,0.25); color: #e5e7eb; }
+    .search-btn {
+      padding: 0.82rem 1.5rem; background: #0ea5e9;
+      color: white; border: none; border-radius: 10px;
+      font-size: 1rem; font-weight: 700; cursor: pointer;
+      transition: background 0.2s, transform 0.15s; white-space: nowrap; font-family: inherit;
+    }
+    .search-btn:hover { background: #0284c7; transform: translateY(-1px); }
+
+    /* Tarjetas de resultado */
+    #statusResult { margin-top: 1.5rem; }
+    .status-card {
+      border-radius: 14px; border: 1.5px solid #e2e8f0;
+      padding: 1.2rem 1.4rem; margin-bottom: 0.85rem;
+      background: white; box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+    }
+    .status-card.apr  { border-color: #6ee7b7; background: #f0fdf4; }
+    .status-card.pend { border-color: #cbd5e1;  background: #f8fafc; }
+    .status-card.den  { border-color: #fca5a5;  background: #fff1f2; }
+    body.dark-mode .status-card      { background: rgba(31,41,55,0.6);  border-color: rgba(56,189,248,0.15); }
+    body.dark-mode .status-card.apr  { background: rgba(16,185,129,0.1); border-color: rgba(16,185,129,0.3); }
+    body.dark-mode .status-card.pend { background: rgba(148,163,184,0.08); border-color: rgba(148,163,184,0.2); }
+    body.dark-mode .status-card.den  { background: rgba(239,68,68,0.08); border-color: rgba(239,68,68,0.3); }
+
+    .status-card-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 0.75rem; margin-bottom: 0.75rem; flex-wrap: wrap; }
+    .status-card-id { font-family: monospace; font-size: 0.83rem; color: #94a3b8; font-weight: 700; letter-spacing: 0.5px; }
+    .status-badge { display: inline-flex; align-items: center; gap: 5px; padding: 0.28rem 0.9rem; border-radius: 20px; font-size: 0.8rem; font-weight: 800; white-space: nowrap; }
+    .status-badge.apr  { background: #d1fae5; color: #065f46; }
+    .status-badge.pend { background: #f1f5f9;  color: #475569; }
+    .status-badge.den  { background: #fee2e2;  color: #991b1b; }
+
+    .status-space   { font-size: 1.1rem; font-weight: 800; color: #1e293b; margin-bottom: 0.5rem; }
+    body.dark-mode .status-space { color: #e5e7eb; }
+    .status-details { display: flex; flex-wrap: wrap; gap: 0.4rem 1.1rem; font-size: 0.84rem; color: #64748b; }
+    .status-details span { display: flex; align-items: center; gap: 4px; }
+
+    /* Caja de razón de denegación */
+    .denial-box {
+      margin-top: 0.9rem; padding: 0.9rem 1rem;
+      background: #fff7ed; border: 1.5px solid #fed7aa; border-radius: 10px;
+    }
+    .denial-box-title { font-size: 0.75rem; font-weight: 800; color: #c2410c; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 5px; }
+    .denial-box-text  { font-size: 0.92rem; color: #7c2d12; font-style: italic; line-height: 1.5; }
+    body.dark-mode .denial-box       { background: rgba(239,68,68,0.08); border-color: rgba(239,68,68,0.3); }
+    body.dark-mode .denial-box-title { color: #f87171; }
+    body.dark-mode .denial-box-text  { color: #fca5a5; }
+
+    /* Sin resultados */
+    .status-empty { text-align: center; padding: 2rem 0.5rem; color: #94a3b8; }
+    .status-empty-icon { font-size: 2.8rem; display: block; margin-bottom: 0.5rem; }
+
+    /* ===== FORMULARIO DE RESERVACIÓN EMBEBIDO ===== */
+    .res-form-section {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      padding: 3.5rem 0;
+      margin: 3rem 0;
+      border-radius: 20px;
+      scroll-margin-top: 80px;
+    }
+    .res-form-card {
+      background: white;
+      border-radius: 18px;
+      padding: 2.5rem;
+      max-width: 720px;
+      margin: 0 auto;
+      box-shadow: 0 16px 48px rgba(0,0,0,0.18);
+    }
+    body.dark-mode .res-form-card {
+      background: rgba(17, 24, 39, 0.97);
+      border: 1px solid rgba(56, 189, 248, 0.25);
+    }
+    .res-form-step-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #667eea;
+      margin-bottom: 1rem;
+      padding-bottom: 0.6rem;
+      border-bottom: 2px solid #f1f5f9;
+    }
+    body.dark-mode .res-form-step-title { color: #38bdf8; border-color: rgba(56,189,248,0.15); }
+
+    /* Selector visual de espacios */
+    .space-selector-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.75rem;
+      margin-bottom: 0.75rem;
+    }
+    @media (max-width: 560px) { .space-selector-grid { grid-template-columns: repeat(2, 1fr); } }
+    .spc-card {
+      background: #f8fafc;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 1rem 0.5rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      user-select: none;
+    }
+    .spc-card:hover { border-color: #667eea; background: rgba(102,126,234,0.06); }
+    .spc-card.selected {
+      border-color: #667eea;
+      background: rgba(102,126,234,0.12);
+      box-shadow: 0 0 0 3px rgba(102,126,234,0.2);
+    }
+    .spc-card .spc-icon { font-size: 2rem; }
+    .spc-card .spc-name { font-size: 0.78rem; font-weight: 700; color: #334155; margin-top: 6px; line-height: 1.3; }
+    body.dark-mode .spc-card { background: rgba(255,255,255,0.04); border-color: rgba(56,189,248,0.2); }
+    body.dark-mode .spc-card.selected { border-color: #38bdf8; background: rgba(56,189,248,0.12); }
+    body.dark-mode .spc-card .spc-name { color: #e5e7eb; }
+
+    /* Grilla del formulario */
+    .res-form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+    @media (max-width: 560px) { .res-form-grid { grid-template-columns: 1fr; } }
+    .res-form-grid .form-group { margin-bottom: 0; }
+    .res-form-grid .form-group.full { grid-column: 1 / -1; }
+    .res-form-grid label { display: block; font-size: 0.87rem; font-weight: 700; color: #475569; margin-bottom: 5px; }
+    body.dark-mode .res-form-grid label { color: #9ca3af; }
+    .res-form-grid input,
+    .res-form-grid select,
+    .res-form-grid textarea {
+      width: 100%; padding: 0.7rem 0.9rem;
+      border: 2px solid #e2e8f0; border-radius: 9px;
+      font-size: 0.95rem; font-family: inherit;
+      background: white; color: #1e293b;
+      transition: border-color 0.2s;
+    }
+    .res-form-grid input:focus,
+    .res-form-grid select:focus,
+    .res-form-grid textarea:focus { outline: none; border-color: #667eea; }
+    body.dark-mode .res-form-grid input,
+    body.dark-mode .res-form-grid select,
+    body.dark-mode .res-form-grid textarea {
+      background: rgba(255,255,255,0.05);
+      border-color: rgba(56,189,248,0.25);
+      color: #e5e7eb;
+    }
+
+    /* Botón submit del formulario */
+    .res-submit-btn {
+      width: 100%; padding: 1rem;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white; border: none; border-radius: 10px;
+      font-size: 1.05rem; font-weight: 700; cursor: pointer;
+      margin-top: 1.5rem; transition: opacity 0.2s, transform 0.15s;
+    }
+    .res-submit-btn:hover { opacity: 0.92; transform: translateY(-1px); }
+    .res-submit-btn:active { transform: translateY(0); }
+
+    /* Tarjetas de espacio — añadir indicador de selección activo */
+    .space-card.active-space { outline: 3px solid white; transform: translateY(-10px); }
+  </style>
+</head>
+
+<body>
+  <!-- Header (mantén tu header existente) -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <div class="logo-area">
+        <img src="LOGO6.png" alt="Logo Escuela" class="logo-image">
+        <div class="logo-text">
+          <span class="logo-title">Escuela Superior Vocacional</span>
+          <span class="logo-subtitle">Pablo Colón Berdecia</span>
+        </div>
+      </div>
+      <button class="hamburger-menu" id="hamburgerBtn">
+        <span></span><span></span><span></span>
+      </button>
+      <nav class="main-nav">
+        <ul>
+          <li><a href="index.html">Inicio</a></li>
+          <li><a href="#servicios">Servicios</a></li>
+          <li><a href="#contacto">Contacto</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Sidebar Menu -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+  <div class="sidebar-menu" id="sidebarMenu">
+    <div class="sidebar-header">
+      <h3 data-translate="Menú">Menú</h3>
+      <button class="sidebar-close" id="closeSidebar">&times;</button>
+    </div>
+    <div class="sidebar-content">
+      <!-- Navegación Principal -->
+      <a href="index.html" class="sidebar-item sidebar-link">
+        <span class="sidebar-icon">🏠</span>
+        <span class="sidebar-text" data-translate="Inicio">Inicio</span>
+        <span class="sidebar-arrow">›</span>
+      </a>
+
+      <a href="quienes-somos.html" class="sidebar-item sidebar-link">
+        <span class="sidebar-icon">🏫</span>
+        <span class="sidebar-text" data-translate="Quiénes Somos">Quiénes Somos</span>
+        <span class="sidebar-arrow">›</span>
+      </a>
+
+      <!-- Servicios Digitales (Expandible) -->
+      <div class="sidebar-item" id="servicesToggle">
+        <span class="sidebar-icon">💻</span>
+        <span class="sidebar-text" data-translate="Servicios Digitales">Servicios Digitales</span>
+        <span class="sidebar-arrow">›</span>
+      </div>
+      <div class="theme-options" id="servicesOptions" style="display: none;">
+        <a href="https://de.pr.gov/MATRICULA//" class="theme-option">
+          <span>📝</span> Matrícula Online
+        </a>
+        <a href="solicitudes.html" class="theme-option">
+          <span>📄</span> Solicitud de Documentos
+        </a>
+        <a href="https://pcbsystempr-cyber.github.io/Servicio-Tecnico/" class="theme-option">
+          <span>🔧</span> Servicios Técnicos
+        </a>
+        <a href="https://pcbsystempr-cyber.github.io/Unidad-de-ApoyoSocioEmocional/" class="theme-option">
+          <span>🧠</span> Orientación
+        </a>
+        <a href="biblioteca.html" class="theme-option">
+          <span>📚</span> Biblioteca
+        </a>
+        <a href="comedor.html" class="theme-option">
+          <span>🍽️</span> Comedor
+        </a>
+        <a href="padres.html" class="theme-option">
+          <span>👨‍👩‍👧</span> Portal de Padres
+        </a>
+        <a href="seguridad.html" class="theme-option">
+          <span>🛡️</span> Seguridad
+        </a>
+
+      </div>
+
+      <a href="participacion-comunitaria.html" class="sidebar-item sidebar-link">
+        <span class="sidebar-icon">🎓</span>
+        <span class="sidebar-text" data-translate="Vida Estudiantil">Vida Estudiantil</span>
+        <span class="sidebar-arrow">›</span>
+      </a>
+
+      <a href="normas-reglamentos.html" class="sidebar-item sidebar-link">
+        <span class="sidebar-icon">📋</span>
+        <span class="sidebar-text" data-translate="Normas">Normas</span>
+        <span class="sidebar-arrow">›</span>
+      </a>
+
+      <!-- Separador -->
+      <div style="border-top: 1px solid rgba(255,255,255,0.1); margin: 1rem 0;"></div>
+
+      <!-- Cambiar Tema -->
+      <div class="sidebar-item" id="themeToggle">
+        <span class="sidebar-icon">🎨</span>
+        <span class="sidebar-text" data-translate="Cambiar Tema">Cambiar Tema</span>
+        <span class="sidebar-arrow">›</span>
+      </div>
+      <div class="theme-options" id="themeOptions" style="display: none;">
+        <button class="theme-option" id="selectLightTheme" data-translate="Modo Claro">
+          <span>☀️</span> Modo Claro
+        </button>
+        <button class="theme-option" id="selectDarkTheme" data-translate="Modo Oscuro">
+          <span>🌙</span> Modo Oscuro
+        </button>
+      </div>
+
+      <!-- Cambiar Idioma -->
+      <div class="sidebar-item" id="languageToggle">
+        <span class="sidebar-icon">🌐</span>
+        <span class="sidebar-text" data-translate="Cambiar Idioma">Cambiar Idioma</span>
+        <span class="sidebar-arrow">›</span>
+      </div>
+      <div class="theme-options" id="languageOptions" style="display: none;">
+        <button class="theme-option" id="selectSpanish" data-translate="Español">
+          <span>🇵🇷</span> Español
+        </button>
+        <button class="theme-option" id="selectEnglish" data-translate="English">
+          <span>🇺🇸</span> English
+        </button>
+      </div>
+
+      <!-- Separador -->
+      <div style="border-top: 1px solid rgba(255,255,255,0.1); margin: 1rem 0;"></div>
+
+      <!-- Dashboard Administrativo -->
+      <a href="admin.html" class="sidebar-item sidebar-link">
+        <span class="sidebar-icon">⚙️</span>
+        <span class="sidebar-text" data-translate="Dashboard Admin">Dashboard Admin</span>
+        <span class="sidebar-arrow">›</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-layout">
+        <div class="hero-text">
+          <h1>📚 Biblioteca Digital</h1>
+          <p>Tu centro de conocimiento y recursos educativos. Accede a nuestro catálogo en línea, reserva espacios de estudio y descubre recursos académicos de calidad.</p>
+          <div class="hero-actions">
+            <a href="#reserva" class="btn btn-primary">Reservar Espacio</a>
+            <a href="#recursos" class="btn btn-secondary">Ver Recursos</a>
+          </div>
+          <div class="hero-tags">
+            <span>📖 Catálogo Digital</span>
+            <span>💻 Reservas Online</span>
+            <span>🎓 Apoyo Académico</span>
+            <span>🌐 Recursos Globales</span>
+          </div>
+        </div>
+
+        <div class="hero-card">
+          <h2>🕐 Horario de Atención</h2>
+          <ul>
+            <li><strong>Lunes - Viernes:</strong> 8:00 AM - 2:00 PM</li>
+            <li><strong>Servicios:</strong> Préstamo de libros</li>
+            <li><strong>Computadoras:</strong> 8 estaciones disponibles</li>
+            <li><strong>Salas de estudio:</strong> Reserva anticipada</li>
+            <li><strong>Apoyo académico:</strong> Tareas y Proyectos</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="container" style="padding: 3rem 0;">
+
+    <!-- 1. RESERVA DE ESPACIOS -->
+    <section class="space-reservation-section">
+      <div class="container">
+        <div class="section-header" style="text-align: center; color: white;">
+          <h2 style="font-size: 2.5rem; margin-bottom: 0.5rem;">📖 Reserva de Espacios</h2>
+          <p style="font-size: 1.2rem; color: #1e293b; opacity: 1;">Reserva salas, computadoras y equipos</p>
+          <a href="biblioteca-dashboard.html" class="btn-dashboard-link">🔑 Dashboard Bibliotecaria</a>
+        </div>
+
+        <div class="reservation-grid">
+          <div class="space-card" id="scard-lectura" onclick="goToForm('Sala de Lectura')">
+            <div class="space-icon">📖</div>
+            <h3>Sala de Lectura</h3>
+            <p>Espacio tranquilo para estudio individual</p>
+            <span class="badge" style="background:#10b981;color:white;padding:0.25rem 0.75rem;border-radius:20px;">Disponible</span>
+          </div>
+
+          <div class="space-card" id="scard-computadoras" onclick="goToForm('Computadoras')">
+            <div class="space-icon">💻</div>
+            <h3>Computadoras</h3>
+            <p>Estaciones de trabajo con internet</p>
+            <span class="badge" style="background:#10b981;color:white;padding:0.25rem 0.75rem;border-radius:20px;">8 disponibles</span>
+          </div>
+
+          <div class="space-card" id="scard-proyector" onclick="goToForm('Proyector')">
+            <div class="space-icon">📽️</div>
+            <h3>Proyector</h3>
+            <p>Para presentaciones y trabajos grupales</p>
+            <span class="badge" style="background:#f59e0b;color:white;padding:0.25rem 0.75rem;border-radius:20px;">Reservar</span>
+          </div>
+
+          <div class="space-card" id="scard-presentaciones" onclick="goToForm('Sala de Presentaciones')">
+            <div class="space-icon">🎤</div>
+            <h3>Sala de Presentaciones</h3>
+            <p>Espacio para exposiciones y eventos</p>
+            <span class="badge" style="background:#10b981;color:white;padding:0.25rem 0.75rem;border-radius:20px;">Disponible</span>
+          </div>
+        </div>
+
+        <!-- Calendario de Reservas y Actividades -->
+        <div class="calendar-container">
+          <div class="calendar-header">
+            <button class="calendar-nav-btn" onclick="previousMonth()" title="Mes anterior">❮</button>
+            <div class="cal-month-center">
+              <h3 id="currentMonth" class="cal-month-title">—</h3>
+              <button class="cal-today-btn" onclick="goToToday()">📍 Hoy</button>
+            </div>
+            <button class="calendar-nav-btn" onclick="nextMonth()" title="Mes siguiente">❯</button>
+          </div>
+
+          <div class="calendar-grid" id="calendarGrid">
+            <div class="calendar-day-header">Dom</div>
+            <div class="calendar-day-header">Lun</div>
+            <div class="calendar-day-header">Mar</div>
+            <div class="calendar-day-header">Mié</div>
+            <div class="calendar-day-header">Jue</div>
+            <div class="calendar-day-header">Vie</div>
+            <div class="calendar-day-header">Sáb</div>
+          </div>
+
+          <!-- Leyenda con cuadros de color -->
+          <div class="cal-legend">
+            <span><span class="leg-dot act"></span>Actividad de biblioteca</span>
+            <span><span class="leg-dot apr"></span>Reserva aprobada</span>
+            <span><span class="leg-dot pend"></span>Reserva pendiente</span>
+            <span><span class="leg-dot mix"></span>Múltiples eventos</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FORMULARIO DE RESERVACIÓN -->
+    <section id="reserva" class="res-form-section">
+      <div class="container">
+        <div style="text-align:center;color:white;margin-bottom:2rem;">
+          <h2 style="font-size:2.2rem;margin-bottom:0.4rem;">📋 Formulario de Reservación</h2>
+          <p style="font-size:1.1rem;opacity:0.88;">Completa el formulario — la bibliotecaria revisará y aprobará tu solicitud</p>
+        </div>
+
+        <div class="res-form-card">
+
+          <!-- ESTADO: FORMULARIO -->
+          <div id="embeddedFormDiv">
+
+            <p class="res-form-step-title">Paso 1 — Selecciona el espacio que deseas reservar</p>
+            <div class="space-selector-grid">
+              <div class="spc-card" data-space="Sala de Lectura" onclick="selectSpace('Sala de Lectura')">
+                <div class="spc-icon">📖</div>
+                <div class="spc-name">Sala de Lectura</div>
+              </div>
+              <div class="spc-card" data-space="Computadoras" onclick="selectSpace('Computadoras')">
+                <div class="spc-icon">💻</div>
+                <div class="spc-name">Computadoras</div>
+              </div>
+              <div class="spc-card" data-space="Proyector" onclick="selectSpace('Proyector')">
+                <div class="spc-icon">📽️</div>
+                <div class="spc-name">Proyector</div>
+              </div>
+              <div class="spc-card" data-space="Sala de Presentaciones" onclick="selectSpace('Sala de Presentaciones')">
+                <div class="spc-icon">🎤</div>
+                <div class="spc-name">Sala de Presentaciones</div>
+              </div>
+            </div>
+            <p id="spaceError" style="color:#ef4444;font-size:0.85rem;display:none;margin-bottom:0.75rem;">⚠️ Por favor selecciona un espacio antes de continuar.</p>
+
+            <p class="res-form-step-title" style="margin-top:1.5rem;">Paso 2 — Completa tus datos</p>
+            <form id="reservationForm" novalidate>
+              <input type="hidden" id="selectedSpaceInput">
+              <div class="res-form-grid">
+                <div class="form-group full">
+                  <label>Nombre Completo *</label>
+                  <input type="text" id="resNombre" required placeholder="Tu nombre completo">
+                </div>
+                <div class="form-group">
+                  <label>Correo Electrónico *</label>
+                  <input type="email" id="resEmail" required placeholder="correo@ejemplo.com">
+                </div>
+                <div class="form-group">
+                  <label>Teléfono</label>
+                  <input type="tel" id="resTelefono" placeholder="(787) 000-0000">
+                </div>
+                <div class="form-group">
+                  <label>Fecha *</label>
+                  <input type="date" id="resDate" required>
+                </div>
+                <div class="form-group">
+                  <label>Número de Participantes</label>
+                  <input type="number" id="resParticipantes" min="1" max="50" placeholder="1">
+                </div>
+                <div class="form-group">
+                  <label>Hora de Inicio *</label>
+                  <input type="time" id="resHoraInicio" required>
+                </div>
+                <div class="form-group">
+                  <label>Hora de Fin *</label>
+                  <input type="time" id="resHoraFin" required>
+                </div>
+                <div class="form-group full">
+                  <label>Propósito de la Reserva *</label>
+                  <textarea id="resProposito" rows="3" required placeholder="Describe brevemente para qué necesitas el espacio..."></textarea>
+                </div>
+              </div>
+              <p style="font-size:0.83rem;color:#94a3b8;margin-top:1rem;">⏳ Tu solicitud quedará <strong>pendiente</strong> hasta que la bibliotecaria la revise y apruebe.</p>
+              <button type="submit" class="res-submit-btn">📋 Enviar Solicitud de Reserva</button>
+            </form>
+          </div>
+
+          <!-- ESTADO: ÉXITO -->
+          <div id="embeddedSuccessDiv" style="display:none;text-align:center;padding:2.5rem 1rem;">
+            <div style="font-size:4rem;margin-bottom:1rem;">✅</div>
+            <h2 style="color:#10b981;margin-bottom:0.5rem;">¡Solicitud Enviada!</h2>
+            <p style="color:#64748b;margin-bottom:1.5rem;">Tu reserva está <strong>pendiente de aprobación</strong> por la bibliotecaria.</p>
+            <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:14px;padding:1.25rem;margin-bottom:1.5rem;display:inline-block;min-width:240px;">
+              <p style="margin:0 0 4px;color:#166534;font-size:0.88rem;font-weight:600;">Número de Solicitud</p>
+              <p id="reservationTicketId" style="margin:0;font-size:1.5rem;font-family:monospace;font-weight:800;color:#166534;letter-spacing:2px;"></p>
+            </div>
+            <p style="font-size:0.85rem;color:#94a3b8;margin-bottom:1.75rem;">
+              Guarda tu número de solicitud. Podrás ver el estado en el calendario de la biblioteca una vez aprobada.
+            </p>
+            <button onclick="resetReservationForm()" class="res-submit-btn" style="max-width:280px;margin-top:0;">
+              🔄 Hacer Otra Reserva
+            </button>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- VERIFICAR ESTATUS DE SOLICITUD -->
+    <section id="verificar" class="verify-section">
+      <div class="container">
+        <div style="text-align:center;color:white;margin-bottom:2rem;">
+          <h2 style="font-size:2.2rem;margin-bottom:0.4rem;">🔍 Verificar Estatus de Solicitud</h2>
+          <p style="font-size:1.05rem;opacity:0.88;">Consulta el estado de tu reserva usando tu número de solicitud, nombre o fecha</p>
+        </div>
+
+        <div class="verify-card">
+
+          <!-- Tipo de búsqueda -->
+          <p style="font-size:0.87rem;font-weight:700;color:#64748b;margin-bottom:0.75rem;text-transform:uppercase;letter-spacing:0.04em;">Buscar por:</p>
+          <div class="search-type-pills">
+            <button class="stype-pill active" id="stype-id"     onclick="setSearchType('id',this)">🎫 Número de Solicitud</button>
+            <button class="stype-pill"        id="stype-nombre" onclick="setSearchType('nombre',this)">👤 Nombre</button>
+            <button class="stype-pill"        id="stype-fecha"  onclick="setSearchType('fecha',this)">📅 Fecha</button>
+          </div>
+
+          <!-- Input de búsqueda -->
+          <div class="search-input-row">
+            <input type="text" id="statusSearchInput" class="search-main-input"
+                   placeholder="Ej: RES-1234567890" maxlength="80"
+                   onkeydown="if(event.key==='Enter') doStatusSearch()">
+            <button class="search-btn" onclick="doStatusSearch()">🔍 Buscar</button>
+          </div>
+          <p id="statusSearchHint" style="font-size:0.82rem;color:#94a3b8;margin-top:0.5rem;">
+            Ingresa el número de solicitud que recibiste al completar el formulario.
+          </p>
+
+          <!-- Área de resultado -->
+          <div id="statusResult"></div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- RECURSOS EDUCATIVOS -->
+    <section id="recursos" style="margin: 3rem 0;">
+      <div class="section-header" style="text-align: center;">
+        <h2 style="font-size: 2.5rem; margin-bottom: 0.5rem;">📘 Recursos Educativos</h2>
+        <p style="font-size: 1.2rem; color: #64748b;">Acceso a bibliotecas digitales y bases de datos</p>
+      </div>
+
+      <div class="resources-grid">
+        <a href="https://www.gutenberg.org/" target="_blank" class="resource-link-card">
+          <i class="fas fa-book"></i>
+          <h4>Project Gutenberg</h4>
+          <p style="font-size: 0.9rem; color: #64748b;">70,000+ libros gratis</p>
+        </a>
+
+        <a href="https://openlibrary.org/" target="_blank" class="resource-link-card">
+          <i class="fas fa-book-open"></i>
+          <h4>Open Library</h4>
+          <p style="font-size: 0.9rem; color: #64748b;">Millones de libros digitales</p>
+        </a>
+
+        <a href="https://www.khanacademy.org/" target="_blank" class="resource-link-card">
+          <i class="fas fa-graduation-cap"></i>
+          <h4>Khan Academy</h4>
+          <p style="font-size: 0.9rem; color: #64748b;">Cursos gratuitos</p>
+        </a>
+
+        <a href="https://scholar.google.com/" target="_blank" class="resource-link-card">
+          <i class="fas fa-search"></i>
+          <h4>Google Scholar</h4>
+          <p style="font-size: 0.9rem; color: #64748b;">Artículos académicos</p>
+        </a>
+
+        <a href="https://www.coursera.org/" target="_blank" class="resource-link-card">
+          <i class="fas fa-laptop"></i>
+          <h4>Coursera</h4>
+          <p style="font-size: 0.9rem; color: #64748b;">Cursos universitarios</p>
+        </a>
+
+        <a href="https://www.ted.com/" target="_blank" class="resource-link-card">
+          <i class="fas fa-video"></i>
+          <h4>TED Talks</h4>
+          <p style="font-size: 0.9rem; color: #64748b;">Charlas inspiradoras</p>
+        </a>
+      </div>
+    </section>
+
+  </div>
+
+  <script src="script.js"></script>
+  <script src="js/services-manager.js"></script>
+  <script src="js/biblioteca.js"></script>
+  <script>
+    // Hamburger menu functionality
+    (function () {
+      const hamburgerBtn = document.getElementById('hamburgerBtn');
+      const sidebarMenu = document.getElementById('sidebarMenu');
+      const sidebarOverlay = document.getElementById('sidebarOverlay');
+      const closeSidebar = document.getElementById('closeSidebar');
+      const themeToggle = document.getElementById('themeToggle');
+      const themeOptions = document.getElementById('themeOptions');
+      const languageToggle = document.getElementById('languageToggle');
+      const languageOptions = document.getElementById('languageOptions');
+      const selectLightTheme = document.getElementById('selectLightTheme');
+      const selectDarkTheme = document.getElementById('selectDarkTheme');
+      const selectSpanish = document.getElementById('selectSpanish');
+      const selectEnglish = document.getElementById('selectEnglish');
+      const servicesToggle = document.getElementById('servicesToggle');
+      const servicesOptions = document.getElementById('servicesOptions');
+
+      function openSidebarMenu() {
+        sidebarMenu.classList.add('active');
+        sidebarOverlay.classList.add('active');
+      }
+
+      function closeSidebarMenu() {
+        sidebarMenu.classList.remove('active');
+        sidebarOverlay.classList.remove('active');
+        if (themeOptions) themeOptions.style.display = 'none';
+        if (languageOptions) languageOptions.style.display = 'none';
+      }
+
+      if (hamburgerBtn) {
+        hamburgerBtn.addEventListener('click', openSidebarMenu);
+      }
+
+      if (closeSidebar) {
+        closeSidebar.addEventListener('click', closeSidebarMenu);
+      }
+
+      if (sidebarOverlay) {
+        sidebarOverlay.addEventListener('click', closeSidebarMenu);
+      }
+
+      // Services toggle
+      if (servicesToggle) {
+        servicesToggle.addEventListener('click', function () {
+          const isVisible = servicesOptions.style.display === 'block';
+          servicesOptions.style.display = isVisible ? 'none' : 'block';
+        });
+      }
+
+      // Theme toggle
+      if (themeToggle) {
+        themeToggle.addEventListener('click', function () {
+          const isVisible = themeOptions.style.display === 'block';
+          themeOptions.style.display = isVisible ? 'none' : 'block';
+          languageOptions.style.display = 'none';
+        });
+      }
+
+      // Language toggle
+      if (languageToggle) {
+        languageToggle.addEventListener('click', function () {
+          const isVisible = languageOptions.style.display === 'block';
+          languageOptions.style.display = isVisible ? 'none' : 'block';
+          themeOptions.style.display = 'none';
+        });
+      }
+
+      // Select Light Theme
+      if (selectLightTheme) {
+        selectLightTheme.addEventListener('click', function () {
+          document.body.classList.remove('dark-mode');
+          localStorage.setItem('theme', 'light');
+          closeSidebarMenu();
+        });
+      }
+
+      // Select Dark Theme
+      if (selectDarkTheme) {
+        selectDarkTheme.addEventListener('click', function () {
+          document.body.classList.add('dark-mode');
+          localStorage.setItem('theme', 'dark');
+          closeSidebarMenu();
+        });
+      }
+
+      // Seleccionar idioma español
+      if (selectSpanish) {
+        selectSpanish.addEventListener('click', function () {
+          localStorage.setItem('language', 'es');
+          const htmlRoot = document.getElementById('htmlRoot');
+          if (htmlRoot) htmlRoot.setAttribute('lang', 'es');
+          if (typeof translatePage === 'function') {
+            translatePage('es');
+          }
+          closeSidebarMenu();
+        });
+      }
+
+      // Seleccionar idioma inglés
+      if (selectEnglish) {
+        selectEnglish.addEventListener('click', function () {
+          localStorage.setItem('language', 'en');
+          const htmlRoot = document.getElementById('htmlRoot');
+          if (htmlRoot) htmlRoot.setAttribute('lang', 'en');
+          if (typeof translatePage === 'function') {
+            translatePage('en');
+          }
+          closeSidebarMenu();
+        });
+      }
+    })();
+  </script>
+</body>
+</html>
+
+
+
+
+
+
+
+

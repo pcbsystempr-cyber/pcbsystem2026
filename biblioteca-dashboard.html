@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Bibliotecaria – PCB</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    /* ===== RESET & BASE ===== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f1f5f9; color: #1e293b; }
+    button { cursor: pointer; font-family: inherit; }
+    input, select, textarea { font-family: inherit; }
+
+    /* ===== LOGIN SCREEN ===== */
+    #loginScreen {
+      min-height: 100vh; display: flex; align-items: center; justify-content: center;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    .login-card {
+      background: white; border-radius: 20px; padding: 3rem 2.5rem;
+      width: 100%; max-width: 420px; box-shadow: 0 25px 60px rgba(0,0,0,0.25); text-align: center;
+    }
+    .login-logo { font-size: 3.5rem; margin-bottom: 0.5rem; }
+    .login-card h1 { font-size: 1.6rem; color: #1e293b; margin-bottom: 0.25rem; }
+    .login-card p { color: #64748b; margin-bottom: 2rem; font-size: 0.95rem; }
+    .login-input {
+      width: 100%; padding: 0.9rem 1rem; border: 2px solid #e2e8f0; border-radius: 10px;
+      font-size: 1rem; margin-bottom: 1rem; transition: border-color 0.3s;
+    }
+    .login-input:focus { outline: none; border-color: #667eea; }
+    .login-btn {
+      width: 100%; padding: 0.9rem; background: linear-gradient(135deg,#667eea,#764ba2);
+      color: white; border: none; border-radius: 10px; font-size: 1rem; font-weight: 700; transition: opacity 0.3s;
+    }
+    .login-btn:hover { opacity: 0.9; }
+    .login-error { color: #ef4444; font-size: 0.88rem; margin-top: 0.75rem; display: none; }
+    .login-hint { margin-top: 1rem; font-size: 0.8rem; color: #94a3b8; }
+
+    /* ===== DASHBOARD LAYOUT ===== */
+    #dashScreen { display: none; min-height: 100vh; flex-direction: column; }
+    .dash-header {
+      background: linear-gradient(135deg,#667eea,#764ba2); color: white;
+      padding: 1rem 1.5rem; display: flex; align-items: center; justify-content: space-between;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+    }
+    .dash-header-left { display: flex; align-items: center; gap: 1rem; }
+    .dash-header img { width: 42px; height: 42px; border-radius: 50%; background: white; padding: 4px; }
+    .dash-header h1 { font-size: 1.3rem; font-weight: 700; }
+    .dash-header p { font-size: 0.8rem; opacity: 0.8; }
+    .dash-header-right { display: flex; gap: 0.75rem; align-items: center; }
+    .btn-hdr { padding: 0.5rem 1rem; border-radius: 8px; border: 2px solid rgba(255,255,255,0.5); background: rgba(255,255,255,0.15); color: white; font-size: 0.88rem; font-weight: 600; text-decoration: none; transition: all 0.2s; }
+    .btn-hdr:hover { background: rgba(255,255,255,0.28); }
+    .btn-hdr.danger { border-color: rgba(239,68,68,0.6); background: rgba(239,68,68,0.2); }
+    .btn-hdr.danger:hover { background: rgba(239,68,68,0.35); }
+
+    /* ===== STATS BAR ===== */
+    .stats-bar { display: flex; gap: 1rem; padding: 1.25rem 1.5rem; flex-wrap: wrap; }
+    .stat-card { flex: 1; min-width: 140px; background: white; border-radius: 12px; padding: 1rem 1.25rem; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border-left: 4px solid #667eea; }
+    .stat-card.pend  { border-color: #f59e0b; }
+    .stat-card.aprob { border-color: #10b981; }
+    .stat-card.denie { border-color: #ef4444; }
+    .stat-card.total { border-color: #667eea; }
+    .stat-num { font-size: 2rem; font-weight: 800; line-height: 1; }
+    .stat-lbl { font-size: 0.82rem; color: #64748b; margin-top: 3px; }
+
+    /* ===== TABS ===== */
+    .tabs-nav { display: flex; gap: 0; border-bottom: 2px solid #e2e8f0; padding: 0 1.5rem; background: white; }
+    .tab-btn { padding: 0.9rem 1.5rem; background: none; border: none; border-bottom: 3px solid transparent; color: #64748b; font-size: 0.97rem; font-weight: 600; transition: all 0.2s; margin-bottom: -2px; }
+    .tab-btn.active { color: #667eea; border-bottom-color: #667eea; }
+    .tab-btn:hover { color: #667eea; background: rgba(102,126,234,0.05); }
+    .tab-content { display: none; padding: 1.5rem; }
+    .tab-content.active { display: block; }
+
+    /* ===== SECTION CARDS ===== */
+    .section-card { background: white; border-radius: 14px; padding: 1.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.06); margin-bottom: 1.5rem; }
+    .section-card h3 { font-size: 1.1rem; color: #334155; margin-bottom: 1.25rem; display: flex; align-items: center; gap: 0.5rem; }
+    /* ===== FILTER BAR ===== */
+    .filter-bar { display: flex; gap: 0.75rem; margin-bottom: 1.25rem; flex-wrap: wrap; }
+    .filter-btn { padding: 0.4rem 1rem; border-radius: 20px; border: 2px solid #e2e8f0; background: white; font-size: 0.85rem; font-weight: 600; color: #64748b; transition: all 0.2s; }
+    .filter-btn.active-all   { border-color: #667eea; background: #667eea; color: white; }
+    .filter-btn.active-pend  { border-color: #f59e0b; background: #f59e0b; color: white; }
+    .filter-btn.active-apr   { border-color: #10b981; background: #10b981; color: white; }
+    .filter-btn.active-den   { border-color: #ef4444; background: #ef4444; color: white; }
+    .filter-btn:hover { opacity: 0.85; }
+
+    /* ===== RESERVATION CARDS ===== */
+    .res-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 1.1rem 1.25rem; margin-bottom: 0.85rem; display: flex; gap: 1rem; align-items: flex-start; }
+    .res-card:hover { background: #f1f5f9; }
+    .res-badge { display: inline-block; padding: 0.25rem 0.7rem; border-radius: 20px; font-size: 0.78rem; font-weight: 700; white-space: nowrap; }
+    .badge-pend { background: #fef3c7; color: #92400e; }
+    .badge-apr  { background: #d1fae5; color: #065f46; }
+    .badge-den  { background: #fee2e2; color: #991b1b; }
+    .res-info { flex: 1; }
+    .res-info strong { font-size: 1rem; color: #1e293b; }
+    .res-info .res-meta { font-size: 0.83rem; color: #64748b; margin-top: 3px; line-height: 1.6; }
+    .res-actions { display: flex; flex-direction: column; gap: 0.4rem; min-width: 90px; }
+    .btn-sm { padding: 0.4rem 0.8rem; border: none; border-radius: 8px; font-size: 0.8rem; font-weight: 700; transition: opacity 0.2s; color: white; }
+    .btn-sm:hover { opacity: 0.85; }
+    .btn-apr  { background: #10b981; }
+    .btn-den  { background: #ef4444; }
+    .btn-del  { background: #94a3b8; }
+    .btn-note { background: #667eea; }
+
+    /* ===== FORM FIELDS ===== */
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    @media (max-width:600px) { .form-row { grid-template-columns: 1fr; } }
+    .form-group { margin-bottom: 1rem; }
+    .form-group label { display: block; font-size: 0.88rem; font-weight: 600; color: #475569; margin-bottom: 5px; }
+    .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 0.7rem 0.9rem; border: 2px solid #e2e8f0; border-radius: 9px; font-size: 0.95rem; transition: border-color 0.2s; background: white; }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: #667eea; }
+    .btn-primary  { background: linear-gradient(135deg,#667eea,#764ba2); color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 10px; font-size: 0.97rem; font-weight: 700; transition: opacity 0.2s; }
+    .btn-primary:hover { opacity: 0.9; }
+    .btn-secondary { background: #e2e8f0; color: #475569; border: none; padding: 0.75rem 1.5rem; border-radius: 10px; font-size: 0.97rem; font-weight: 600; }
+    .btn-secondary:hover { background: #cbd5e1; }
+
+    /* ===== CALENDAR (dashboard) ===== */
+    .dash-cal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; }
+    .dash-cal-header h3 { font-size: 1.2rem; color: #334155; }
+    .cal-nav { background: #667eea; color: white; border: none; padding: 0.4rem 0.9rem; border-radius: 8px; font-size: 1.1rem; }
+    .dash-cal-grid { display: grid; grid-template-columns: repeat(7,1fr); gap: 6px; }
+    .dcal-head { text-align: center; font-weight: 700; font-size: 0.8rem; color: #64748b; padding: 6px 2px; }
+    .dcal-day { min-height: 72px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 6px; cursor: pointer; transition: all 0.15s; }
+    .dcal-day:hover { background: #ede9fe; border-color: #667eea; }
+    .dcal-day.today { border: 2px solid #667eea; background: rgba(102,126,234,0.08); }
+    .dcal-num { font-weight: 700; font-size: 0.88rem; color: #334155; }
+    .dcal-events { margin-top: 4px; }
+    .dcal-evt { font-size: 0.7rem; border-radius: 4px; padding: 1px 4px; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .dcal-evt.act  { background: #fef3c7; color: #92400e; }
+    .dcal-evt.apr  { background: #d1fae5; color: #065f46; }
+    .dcal-evt.pend { background: #f1f5f9; color: #475569; }
+    .dash-cal-legend { display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 0.75rem; font-size: 0.82rem; color: #64748b; }
+    .dash-cal-legend span { display: flex; align-items: center; gap: 5px; }
+    .dl-dot { width: 10px; height: 10px; border-radius: 3px; display: inline-block; }
+
+    /* ===== ACTIVITY LIST ===== */
+    .act-card { background: #fffbeb; border: 1px solid #fde68a; border-radius: 12px; padding: 1rem 1.25rem; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 1rem; }
+    .act-info { flex: 1; }
+    .act-info strong { color: #92400e; }
+    .act-info .act-meta { font-size: 0.83rem; color: #a16207; margin-top: 3px; }
+    .empty-msg { text-align: center; padding: 3rem 1rem; color: #94a3b8; }
+    .empty-msg span { font-size: 3rem; display: block; margin-bottom: 0.5rem; }
+
+    /* ===== GALERÍA ===== */
+    .biblio-upload-card { background:#f8fafc; border:2px dashed #cbd5e1; border-radius:14px; padding:1.5rem; margin-bottom:1.5rem; }
+    .biblio-upload-card h4 { color:#475569; margin-bottom:1rem; font-size:1rem; }
+    .biblio-upload-row { display:flex; gap:0.75rem; flex-wrap:wrap; align-items:flex-end; }
+    .biblio-upload-row input[type=text] { flex:1; min-width:200px; padding:0.6rem 0.8rem; border:1px solid #ddd; border-radius:8px; font-size:0.93rem; }
+    .biblio-upload-row input[type=file] { flex:1; min-width:200px; font-size:0.88rem; }
+    .biblio-gallery-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:1rem; }
+    .biblio-gallery-item { background:white; border-radius:12px; overflow:hidden; box-shadow:0 2px 8px rgba(0,0,0,0.08); border:1px solid #e2e8f0; }
+    .biblio-gallery-img { width:100%; height:160px; object-fit:cover; display:block; }
+    .biblio-gallery-info { padding:0.75rem; }
+    .biblio-gallery-title { font-weight:700; font-size:0.9rem; color:#1e293b; margin-bottom:0.2rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .biblio-gallery-desc { font-size:0.8rem; color:#64748b; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .biblio-item-actions { display:flex; gap:0.4rem; padding:0.5rem 0.75rem; border-top:1px solid #f1f5f9; }
+    .biblio-btn { flex:1; padding:0.4rem; border:none; border-radius:7px; font-size:0.9rem; cursor:pointer; font-weight:600; transition:opacity 0.2s; }
+    .biblio-btn:hover { opacity:0.82; }
+    .biblio-btn-edit { background:#f0f4ff; color:#667eea; }
+    .biblio-btn-del  { background:#fff0f0; color:#e74c3c; }
+    /* edit overlay reuses existing overlay/note styles */
+    /* ===== TOAST ===== */
+    .toast { position: fixed; bottom: 1.5rem; right: 1.5rem; background: #1e293b; color: white; padding: 0.9rem 1.4rem; border-radius: 12px; font-size: 0.95rem; font-weight: 600; box-shadow: 0 8px 24px rgba(0,0,0,0.2); z-index: 9999; animation: slideUp 0.3s ease; }
+    @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+    /* ===== NOTE MODAL ===== */
+    .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.55); z-index: 9000; display: none; align-items: center; justify-content: center; }
+    .overlay.open { display: flex; }
+    .overlay-box { background: white; border-radius: 16px; padding: 2rem; max-width: 420px; width: 90%; }
+    .overlay-box h3 { margin-bottom: 1rem; color: #334155; }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 700px) {
+      .stats-bar { gap: 0.5rem; }
+      .dash-header h1 { font-size: 1rem; }
+      .tab-btn { padding: 0.7rem 0.9rem; font-size: 0.85rem; }
+      .res-card { flex-direction: column; }
+      .res-actions { flex-direction: row; flex-wrap: wrap; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ===== LOGIN ===== -->
+<div id="loginScreen">
+  <div class="login-card">
+    <div class="login-logo">📚</div>
+    <h1>Dashboard Bibliotecaria</h1>
+    <p>Escuela Superior Vocacional Pablo Colón Berdecia</p>
+    <input type="password" id="loginPassword" class="login-input" placeholder="Contraseña" autocomplete="current-password">
+    <button class="login-btn" onclick="doLogin()">🔑 Acceder</button>
+    <p id="loginError" class="login-error">❌ Contraseña incorrecta. Intente nuevamente.</p>
+    <p class="login-hint">Acceso exclusivo para personal de la biblioteca.</p>
+  </div>
+</div>
+
+<!-- ===== DASHBOARD ===== -->
+<div id="dashScreen">
+  <!-- HEADER -->
+  <header class="dash-header">
+    <div class="dash-header-left">
+      <img src="LOGO6.png" alt="Logo PCB">
+      <div>
+        <h1>Dashboard Bibliotecaria</h1>
+        <p>Escuela Superior Vocacional Pablo Colón Berdecia</p>
+      </div>
+    </div>
+    <div class="dash-header-right">
+      <a href="biblioteca.html" class="btn-hdr">← Volver a Biblioteca</a>
+      <button class="btn-hdr danger" onclick="doLogout()">🚪 Cerrar Sesión</button>
+    </div>
+  </header>
+
+  <!-- STATS -->
+  <div class="stats-bar" id="statsBar">
+    <div class="stat-card total"><div class="stat-num" id="statTotal">0</div><div class="stat-lbl">📋 Total Solicitudes</div></div>
+    <div class="stat-card pend"><div class="stat-num" id="statPend">0</div><div class="stat-lbl">⏳ Pendientes</div></div>
+    <div class="stat-card aprob"><div class="stat-num" id="statApr">0</div><div class="stat-lbl">✅ Aprobadas</div></div>
+    <div class="stat-card denie"><div class="stat-num" id="statDen">0</div><div class="stat-lbl">❌ Denegadas</div></div>
+    <div class="stat-card" style="border-color:#f59e0b;"><div class="stat-num" id="statAct">0</div><div class="stat-lbl">🎯 Actividades</div></div>
+  </div>
+
+  <!-- TABS NAV -->
+  <nav class="tabs-nav">
+    <button class="tab-btn active" onclick="switchTab('reservaciones',this)">📋 Reservaciones</button>
+    <button class="tab-btn" onclick="switchTab('calendario',this)">📅 Calendario</button>
+    <button class="tab-btn" onclick="switchTab('actividades',this)">🎯 Actividades</button>
+    <button class="tab-btn" onclick="switchTab('galeria',this)">📸 Galería</button>
+  </nav>
+
+  <!-- TAB: GALERÍA -->
+  <div id="tab-galeria" class="tab-content">
+    <div class="section-card">
+      <h3>📸 Galería de Imágenes</h3>
+
+      <!-- Subir por archivo -->
+      <div class="biblio-upload-card">
+        <h4>📁 Subir nueva imagen</h4>
+        <div class="biblio-upload-row">
+          <input type="text" id="biGalleryTitle" placeholder="Título de la imagen *">
+          <input type="text" id="biGalleryDesc" placeholder="Descripción (opcional)">
+          <input type="file" id="biGalleryFile" accept="image/jpeg,image/png,image/webp">
+          <button class="btn-primary" onclick="uploadBiblioImage()">📤 Subir</button>
+        </div>
+      </div>
+
+      <!-- Grid de imágenes -->
+      <div class="biblio-gallery-grid" id="biGalleryGrid">
+        <p style="color:#94a3b8; grid-column:1/-1; text-align:center; padding:2rem;">Cargando galería…</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit imagen biblioteca overlay -->
+  <div class="note-overlay" id="editBiImgOverlay">
+    <div class="note-modal">
+      <h3>✏️ Editar Imagen</h3>
+      <input type="hidden" id="editBiImgId">
+      <div class="form-group" style="margin-top:1rem;">
+        <label>Título *</label>
+        <input type="text" id="editBiTitle" style="width:100%; padding:0.6rem; border:1px solid #ddd; border-radius:6px; margin-top:4px;">
+      </div>
+      <div class="form-group" style="margin-top:0.75rem;">
+        <label>Descripción</label>
+        <input type="text" id="editBiDesc" style="width:100%; padding:0.6rem; border:1px solid #ddd; border-radius:6px; margin-top:4px;">
+      </div>
+      <div class="form-group" style="margin-top:0.75rem;">
+        <label>Reemplazar imagen (opcional)</label>
+        <input type="file" id="editBiFile" accept="image/jpeg,image/png,image/webp" style="margin-top:4px;">
+        <small style="color:#94a3b8;">Deja vacío para conservar la imagen actual.</small>
+      </div>
+      <div id="editBiPreview" style="text-align:center; margin-top:0.75rem;"></div>
+      <div class="note-actions" style="margin-top:1rem;">
+        <button class="btn-primary" onclick="saveEditBiblioImage()">💾 Guardar</button>
+        <button class="btn-secondary" onclick="document.getElementById('editBiImgOverlay').classList.remove('open')">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: RESERVACIONES -->
+  <div id="tab-reservaciones" class="tab-content active">
+    <div class="section-card">
+      <h3>📋 Gestión de Reservaciones</h3>
+      <div class="filter-bar">
+        <button class="filter-btn active-all" onclick="filterRes('all',this)">Todas</button>
+        <button class="filter-btn" onclick="filterRes('pendiente',this)">⏳ Pendientes</button>
+        <button class="filter-btn" onclick="filterRes('aprobada',this)">✅ Aprobadas</button>
+        <button class="filter-btn" onclick="filterRes('denegada',this)">❌ Denegadas</button>
+      </div>
+      <div id="resList"></div>
+    </div>
+  </div>
+
+  <!-- TAB: CALENDARIO -->
+  <div id="tab-calendario" class="tab-content">
+    <div class="section-card">
+      <div class="dash-cal-header">
+        <button class="cal-nav" onclick="dashPrevMonth()">❮</button>
+        <h3 id="dashCalMonth">—</h3>
+        <button class="cal-nav" onclick="dashNextMonth()">❯</button>
+      </div>
+      <div class="dash-cal-grid" id="dashCalGrid">
+        <div class="dcal-head">Dom</div><div class="dcal-head">Lun</div><div class="dcal-head">Mar</div>
+        <div class="dcal-head">Mié</div><div class="dcal-head">Jue</div><div class="dcal-head">Vie</div><div class="dcal-head">Sáb</div>
+      </div>
+      <div class="dash-cal-legend">
+        <span><span class="dl-dot" style="background:#fef3c7;border:1px solid #fde68a;"></span>Actividad</span>
+        <span><span class="dl-dot" style="background:#d1fae5;border:1px solid #bbf7d0;"></span>Reserva aprobada</span>
+        <span><span class="dl-dot" style="background:#f1f5f9;border:1px solid #e2e8f0;"></span>Reserva pendiente</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: ACTIVIDADES -->
+  <div id="tab-actividades" class="tab-content">
+    <div class="section-card">
+      <h3>➕ Agregar Actividad al Calendario</h3>
+      <form id="actForm">
+        <div class="form-row">
+          <div class="form-group" style="grid-column:1/-1;">
+            <label>Título de la Actividad *</label>
+            <input type="text" id="actTitulo" required placeholder="Ej: Club de Lectura, Taller de Investigación...">
+          </div>
+          <div class="form-group">
+            <label>Fecha *</label>
+            <input type="date" id="actFecha" required>
+          </div>
+          <div class="form-group">
+            <label>Tipo</label>
+            <select id="actTipo">
+              <option value="Taller">🎓 Taller</option>
+              <option value="Club">📖 Club de Lectura</option>
+              <option value="Evento">🎉 Evento</option>
+              <option value="Capacitación">💡 Capacitación</option>
+              <option value="Otro">📌 Otro</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Hora de Inicio *</label>
+            <input type="time" id="actHoraIni" required>
+          </div>
+          <div class="form-group">
+            <label>Hora de Fin *</label>
+            <input type="time" id="actHoraFin" required>
+          </div>
+          <div class="form-group" style="grid-column:1/-1;">
+            <label>Descripción</label>
+            <textarea id="actDesc" rows="3" placeholder="Detalles adicionales de la actividad..."></textarea>
+          </div>
+        </div>
+        <div style="display:flex;gap:1rem;flex-wrap:wrap;">
+          <button type="submit" class="btn-primary">💾 Guardar Actividad</button>
+          <button type="reset" class="btn-secondary">Limpiar</button>
+        </div>
+      </form>
+    </div>
+    <div class="section-card">
+      <h3>🎯 Actividades Programadas</h3>
+      <div id="actList"></div>
+    </div>
+  </div>
+
+  <!-- NOTE MODAL -->
+  <div class="overlay" id="noteOverlay">
+    <div class="overlay-box">
+      <h3>📝 Nota para el solicitante</h3>
+      <div class="form-group">
+        <label>Mensaje (opcional)</label>
+        <textarea id="noteText" rows="4" placeholder="Ej: Por favor traer identificación estudiantil. Horario disponible a partir de las 8am..."></textarea>
+      </div>
+      <div style="display:flex;gap:0.75rem;margin-top:0.5rem;">
+        <button class="btn-primary" onclick="confirmNote()">Confirmar</button>
+        <button class="btn-secondary" onclick="closeNoteModal()">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- EDIT ACTIVITY MODAL -->
+  <div class="overlay" id="editActOverlay">
+    <div class="overlay-box">
+      <h3>✏️ Editar Actividad</h3>
+      <input type="hidden" id="editActId">
+      <div class="form-group"><label>Título</label><input type="text" id="editActTitulo"></div>
+      <div class="form-row">
+        <div class="form-group"><label>Fecha</label><input type="date" id="editActFecha"></div>
+        <div class="form-group"><label>Tipo</label>
+          <select id="editActTipo">
+            <option value="Taller">🎓 Taller</option><option value="Club">📖 Club de Lectura</option>
+            <option value="Evento">🎉 Evento</option><option value="Capacitación">💡 Capacitación</option><option value="Otro">📌 Otro</option>
+          </select>
+        </div>
+        <div class="form-group"><label>Hora Inicio</label><input type="time" id="editActIni"></div>
+        <div class="form-group"><label>Hora Fin</label><input type="time" id="editActFin"></div>
+      </div>
+      <div class="form-group"><label>Descripción</label><textarea id="editActDesc" rows="3"></textarea></div>
+      <div style="display:flex;gap:0.75rem;">
+        <button class="btn-primary" onclick="saveEditActivity()">💾 Guardar</button>
+        <button class="btn-secondary" onclick="document.getElementById('editActOverlay').classList.remove('open')">Cancelar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="js/biblioteca.js"></script>
+<script>
+  // ===== AUTH =====
+  const PASS = 'Biblioteca2026';
+  function doLogin() {
+    const v = document.getElementById('loginPassword').value;
+    if (v === PASS) {
+      sessionStorage.setItem('biblio_auth', '1');
+      document.getElementById('loginScreen').style.display = 'none';
+      document.getElementById('dashScreen').style.display = 'flex';
+      document.getElementById('dashScreen').style.flexDirection = 'column';
+      initDashboard();
+    } else {
+      document.getElementById('loginError').style.display = 'block';
+    }
+  }
+  document.getElementById('loginPassword').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+  function doLogout() {
+    sessionStorage.removeItem('biblio_auth');
+    document.getElementById('dashScreen').style.display = 'none';
+    document.getElementById('loginScreen').style.display = 'flex';
+    document.getElementById('loginPassword').value = '';
+    document.getElementById('loginError').style.display = 'none';
+  }
+  // Auto-login if session active
+  if (sessionStorage.getItem('biblio_auth') === '1') {
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('dashScreen').style.display = 'flex';
+    document.getElementById('dashScreen').style.flexDirection = 'column';
+    document.addEventListener('DOMContentLoaded', initDashboard);
+  }
+
+  // ===== TABS =====
+  function switchTab(id, btn) {
+    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + id).classList.add('active');
+    btn.classList.add('active');
+    if (id === 'calendario') renderDashCalendar();
+    if (id === 'actividades') renderActList();
+    if (id === 'galeria') renderBiblioGallery();
+  }
+
+  // ===== GALERÍA BIBLIOTECA =====
+  const BI_KEY = 'pcb_content_data';
+
+  function getBiData() {
+    const raw = JSON.parse(localStorage.getItem(BI_KEY) || '{}');
+    if (!raw.biblioteca) raw.biblioteca = [];
+    return raw;
+  }
+  function saveBiData(data) { localStorage.setItem(BI_KEY, JSON.stringify(data)); }
+
+  function renderBiblioGallery() {
+    const grid = document.getElementById('biGalleryGrid');
+    const data = getBiData();
+    const items = data.biblioteca;
+    if (!items.length) {
+      grid.innerHTML = '<p style="color:#94a3b8; grid-column:1/-1; text-align:center; padding:2rem;">No hay imágenes aún. Sube la primera imagen arriba.</p>';
+      return;
+    }
+    grid.innerHTML = items.map(item => {
+      const src = item.base64 || item.url || item.path || '';
+      return `<div class="biblio-gallery-item">
+        <img src="${src}" alt="${item.title}" class="biblio-gallery-img" onerror="this.style.display='none'">
+        <div class="biblio-gallery-info">
+          <div class="biblio-gallery-title">${item.title || 'Sin título'}</div>
+          <div class="biblio-gallery-desc">${item.description || ''}</div>
+        </div>
+        <div class="biblio-item-actions">
+          <button class="biblio-btn biblio-btn-edit" onclick="openEditBiblioImage('${item.id}')">✏️ Editar</button>
+          <button class="biblio-btn biblio-btn-del" onclick="deleteBiblioImage('${item.id}')">🗑️ Eliminar</button>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  function uploadBiblioImage() {
+    const title = document.getElementById('biGalleryTitle').value.trim();
+    const desc = document.getElementById('biGalleryDesc').value.trim();
+    const file = document.getElementById('biGalleryFile').files[0];
+    if (!title) { alert('⚠️ El título es obligatorio.'); return; }
+    if (!file) { alert('⚠️ Selecciona una imagen.'); return; }
+    const reader = new FileReader();
+    reader.onload = e => {
+      const data = getBiData();
+      data.biblioteca.push({
+        id: 'bi_' + Date.now(),
+        title, description: desc,
+        base64: e.target.result,
+        dateAdded: new Date().toISOString()
+      });
+      saveBiData(data);
+      document.getElementById('biGalleryTitle').value = '';
+      document.getElementById('biGalleryDesc').value = '';
+      document.getElementById('biGalleryFile').value = '';
+      renderBiblioGallery();
+      showToast('✅ Imagen subida correctamente');
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function deleteBiblioImage(id) {
+    if (!confirm('¿Eliminar esta imagen permanentemente?')) return;
+    const data = getBiData();
+    data.biblioteca = data.biblioteca.filter(i => i.id !== id);
+    saveBiData(data);
+    renderBiblioGallery();
+    showToast('🗑️ Imagen eliminada');
+  }
+
+  function openEditBiblioImage(id) {
+    const data = getBiData();
+    const item = data.biblioteca.find(i => i.id === id);
+    if (!item) return;
+    document.getElementById('editBiImgId').value = id;
+    document.getElementById('editBiTitle').value = item.title || '';
+    document.getElementById('editBiDesc').value = item.description || '';
+    document.getElementById('editBiFile').value = '';
+    const src = item.base64 || item.url || item.path || '';
+    document.getElementById('editBiPreview').innerHTML = src
+      ? `<img src="${src}" style="max-width:100%; max-height:130px; border-radius:8px; border:1px solid #e2e8f0;">`
+      : '';
+    document.getElementById('editBiImgOverlay').classList.add('open');
+  }
+
+  function saveEditBiblioImage() {
+    const id = document.getElementById('editBiImgId').value;
+    const title = document.getElementById('editBiTitle').value.trim();
+    const desc = document.getElementById('editBiDesc').value.trim();
+    if (!title) { alert('⚠️ El título es obligatorio.'); return; }
+    const file = document.getElementById('editBiFile').files[0];
+
+    function apply(newBase64) {
+      const data = getBiData();
+      const idx = data.biblioteca.findIndex(i => i.id === id);
+      if (idx !== -1) {
+        data.biblioteca[idx].title = title;
+        data.biblioteca[idx].description = desc;
+        if (newBase64) data.biblioteca[idx].base64 = newBase64;
+      }
+      saveBiData(data);
+      document.getElementById('editBiImgOverlay').classList.remove('open');
+      renderBiblioGallery();
+      showToast('✅ Imagen actualizada');
+    }
+
+    if (file) { const r = new FileReader(); r.onload = e => apply(e.target.result); r.readAsDataURL(file); }
+    else apply(null);
+  }
+
+  // ===== INIT =====
+  function initDashboard() {
+    updateStats(); renderResList('all'); renderDashCalendar(); renderActList();
+    const af = document.getElementById('actForm');
+    if (af) af.addEventListener('submit', e => { e.preventDefault(); addActivity(); });
+    document.getElementById('actFecha').min = new Date().toISOString().split('T')[0];
+  }
+
+  // ===== STATS =====
+  function updateStats() {
+    const res = LibraryManager.getReservations(), act = LibraryManager.getActivities();
+    document.getElementById('statTotal').textContent = res.length;
+    document.getElementById('statPend').textContent  = res.filter(r => r.status === 'pendiente').length;
+    document.getElementById('statApr').textContent   = res.filter(r => r.status === 'aprobada').length;
+    document.getElementById('statDen').textContent   = res.filter(r => r.status === 'denegada').length;
+    document.getElementById('statAct').textContent   = act.length;
+  }
+
+  // ===== RESERVACIONES =====
+  let currentFilter = 'all', pendingAction = null;
+  function filterRes(f, btn) {
+    currentFilter = f;
+    document.querySelectorAll('.filter-btn').forEach(b => b.className = 'filter-btn');
+    const map = { all:'active-all', pendiente:'active-pend', aprobada:'active-apr', denegada:'active-den' };
+    btn.classList.add(map[f] || 'active-all');
+    renderResList(f);
+  }
+  function renderResList(f) {
+    const list = document.getElementById('resList');
+    let res = LibraryManager.getReservations();
+    if (f !== 'all') res = res.filter(r => r.status === f);
+    res.sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
+    if (!res.length) { list.innerHTML = `<div class="empty-msg"><span>📭</span>No hay reservaciones ${f !== 'all' ? 'con este filtro' : 'aún'}.</div>`; return; }
+    list.innerHTML = res.map(r => {
+      const badgeClass = {pendiente:'badge-pend', aprobada:'badge-apr', denegada:'badge-den'}[r.status] || 'badge-pend';
+      const badgeLabel = {pendiente:'⏳ Pendiente', aprobada:'✅ Aprobada', denegada:'❌ Denegada'}[r.status] || r.status;
+      const actionBtns = r.status === 'pendiente'
+        ? `<button class="btn-sm btn-apr" onclick="approveRes('${r.id}')">✅ Aprobar</button>
+           <button class="btn-sm btn-den" onclick="openNote('${r.id}','denegada')">❌ Denegar</button>`
+        : `<button class="btn-sm btn-note" onclick="openNote('${r.id}','nota')">📝 Nota</button>`;
+      return `<div class="res-card">
+        <div class="res-info">
+          <span class="res-badge ${badgeClass}">${badgeLabel}</span>
+          <strong style="display:block;margin-top:6px;">${r.space}</strong>
+          <div class="res-meta">
+            👤 ${r.nombre} · 📧 ${r.email}${r.telefono ? ' · 📞 ' + r.telefono : ''}<br>
+            📅 ${r.fecha} · 🕐 ${r.horaInicio}–${r.horaFin}${r.participantes ? ' · 👥 ' + r.participantes + ' participante(s)' : ''}<br>
+            📝 ${r.proposito || '—'}${r.note ? '<br>💬 <em>' + r.note + '</em>' : ''}
+          </div>
+        </div>
+        <div class="res-actions">
+          ${actionBtns}
+          <button class="btn-sm btn-del" onclick="deleteRes('${r.id}')">🗑️ Borrar</button>
+        </div>
+      </div>`;
+    }).join('');
+  }
+  function approveRes(id) {
+    LibraryManager.updateReservation(id, { status: 'aprobada' });
+    updateStats(); renderResList(currentFilter); renderDashCalendar(); showToast('✅ Reserva aprobada');
+  }
+  function deleteRes(id) {
+    if (confirm('¿Eliminar esta reservación permanentemente?')) {
+      LibraryManager.deleteReservation(id);
+      updateStats(); renderResList(currentFilter); renderDashCalendar(); showToast('🗑️ Reservación eliminada');
+    }
+  }
+  let noteTarget = null, noteAction = null;
+  function openNote(id, action) {
+    noteTarget = id; noteAction = action;
+    document.getElementById('noteText').value = '';
+    document.getElementById('noteOverlay').classList.add('open');
+  }
+  function closeNoteModal() { document.getElementById('noteOverlay').classList.remove('open'); noteTarget = null; }
+  function confirmNote() {
+    const note = document.getElementById('noteText').value.trim();
+    if (noteAction === 'denegada') {
+      LibraryManager.updateReservation(noteTarget, { status: 'denegada', note });
+      showToast('❌ Reserva denegada');
+    } else {
+      LibraryManager.updateReservation(noteTarget, { note });
+      showToast('📝 Nota guardada');
+    }
+    closeNoteModal(); updateStats(); renderResList(currentFilter);
+  }
+
+  // ===== DASHBOARD CALENDAR =====
+  let dashCalDate = new Date();
+  const MES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+  function renderDashCalendar() {
+    const grid = document.getElementById('dashCalGrid');
+    if (!grid) return;
+    const y = dashCalDate.getFullYear(), m = dashCalDate.getMonth();
+    document.getElementById('dashCalMonth').textContent = `${MES[m]} ${y}`;
+    const headers = Array.from(grid.querySelectorAll('.dcal-head'));
+    grid.innerHTML = ''; headers.forEach(h => grid.appendChild(h));
+    const firstDay = new Date(y, m, 1).getDay(), days = new Date(y, m+1, 0).getDate();
+    const today = new Date();
+    for (let i = 0; i < firstDay; i++) { const e = document.createElement('div'); e.style.minHeight='72px'; grid.appendChild(e); }
+    for (let d = 1; d <= days; d++) {
+      const ds = `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+      const ev = LibraryManager.getEventsForDate(ds);
+      const el = document.createElement('div');
+      el.className = 'dcal-day' + (d===today.getDate()&&m===today.getMonth()&&y===today.getFullYear()?' today':'');
+      let inner = `<div class="dcal-num">${d}</div><div class="dcal-events">`;
+      ev.activities.forEach(a => { inner += `<div class="dcal-evt act" title="${a.titulo}">🎯 ${a.titulo}</div>`; });
+      ev.approved.forEach(r  => { inner += `<div class="dcal-evt apr"  title="${r.space} - ${r.nombre}">✅ ${r.space}</div>`; });
+      ev.pending.forEach(r   => { inner += `<div class="dcal-evt pend" title="${r.space} - ${r.nombre}">⏳ ${r.space}</div>`; });
+      inner += '</div>';
+      el.innerHTML = inner;
+      grid.appendChild(el);
+    }
+  }
+  function dashPrevMonth() { dashCalDate.setMonth(dashCalDate.getMonth()-1); renderDashCalendar(); }
+  function dashNextMonth() { dashCalDate.setMonth(dashCalDate.getMonth()+1); renderDashCalendar(); }
+
+  // ===== ACTIVIDADES =====
+  function addActivity() {
+    const data = {
+      titulo: document.getElementById('actTitulo').value,
+      fecha: document.getElementById('actFecha').value,
+      tipo: document.getElementById('actTipo').value,
+      horaInicio: document.getElementById('actHoraIni').value,
+      horaFin: document.getElementById('actHoraFin').value,
+      descripcion: document.getElementById('actDesc').value
+    };
+    LibraryManager.addActivity(data);
+    document.getElementById('actForm').reset();
+    updateStats(); renderActList(); renderDashCalendar();
+    if (typeof renderCalendar === 'function') renderCalendar();
+    showToast('🎯 Actividad guardada en el calendario');
+  }
+  function renderActList() {
+    const list = document.getElementById('actList');
+    const acts = LibraryManager.getActivities().sort((a,b) => a.fecha > b.fecha ? 1 : -1);
+    if (!acts.length) { list.innerHTML = `<div class="empty-msg"><span>🗓️</span>No hay actividades programadas aún.</div>`; return; }
+    list.innerHTML = acts.map(a => `
+      <div class="act-card">
+        <div class="act-info">
+          <strong>${a.titulo}</strong> <span style="font-size:0.78rem;background:#fde68a;color:#92400e;padding:2px 7px;border-radius:10px;">${a.tipo||'Actividad'}</span>
+          <div class="act-meta">📅 ${a.fecha} · 🕐 ${a.horaInicio}–${a.horaFin}${a.descripcion ? ' · ' + a.descripcion : ''}</div>
+        </div>
+        <div style="display:flex;gap:0.4rem;">
+          <button class="btn-sm btn-note" onclick="openEditActivity('${a.id}')">✏️</button>
+          <button class="btn-sm btn-del" onclick="deleteActivity('${a.id}')">🗑️</button>
+        </div>
+      </div>`).join('');
+  }
+  function deleteActivity(id) {
+    if (confirm('¿Eliminar esta actividad?')) {
+      LibraryManager.deleteActivity(id); updateStats(); renderActList(); renderDashCalendar();
+      if (typeof renderCalendar === 'function') renderCalendar();
+      showToast('🗑️ Actividad eliminada');
+    }
+  }
+  function openEditActivity(id) {
+    const act = LibraryManager.getActivities().find(a => a.id === id);
+    if (!act) return;
+    document.getElementById('editActId').value = id;
+    document.getElementById('editActTitulo').value = act.titulo;
+    document.getElementById('editActFecha').value = act.fecha;
+    document.getElementById('editActTipo').value = act.tipo || 'Otro';
+    document.getElementById('editActIni').value = act.horaInicio;
+    document.getElementById('editActFin').value = act.horaFin;
+    document.getElementById('editActDesc').value = act.descripcion || '';
+    document.getElementById('editActOverlay').classList.add('open');
+  }
+  function saveEditActivity() {
+    const id = document.getElementById('editActId').value;
+    LibraryManager.updateActivity(id, {
+      titulo: document.getElementById('editActTitulo').value,
+      fecha: document.getElementById('editActFecha').value,
+      tipo: document.getElementById('editActTipo').value,
+      horaInicio: document.getElementById('editActIni').value,
+      horaFin: document.getElementById('editActFin').value,
+      descripcion: document.getElementById('editActDesc').value
+    });
+    document.getElementById('editActOverlay').classList.remove('open');
+    renderActList(); renderDashCalendar();
+    if (typeof renderCalendar === 'function') renderCalendar();
+    showToast('✅ Actividad actualizada');
+  }
+
+  // ===== TOAST =====
+  function showToast(msg) {
+    const t = document.createElement('div'); t.className = 'toast'; t.textContent = msg;
+    document.body.appendChild(t);
+    setTimeout(() => t.remove(), 3000);
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Computec - Fondo Animado</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(45deg, #000428, #004e92, #000428);
+            background-size: 400% 400%;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Arial', sans-serif;
+            animation: gradientShift 8s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .main-text {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+        }
+
+        .computec-text {
+            font-size: 6rem;
+            font-weight: bold;
+            color: rgba(255, 255, 255, 0.9);
+            text-shadow: 
+                0 0 20px rgba(0, 255, 255, 0.7),
+                0 0 40px rgba(0, 255, 255, 0.5),
+                0 0 60px rgba(0, 255, 255, 0.3);
+            animation: textGlow 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes textGlow {
+            from {
+                text-shadow: 
+                    0 0 20px rgba(0, 255, 255, 0.7),
+                    0 0 40px rgba(0, 255, 255, 0.5),
+                    0 0 60px rgba(0, 255, 255, 0.3);
+            }
+            to {
+                text-shadow: 
+                    0 0 30px rgba(0, 255, 255, 0.9),
+                    0 0 60px rgba(0, 255, 255, 0.7),
+                    0 0 80px rgba(0, 255, 255, 0.5);
+            }
+        }
+
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        .particle {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 50%;
+            animation: float 6s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 0.3;
+            }
+            50% {
+                transform: translateY(-20px) rotate(180deg);
+                opacity: 0.8;
+            }
+        }
+
+        .tech-grid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.1;
+            background-image: 
+                linear-gradient(rgba(0, 255, 255, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 255, 0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: gridMove 20s linear infinite;
+        }
+
+        @keyframes gridMove {
+            from { background-position: 0 0; }
+            to { background-position: 50px 50px; }
+        }
+
+        .binary-rain {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .binary-digit {
+            position: absolute;
+            color: rgba(0, 255, 255, 0.3);
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            animation: fall 10s linear infinite;
+        }
+
+        @keyframes fall {
+            to { transform: translateY(100vh); }
+        }
+
+        @media (max-width: 768px) {
+            .computec-text {
+                font-size: 4rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .computec-text {
+                font-size: 3rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="tech-grid"></div>
+    <div class="particles" id="particles"></div>
+    <div class="binary-rain" id="binaryRain"></div>
+    
+    <div class="main-text">
+        <h1 class="computec-text">COMPUTEC</h1>
+    </div>
+
+    <script>
+        // Crear partículas flotantes
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                
+                const size = Math.random() * 8 + 2;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.top = `${Math.random() * 100}%`;
+                
+                particle.style.animationDelay = `${Math.random() * 6}s`;
+                particle.style.animationDuration = `${Math.random() * 4 + 4}s`;
+                
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // Crear lluvia binaria
+        function createBinaryRain() {
+            const rainContainer = document.getElementById('binaryRain');
+            const digits = ['0', '1'];
+            
+            function createDigit() {
+                const digit = document.createElement('div');
+                digit.className = 'binary-digit';
+                digit.textContent = digits[Math.floor(Math.random() * digits.length)];
+                
+                digit.style.left = `${Math.random() * 100}%`;
+                digit.style.top = `${Math.random() * -100}px`;
+                digit.style.animationDuration = `${Math.random() * 10 + 5}s`;
+                digit.style.animationDelay = `${Math.random() * 2}s`;
+                
+                rainContainer.appendChild(digit);
+                
+                // Remover después de la animación
+                setTimeout(() => {
+                    digit.remove();
+                }, parseInt(digit.style.animationDuration) * 1000);
+            }
+            
+            // Crear dígitos continuamente
+            setInterval(createDigit, 100);
+            
+            // Crear algunos iniciales
+            for (let i = 0; i < 20; i++) {
+                createDigit();
+            }
+        }
+
+        // Inicializar animaciones
+        document.addEventListener('DOMContentLoaded', () => {
+            createParticles();
+            createBinaryRain();
+        });
+    </script>
+</body>
+</html>

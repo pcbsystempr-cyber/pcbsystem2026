@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Administrativo - PCB</title>
+  <link rel="stylesheet" href="admin.css">
+  <link rel="stylesheet" href="dark-mode-fix.css">
+  <link rel="stylesheet" href="image-popup.css">
+  <script src="js/services-manager.js"></script>
+  <script src="js/crypto-utils.js"></script>
+  <script src="js/jwt-simple.js"></script>
+  <script src="js/auth-jwt.js"></script>
+</head>
+
+<body>
+  <script>
+    // Proteger página de admin con JWT
+    (async function () {
+      const isAuth = await AuthJWT.isAuthenticated();
+      if (!isAuth) {
+        window.location.href = 'login.html';
+      }
+    })();
+  </script>
+
+  <div class="admin-container">
+    <!-- Sidebar -->
+    <aside class="admin-sidebar">
+      <div class="admin-logo">
+        <img src="LOGO6.png" alt="Logo PCB">
+        <h2>Panel Admin</h2>
+      </div>
+      <nav class="admin-nav">
+        <button class="nav-btn active" data-section="comedor">
+          🍽️ Comedor
+        </button>
+        <button class="nav-btn" data-section="promociones">
+          📢 Promociones
+        </button>
+        <button class="nav-btn" data-section="avisos">
+          📋 Avisos
+        </button>
+        <button class="nav-btn" data-section="bot">
+          🔔 Bot de Avisos
+        </button>
+        <button class="nav-btn" data-section="novedades">
+          📢 Novedades
+        </button>
+      </nav>
+      <div class="admin-footer">
+        <a href="index.html" class="btn-back">← Volver al sitio</a>
+        <button onclick="AuthJWT.logout()" class="btn-back"
+          style="margin-top: 0.5rem; background: rgba(231, 76, 60, 0.2); border: none; cursor: pointer; width: 100%;">
+          🚪 Cerrar Sesión
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="admin-main">
+      <header class="admin-header">
+        <h1 id="sectionTitle">Gestión de Comedor</h1>
+        <div class="admin-actions">
+          <button class="btn-secondary" id="btnExportData" title="Exportar datos a JSON">
+            💾 Exportar Datos
+          </button>
+          <button class="btn-primary" id="btnEditMenu" style="display: none;">
+            📝 Editar Menú
+          </button>
+          <button class="btn-primary" id="btnAddImage">
+            ➕ Añadir Imagen
+          </button>
+        </div>
+      </header>
+
+      <!-- Content Area -->
+      <div class="admin-content">
+        <!-- Menu Editor (only for comedor section) -->
+        <div class="menu-editor-section" id="menuEditorSection" style="display: none;">
+          <div class="upload-card">
+            <h3>📝 Editar Menú del Día</h3>
+            <form id="menuForm">
+              <div class="menu-section">
+                <h4>🌅 Desayuno</h4>
+                <div class="form-group">
+                  <label>Items del desayuno (uno por línea):</label>
+                  <textarea id="desayunoItems" rows="5"
+                    placeholder="Ej:&#10;Revoltillo&#10;Peras Frescas&#10;Melocotones&#10;Leche"></textarea>
+                </div>
+              </div>
+
+              <div class="menu-section">
+                <h4>🍽️ Almuerzo</h4>
+                <div class="form-group">
+                  <label>Items del almuerzo (uno por línea):</label>
+                  <textarea id="almuerzoItems" rows="6"
+                    placeholder="Ej:&#10;Arroz&#10;Habichuelas guisadas&#10;Carne de Cerdo&#10;Zanahoria&#10;Manzana&#10;Coctel de fruta"></textarea>
+                </div>
+              </div>
+
+              <div class="form-actions">
+                <button type="submit" class="btn-primary">💾 Guardar Menú</button>
+                <button type="button" class="btn-secondary" id="btnCancelMenu">Cancelar</button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Upload Form -->
+        <div class="upload-section" id="uploadSection" style="display: none;">
+          <div class="upload-card">
+            <h3>Subir Nueva Imagen</h3>
+
+            <!-- Tabs para elegir método -->
+            <div class="upload-tabs">
+              <button type="button" class="tab-btn active" data-tab="file">📁 Subir Archivo</button>
+              <button type="button" class="tab-btn" data-tab="url">🔗 URL Externa</button>
+            </div>
+
+            <form id="uploadForm">
+              <!-- Tab: Subir Archivo -->
+              <div class="tab-content active" id="tabFile">
+                <div class="form-group">
+                  <label for="imageFile">Seleccionar Imagen:</label>
+                  <input type="file" id="imageFile" accept="image/*">
+                  <div class="file-preview" id="filePreview"></div>
+                  <p class="help-text">⚠️ Nota: Para usar en GitHub, debes copiar manualmente la imagen a la carpeta
+                    correspondiente o usar URL externa.</p>
+                </div>
+              </div>
+
+              <!-- Tab: URL Externa -->
+              <div class="tab-content" id="tabUrl" style="display: none;">
+                <div class="form-group">
+                  <label for="imageUrl">URL de la Imagen:</label>
+                  <input type="url" id="imageUrl" placeholder="https://ejemplo.com/imagen.jpg">
+                  <p class="help-text">
+                    💡 Puedes usar servicios como:
+                    <br>• <a href="https://imgur.com" target="_blank">Imgur</a> (recomendado)
+                    <br>• <a href="https://postimages.org" target="_blank">PostImages</a>
+                    <br>• Google Drive (asegúrate de que sea público)
+                  </p>
+                  <div class="url-preview" id="urlPreview"></div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="imageTitle">Título (opcional):</label>
+                <input type="text" id="imageTitle" placeholder="Ej: Inscripción Abierta 2026">
+              </div>
+              <div class="form-group">
+                <label for="imageDescription">Descripción (opcional):</label>
+                <textarea id="imageDescription" rows="3"
+                  placeholder="Ej: ¡Únete a nuestra familia educativa!"></textarea>
+              </div>
+              <div class="form-actions">
+                <button type="submit" class="btn-primary">Guardar Imagen</button>
+                <button type="button" class="btn-secondary" id="btnCancelUpload">Cancelar</button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Bot Configuration (only for bot section) -->
+        <div class="bot-config-section" id="botConfigSection" style="display: none;">
+          <div class="upload-card">
+            <h3>🔔 Configuración del Bot de Avisos</h3>
+            <p style="margin-bottom: 1.5rem; color: #7f8c8d;">
+              Selecciona los avisos y promociones que quieres mostrar en el bot flotante del sitio web.
+            </p>
+            <div id="botItemsList">
+              <!-- Items will be loaded here -->
+            </div>
+            <div class="form-actions" style="margin-top: 1.5rem;">
+              <button type="button" class="btn-primary" id="btnSaveBotConfig">💾 Guardar Configuración</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Gestión de Novedades (solo visible en sección Novedades) -->
+        <div id="novedadesSection" style="display:none;">
+          <div class="upload-card">
+            <h3>📢 Gestión de Novedades (Popup)</h3>
+            <p style="color:#7f8c8d; margin-bottom:1.5rem;">La noticia más reciente aparecerá automáticamente en el popup de la página principal.</p>
+
+            <form id="newsForm" style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:20px; align-items:flex-end;">
+              <div style="flex:1; min-width:200px;">
+                <label class="form-label">Título</label>
+                <input type="text" id="newsTitle" placeholder="Ej: ¡Matrícula Abierta!"
+                  style="width:100%; padding:8px; border:1px solid #ddd; border-radius:6px; margin-top:4px;" required>
+              </div>
+              <div style="flex:2; min-width:300px;">
+                <label class="form-label">Mensaje</label>
+                <input type="text" id="newsMessage" placeholder="Detalles de la noticia..."
+                  style="width:100%; padding:8px; border:1px solid #ddd; border-radius:6px; margin-top:4px;" required>
+              </div>
+              <div style="flex:1; min-width:200px;">
+                <label class="form-label">URL Imagen (Opcional)</label>
+                <input type="text" id="newsImage" placeholder="https://..."
+                  style="width:100%; padding:8px; border:1px solid #ddd; border-radius:6px; margin-top:4px;">
+              </div>
+              <button type="submit" class="btn-primary">📤 Publicar</button>
+            </form>
+
+            <ul id="newsList" style="list-style:none; padding:0;">
+              <!-- Noticias se renderizan con JS -->
+            </ul>
+          </div>
+        </div>
+
+        <!-- Recomendaciones del Comedor (solo visible en sección Comedor) -->
+        <div id="recomendacionesAdminSection" style="display:none; margin-bottom: 2rem;">
+          <div style="background:white; border-radius:12px; padding:1.5rem; box-shadow:0 2px 10px rgba(0,0,0,0.06); border-left: 4px solid #667eea;">
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:1.2rem;">
+              <div>
+                <h3 style="margin:0; color:#2c3e50; font-size:1.2rem;">💬 Recomendaciones de Estudiantes</h3>
+                <p style="margin:0.3rem 0 0; color:#7f8c8d; font-size:0.88rem;">Gestiona las recomendaciones enviadas desde el comedor</p>
+              </div>
+              <span id="recCount" style="background:#667eea; color:white; padding:0.3rem 0.8rem; border-radius:20px; font-size:0.85rem; font-weight:600;">0</span>
+            </div>
+            <div id="recomendacionesAdminList">
+              <!-- Cards se renderizan con JS -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Gallery Grid -->
+        <div class="gallery-grid" id="galleryGrid">
+          <!-- Images will be loaded here dynamically -->
+        </div>
+
+        <!-- Empty State -->
+        <div class="empty-state" id="emptyState" style="display: none;">
+          <div class="empty-icon">📸</div>
+          <h3>No hay imágenes</h3>
+          <p>Añade tu primera imagen usando el botón de arriba</p>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Delete Confirmation Modal -->
+  <div class="modal" id="deleteModal">
+    <div class="modal-content">
+      <h3>⚠️ Confirmar Eliminación</h3>
+      <p>¿Estás seguro de que deseas eliminar esta imagen?</p>
+      <p class="modal-warning">Esta acción no se puede deshacer.</p>
+      <div class="modal-actions">
+        <button class="btn-danger" id="btnConfirmDelete">Eliminar</button>
+        <button class="btn-secondary" id="btnCancelDelete">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit News Modal -->
+  <div class="modal" id="editNewsModal">
+    <div class="modal-content">
+      <h3>✏️ Editar Noticia</h3>
+      <div class="form-group" style="margin-top:1rem;">
+        <label for="editNewsTitle">Título:</label>
+        <input type="text" id="editNewsTitle" placeholder="Título de la noticia..."
+          style="width:100%; padding:0.6rem 0.8rem; border:1px solid #ddd; border-radius:6px; font-size:0.95rem; margin-top:0.3rem;">
+      </div>
+      <div class="form-group" style="margin-top:1rem;">
+        <label for="editNewsMessage">Mensaje:</label>
+        <textarea id="editNewsMessage" rows="3" placeholder="Detalles de la noticia..."
+          style="width:100%; padding:0.6rem 0.8rem; border:1px solid #ddd; border-radius:6px; font-size:0.95rem; margin-top:0.3rem; resize:vertical; font-family:inherit;"></textarea>
+      </div>
+      <div class="form-group" style="margin-top:1rem;">
+        <label for="editNewsImageUrl">URL de Imagen (opcional):</label>
+        <input type="text" id="editNewsImageUrl" placeholder="https://..."
+          style="width:100%; padding:0.6rem 0.8rem; border:1px solid #ddd; border-radius:6px; font-size:0.95rem; margin-top:0.3rem;">
+      </div>
+      <div class="modal-actions" style="margin-top:1.5rem;">
+        <button class="btn-primary" id="btnSaveNewsEdit">💾 Guardar Cambios</button>
+        <button class="btn-secondary" id="btnCancelNewsEdit">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Gallery Item Modal -->
+  <div class="modal" id="editGalleryItemModal">
+    <div class="modal-content">
+      <h3>✏️ Editar Imagen</h3>
+      <div class="form-group" style="margin-top:1rem;">
+        <label for="editGalleryTitle">Título:</label>
+        <input type="text" id="editGalleryTitle" placeholder="Título..."
+          style="width:100%; padding:0.6rem 0.8rem; border:1px solid #ddd; border-radius:6px; font-size:0.95rem; margin-top:0.3rem;">
+      </div>
+      <div class="form-group" style="margin-top:1rem;">
+        <label for="editGalleryDesc">Descripción:</label>
+        <textarea id="editGalleryDesc" rows="3" placeholder="Descripción..."
+          style="width:100%; padding:0.6rem 0.8rem; border:1px solid #ddd; border-radius:6px; font-size:0.95rem; margin-top:0.3rem; resize:vertical; font-family:inherit;"></textarea>
+      </div>
+      <div class="form-group" style="margin-top:1rem;">
+        <label>Imagen actual:</label>
+        <div id="editGalleryImgPreview" style="margin-top:0.5rem; text-align:center;"></div>
+      </div>
+      <div class="form-group" style="margin-top:1rem;">
+        <label for="editGalleryImgFile">Reemplazar imagen (opcional):</label>
+        <input type="file" id="editGalleryImgFile" accept="image/jpeg,image/png,image/webp"
+          style="display:block; margin-top:0.4rem; font-size:0.9rem;">
+        <small style="color:#95a5a6;">Deja vacío para conservar la imagen actual.</small>
+      </div>
+      <div class="modal-actions" style="margin-top:1.5rem;">
+        <button class="btn-primary" id="btnSaveGalleryEdit">💾 Guardar Cambios</button>
+        <button class="btn-secondary" id="btnCancelGalleryEdit">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Bot Item Modal -->
+  <div class="modal" id="editBotItemModal">
+    <div class="modal-content">
+      <h3>✏️ Editar Aviso / Promoción</h3>
+
+      <div class="form-group" style="margin-top:1rem;">
+        <label for="editBotTitle">Título:</label>
+        <input type="text" id="editBotTitle" placeholder="Título del aviso..."
+          style="width:100%; padding:0.6rem 0.8rem; border:1px solid #ddd; border-radius:6px; font-size:0.95rem; margin-top:0.3rem;">
+      </div>
+
+      <div class="form-group" style="margin-top:1rem;">
+        <label for="editBotDesc">Descripción:</label>
+        <textarea id="editBotDesc" rows="3" placeholder="Descripción del aviso..."
+          style="width:100%; padding:0.6rem 0.8rem; border:1px solid #ddd; border-radius:6px; font-size:0.95rem; margin-top:0.3rem; resize:vertical; font-family:inherit;"></textarea>
+      </div>
+
+      <div class="form-group" style="margin-top:1rem;">
+        <label>Imagen actual:</label>
+        <div id="editBotImgPreview" style="margin-top:0.5rem; text-align:center;">
+          <!-- preview rendered with JS -->
+        </div>
+      </div>
+
+      <div class="form-group" style="margin-top:1rem;">
+        <label for="editBotImgFile">Reemplazar imagen (opcional):</label>
+        <input type="file" id="editBotImgFile" accept="image/jpeg,image/png,image/webp"
+          style="display:block; margin-top:0.4rem; font-size:0.9rem;">
+        <small style="color:#95a5a6;">Deja vacío para conservar la imagen actual.</small>
+      </div>
+
+      <div class="modal-actions" style="margin-top:1.5rem;">
+        <button class="btn-primary" id="btnSaveBotItemEdit">💾 Guardar Cambios</button>
+        <button class="btn-secondary" id="btnCancelBotItemEdit">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Recommendation Modal -->
+  <div class="modal" id="editRecModal">
+    <div class="modal-content">
+      <h3>✏️ Editar Recomendación</h3>
+      <div class="form-group" style="margin-top:1rem;">
+        <label for="editRecNombre">Nombre del Estudiante:</label>
+        <input type="text" id="editRecNombre" placeholder="Nombre..." style="width:100%; padding:0.6rem 0.8rem; border:1px solid #ddd; border-radius:6px; font-size:0.95rem; margin-top:0.3rem;">
+      </div>
+      <div class="form-group" style="margin-top:1rem;">
+        <label for="editRecTexto">Recomendación:</label>
+        <textarea id="editRecTexto" rows="4" placeholder="Texto de la recomendación..."
+          style="width:100%; padding:0.6rem 0.8rem; border:1px solid #ddd; border-radius:6px; font-size:0.95rem; margin-top:0.3rem; resize:vertical; font-family:inherit;"></textarea>
+      </div>
+      <div class="modal-actions" style="margin-top:1.5rem;">
+        <button class="btn-primary" id="btnSaveRecEdit">💾 Guardar Cambios</button>
+        <button class="btn-secondary" id="btnCancelRecEdit">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="image-popup.js"></script>
+  <script src="admin.js"></script>
+  <script>
+    // Initialize image popup for gallery items after they are rendered
+    // This will be called after renderGallery() in admin.js
+    window.addEventListener('DOMContentLoaded', function () {
+      // Create a MutationObserver to watch for changes in the gallery
+      const galleryGrid = document.getElementById('galleryGrid');
+
+      if (galleryGrid) {
+        const observer = new MutationObserver(function (mutations) {
+          // Re-initialize popup for gallery items whenever the gallery changes
+          setTimeout(() => {
+            if (window.imagePopup && window.imagePopup.init) {
+              window.imagePopup.init('.gallery-item', '.gallery-item-image');
+            }
+          }, 100);
+        });
+
+        observer.observe(galleryGrid, {
+          childList: true,
+          subtree: true
+        });
+
+        // Initial initialization
+        setTimeout(() => {
+          if (window.imagePopup && window.imagePopup.init) {
+            window.imagePopup.init('.gallery-item', '.gallery-item-image');
+          }
+        }, 500);
+      }
+    });
+  </script>
+</body>
+
+</html>

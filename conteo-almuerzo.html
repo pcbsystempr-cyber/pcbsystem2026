@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="es" id="htmlRoot">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Conteo de Almuerzo – Maestros | PCB</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="dark-mode-fix.css">
+  <link rel="stylesheet" href="dropdown-fix.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <script src="translations.js"></script>
+  <style>
+    .ca-wrapper { max-width: 540px; margin: 0 auto; padding: 2rem 1rem 4rem; }
+    .ca-card {
+      background: white; border-radius: 20px;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.12);
+      padding: 2.5rem 2rem; border-top: 5px solid #9b59b6;
+      animation: caSlideUp 0.4s ease;
+    }
+    @keyframes caSlideUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .ca-header { text-align: center; margin-bottom: 1.8rem; }
+    .ca-icon { font-size: 3.2rem; display: block; margin-bottom: 0.6rem; }
+    .ca-header h2 { font-size: 1.55rem; color: #1e293b; margin: 0 0 0.35rem; }
+    .ca-header p  { color: #64748b; font-size: 0.92rem; margin: 0; }
+    .ca-field { margin-bottom: 1.15rem; }
+    .ca-label { display: block; font-weight: 600; color: #334155; margin-bottom: 0.4rem; font-size: 0.88rem; }
+    .ca-label i { color: #9b59b6; margin-right: 5px; }
+    .ca-input, .ca-select {
+      width: 100%; padding: 0.78rem 1rem; border: 2px solid #e2e8f0; border-radius: 12px;
+      font-size: 0.97rem; font-family: inherit; transition: border-color 0.2s, box-shadow 0.2s;
+      box-sizing: border-box; background: white; color: #1e293b;
+    }
+    .ca-input:focus, .ca-select:focus {
+      outline: none; border-color: #9b59b6; box-shadow: 0 0 0 3px rgba(155,89,182,0.12);
+    }
+    .ca-input[readonly] { background: #f8fafc; color: #64748b; cursor: default; }
+    .ca-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .counter-wrap { display: flex; align-items: center; border: 2px solid #e2e8f0; border-radius: 12px; overflow: hidden; }
+    .counter-btn {
+      background: #f1f5f9; border: none; width: 54px; height: 52px; font-size: 1.5rem;
+      font-weight: 700; cursor: pointer; color: #9b59b6; transition: background 0.2s; flex-shrink: 0;
+    }
+    .counter-btn:hover  { background: #e2e8f0; }
+    .counter-btn:active { background: #9b59b6; color: white; }
+    .counter-val {
+      flex: 1; text-align: center; font-size: 1.9rem; font-weight: 800;
+      color: #1e293b; border: none; outline: none; background: white; padding: 0;
+    }
+    .ca-btn {
+      width: 100%; padding: 0.88rem; background: linear-gradient(135deg, #9b59b6, #8e44ad);
+      color: white; border: none; border-radius: 12px; font-size: 1rem; font-weight: 700;
+      cursor: pointer; transition: all 0.25s; display: flex; align-items: center;
+      justify-content: center; gap: 0.5rem; font-family: inherit; margin-top: 0.5rem;
+    }
+    .ca-btn:hover { background: linear-gradient(135deg, #8e44ad, #7d3c98); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(155,89,182,0.35); }
+    .ca-btn-sec { background: #f1f5f9; color: #64748b; margin-top: 0.7rem; }
+    .ca-btn-sec:hover { background: #e2e8f0; color: #475569; transform: translateY(-1px); box-shadow: none; }
+    .ca-btn-green { background: linear-gradient(135deg, #059669, #047857); }
+    .ca-btn-green:hover { background: linear-gradient(135deg, #047857, #065f46); box-shadow: 0 6px 20px rgba(5,150,105,0.35); }
+    .ca-divider { border: none; border-top: 1.5px solid #f1f5f9; margin: 1.25rem 0; }
+    .ca-alert {
+      padding: 0.75rem 1rem; border-radius: 10px; font-size: 0.88rem;
+      margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;
+    }
+    .ca-alert-blue { background: #eff6ff; color: #1e40af; border: 1.5px solid #bfdbfe; }
+    .ca-alert-red  { background: #fef2f2; color: #991b1b; border: 1.5px solid #fecaca; }
+    .ca-alert-green { background: #f0fdf4; color: #065f46; border: 1.5px solid #a7f3d0; }
+    .success-icon { font-size: 4rem; display: block; margin-bottom: 0.6rem; animation: pop 0.4s ease; }
+    @keyframes pop { 0%{transform:scale(0)} 70%{transform:scale(1.15)} 100%{transform:scale(1)} }
+    .ca-success h3 { font-size: 1.45rem; color: #059669; margin: 0 0 0.4rem; }
+    .ca-success p  { color: #64748b; font-size: 0.93rem; }
+    .summary-box {
+      background: #f0fdf4; border: 1.5px solid #a7f3d0; border-radius: 12px;
+      padding: 1rem 1.15rem; margin: 1.1rem 0; text-align: left;
+    }
+    .summary-row { display: flex; justify-content: space-between; padding: 0.3rem 0; border-bottom: 1px solid #d1fae5; font-size: 0.91rem; }
+    .summary-row:last-child { border-bottom: none; }
+    .sum-lbl { color: #065f46; font-weight: 600; } .sum-val { color: #047857; font-weight: 700; }
+    .admin-tbl { width: 100%; border-collapse: collapse; font-size: 0.88rem; margin-top: 0.75rem; }
+    .admin-tbl th { background: linear-gradient(135deg,#9b59b6,#8e44ad); color: white; padding: 0.65rem 0.9rem; text-align: left; }
+    .admin-tbl td { padding: 0.6rem 0.9rem; border-bottom: 1px solid #e2e8f0; }
+    .admin-tbl tbody tr:hover { background: #f8fafc; }
+    .badge-total {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      background: linear-gradient(135deg,#9b59b6,#8e44ad); color: white;
+      padding: 0.45rem 1.1rem; border-radius: 50px; font-size: 1rem; font-weight: 700; margin: 0.9rem 0;
+    }
+    .screen { display: none; }
+    .screen.active { display: block; }
+    body.dark-mode .ca-card { background: #1e293b; box-shadow: 0 8px 40px rgba(0,0,0,0.4); }
+    body.dark-mode .ca-header h2 { color: #e5e7eb; }
+    body.dark-mode .ca-header p  { color: #94a3b8; }
+    body.dark-mode .ca-label     { color: #cbd5e1; }
+    body.dark-mode .ca-input, body.dark-mode .ca-select { background: #0f172a; border-color: #334155; color: #e5e7eb; }
+    body.dark-mode .ca-input[readonly] { background: #0f172a; color: #64748b; }
+    body.dark-mode .counter-wrap { border-color: #334155; }
+    body.dark-mode .counter-btn  { background: #1e293b; color: #a78bfa; }
+    body.dark-mode .counter-btn:hover { background: #334155; }
+    body.dark-mode .counter-val  { background: #0f172a; color: #e5e7eb; }
+    body.dark-mode .ca-btn-sec   { background: #334155; color: #94a3b8; }
+    body.dark-mode .ca-btn-sec:hover { background: #475569; color: #e5e7eb; }
+    body.dark-mode .ca-divider   { border-color: #334155; }
+    body.dark-mode .summary-box  { background: #064e3b; border-color: #065f46; }
+    body.dark-mode .summary-row  { border-color: #065f46; }
+    body.dark-mode .sum-lbl { color: #6ee7b7; } body.dark-mode .sum-val { color: #34d399; }
+    body.dark-mode .admin-tbl td { border-color: #334155; }
+    body.dark-mode .admin-tbl tbody tr:hover { background: #1e293b; }
+    body.dark-mode .ca-alert-blue { background: #1e3a5f; border-color: #1e40af; color: #93c5fd; }
+    body.dark-mode .ca-alert-green { background: #064e3b; border-color: #065f46; color: #6ee7b7; }
+    @media(max-width:540px){ .ca-card{padding:1.5rem 1.1rem;} .ca-grid-2{grid-template-columns:1fr;} }
+  </style>
+</head>
+<body>
+  <script>
+    (function(){
+      var t=localStorage.getItem('theme');
+      if(t==='dark') document.body.classList.add('dark-mode');
+    })();
+  </script>
+
+  <!-- HEADER -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <div class="logo-area">
+        <img src="LOGO6.png" alt="Logo Escuela" class="logo-image">
+        <div class="logo-text">
+          <span class="logo-title">Escuela Superior Vocacional</span>
+          <span class="logo-subtitle">Pablo Colón Berdecia</span>
+        </div>
+      </div>
+      <button class="hamburger-menu" id="hamburgerBtn" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+      <nav class="main-nav">
+        <ul>
+          <li><a href="index.html#inicio">Inicio</a></li>
+          <li><a href="comedor.html">Comedor</a></li>
+          <li><a href="index.html#contacto">Contacto</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- SIDEBAR -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+  <div class="sidebar-menu" id="sidebarMenu">
+    <div class="sidebar-header">
+      <h3>Menú</h3>
+      <button class="sidebar-close" id="closeSidebar">&times;</button>
+    </div>
+    <div class="sidebar-content">
+      <a href="index.html" class="sidebar-item sidebar-link"><span class="sidebar-icon">🏠</span><span class="sidebar-text">Inicio</span><span class="sidebar-arrow">›</span></a>
+      <a href="comedor.html" class="sidebar-item sidebar-link"><span class="sidebar-icon">🍽️</span><span class="sidebar-text">Comedor</span><span class="sidebar-arrow">›</span></a>
+      <div style="border-top:1px solid rgba(255,255,255,0.1);margin:1rem 0;"></div>
+      <div class="sidebar-item" id="themeToggle"><span class="sidebar-icon">🎨</span><span class="sidebar-text">Cambiar Tema</span><span class="sidebar-arrow">›</span></div>
+      <div class="theme-options" id="themeOptions" style="display:none;">
+        <button class="theme-option" id="selectLightTheme"><span>☀️</span> Modo Claro</button>
+        <button class="theme-option" id="selectDarkTheme"><span>🌙</span> Modo Oscuro</button>
+      </div>
+    </div>
+  </div>
+  <script>
+    (function(){
+      var hBtn=document.getElementById('hamburgerBtn'),
+          sm=document.getElementById('sidebarMenu'),
+          so=document.getElementById('sidebarOverlay'),
+          cs=document.getElementById('closeSidebar'),
+          tt=document.getElementById('themeToggle'),
+          to=document.getElementById('themeOptions'),
+          sl=document.getElementById('selectLightTheme'),
+          sd=document.getElementById('selectDarkTheme');
+      function open(){ sm.classList.add('active'); so.classList.add('active'); }
+      function close(){ sm.classList.remove('active'); so.classList.remove('active'); }
+      if(hBtn) hBtn.addEventListener('click',open);
+      if(cs)   cs.addEventListener('click',close);
+      if(so)   so.addEventListener('click',close);
+      if(tt)   tt.addEventListener('click',function(){ to.style.display=to.style.display==='block'?'none':'block'; });
+      if(sl)   sl.addEventListener('click',function(){ document.body.classList.remove('dark-mode'); localStorage.setItem('theme','light'); close(); });
+      if(sd)   sd.addEventListener('click',function(){ document.body.classList.add('dark-mode'); localStorage.setItem('theme','dark'); close(); });
+    })();
+  </script>
+
+  <!-- HERO -->
+  <section class="hero" style="min-height:280px;padding:3rem 0;">
+    <div class="container">
+      <div class="section-header" style="margin-bottom:0;">
+        <div style="font-size:4.5rem;margin-bottom:0.8rem;">🍽️</div>
+        <h1 style="color:#fff;font-size:2.4rem;text-shadow:0 2px 20px rgba(0,0,0,0.5);">Conteo de Almuerzo</h1>
+        <p style="color:rgba(255,255,255,0.9);font-size:1.05rem;max-width:600px;margin:0.7rem auto;">
+          Portal exclusivo para maestros · Registro diario de estudiantes que almorzarán
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- MAIN -->
+  <section class="section" style="padding-top:2rem;">
+    <div class="ca-wrapper">
+
+      <!-- ===== PANTALLA 1: LOGIN ===== -->
+      <div class="ca-card screen active" id="screenLogin">
+        <div class="ca-header">
+          <span class="ca-icon">🔐</span>
+          <h2>Acceso Maestros</h2>
+          <p>Ingresa la contraseña para continuar</p>
+        </div>
+        <div id="loginError" class="ca-alert ca-alert-red" style="display:none;">
+          <i class="fas fa-exclamation-circle"></i> Contraseña incorrecta. Intenta de nuevo.
+        </div>
+        <div class="ca-field">
+          <label class="ca-label"><i class="fas fa-lock"></i> Contraseña</label>
+          <input type="password" class="ca-input" id="loginPass" placeholder="••••••••••"
+            onkeydown="if(event.key==='Enter') doLogin()">
+        </div>
+        <button class="ca-btn" onclick="doLogin()">
+          <i class="fas fa-sign-in-alt"></i> Entrar
+        </button>
+        <button class="ca-btn ca-btn-sec" onclick="doAdminLogin()">
+          <i class="fas fa-chart-bar"></i> Ver Reporte (Admin)
+        </button>
+        <hr class="ca-divider">
+        <div class="ca-alert ca-alert-blue">
+          <i class="fas fa-info-circle"></i>
+          La contraseña es proporcionada por la administración del comedor.
+        </div>
+      </div>
+
+      <!-- ===== PANTALLA 2: FORMULARIO MAESTRO ===== -->
+      <div class="ca-card screen" id="screenForm">
+        <div class="ca-header">
+          <span class="ca-icon">📋</span>
+          <h2>Conteo del Día</h2>
+          <p id="formFecha"></p>
+        </div>
+
+        <div id="alreadySubmitted" class="ca-alert ca-alert-green" style="display:none;">
+          <i class="fas fa-check-circle"></i>
+          Ya enviaste tu conteo hoy. Puedes actualizarlo.
+        </div>
+
+        <div class="ca-field">
+          <label class="ca-label"><i class="fas fa-user-tie"></i> Tu Nombre</label>
+          <select class="ca-select" id="selMaestro" onchange="onMaestroChange()">
+            <option value="">— Selecciona tu nombre —</option>
+          </select>
+        </div>
+        <div class="ca-grid-2">
+          <div class="ca-field">
+            <label class="ca-label"><i class="fas fa-book"></i> Materia</label>
+            <input type="text" class="ca-input" id="inpMateria" readonly placeholder="Auto">
+          </div>
+          <div class="ca-field">
+            <label class="ca-label"><i class="fas fa-graduation-cap"></i> Grado</label>
+            <input type="text" class="ca-input" id="inpGrado" readonly placeholder="Auto">
+          </div>
+        </div>
+        <div class="ca-field">
+          <label class="ca-label"><i class="fas fa-users"></i> Estudiantes que almorzarán hoy</label>
+          <div class="counter-wrap">
+            <button class="counter-btn" onclick="changeCount(-1)">−</button>
+            <input type="number" class="counter-val" id="counterVal" value="0" min="0" max="999"
+              oninput="validateCount(this)">
+            <button class="counter-btn" onclick="changeCount(1)">+</button>
+          </div>
+        </div>
+        <button class="ca-btn" onclick="submitCount()">
+          <i class="fas fa-paper-plane"></i> Enviar Conteo
+        </button>
+        <button class="ca-btn ca-btn-sec" onclick="doLogout()">
+          <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+        </button>
+      </div>
+
+      <!-- ===== PANTALLA 3: ÉXITO ===== -->
+      <div class="ca-card screen ca-success" id="screenSuccess" style="text-align:center;">
+        <span class="success-icon">✅</span>
+        <h3>¡Conteo Enviado!</h3>
+        <p>Tu información fue registrada correctamente.</p>
+        <div class="summary-box" id="successSummary"></div>
+        <button class="ca-btn" onclick="showScreen('screenForm')">
+          <i class="fas fa-redo"></i> Actualizar Conteo
+        </button>
+        <button class="ca-btn ca-btn-sec" onclick="doLogout()">
+          <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+        </button>
+      </div>
+
+      <!-- ===== PANTALLA 4: ADMIN ===== -->
+      <div class="ca-card screen" id="screenAdmin">
+        <div class="ca-header">
+          <span class="ca-icon">📊</span>
+          <h2>Reporte de Almuerzo</h2>
+          <p id="adminFecha"></p>
+        </div>
+        <div class="ca-alert ca-alert-blue" id="sendTimeInfo">
+          <i class="fas fa-clock"></i>
+          <span id="sendTimeText"></span>
+        </div>
+        <div class="badge-total">
+          <i class="fas fa-users"></i> Total: <span id="totalCount">0</span> estudiantes
+        </div>
+        <div id="adminTableWrap">
+          <table class="admin-tbl" id="adminTbl">
+            <thead><tr><th>Maestro/a</th><th>Materia</th><th>Grado</th><th style="text-align:center;">Estudiantes</th></tr></thead>
+            <tbody id="adminTblBody"></tbody>
+          </table>
+        </div>
+        <hr class="ca-divider">
+        <button class="ca-btn ca-btn-green" id="btnSendEmail" onclick="sendEmailReport(true)">
+          <i class="fas fa-envelope"></i> Enviar Reporte por Correo Ahora
+        </button>
+        <button class="ca-btn ca-btn-sec" onclick="clearTodayData()">
+          <i class="fas fa-trash-alt"></i> Limpiar Datos de Hoy
+        </button>
+        <button class="ca-btn ca-btn-sec" onclick="doLogout()">
+          <i class="fas fa-sign-out-alt"></i> Salir
+        </button>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="container">
+      <p>&copy; <script>document.write(new Date().getFullYear());</script>
+        Escuela Superior Vocacional Pablo Colón Berdecia. Todos los derechos reservados.</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+  <script>
+  // ============================================================
+  //  CONFIGURACIÓN — edita estos valores según necesites
+  // ============================================================
+  var CONFIG = {
+    TEACHER_PASS : 'Comedor2026',      // Contraseña para maestros
+    ADMIN_PASS   : 'Admin2026',        // Contraseña para ver el reporte
+    SEND_HOUR    : 11,                 // Hora de envío automático (11 AM)
+    SEND_MINUTE  : 15,                 // Minutos (11:15 AM)
+    EMAIL_DEST   : 'comedor@tuescuela.pr', // ← Cambia al correo real del comedor
+    // EmailJS — crea cuenta gratis en emailjs.com y llena estos datos:
+    EJS_PUBLIC   : 'TU_PUBLIC_KEY',
+    EJS_SERVICE  : 'TU_SERVICE_ID',
+    EJS_TEMPLATE : 'TU_TEMPLATE_ID'
+  };
+
+  // ============================================================
+  //  LISTA DE MAESTROS (nombre, materia, grado)
+  // ============================================================
+  var MAESTROS = [
+    {n:'Torres Soto, Midelys',          m:'Español',                   g:'9'},
+    {n:'Rodríguez López, Brenda L.',    m:'Español',                   g:'10'},
+    {n:'Aguayo Guzmán, Danny',          m:'Español',                   g:'11'},
+    {n:'Alvarado Berríos, Angélica',    m:'Español',                   g:'12'},
+    {n:'Hernández Rosado, Coral',       m:'Inglés',                    g:'10'},
+    {n:'Otero, Carmen',                 m:'Inglés',                    g:'9-6, 9-7, 10-6, 11-6'},
+    {n:'Acosta Meléndez, Vilmarie',     m:'Inglés',                    g:'12'},
+    {n:'Colón Ortiz, Luz C.',           m:'Matemáticas',               g:'9'},
+    {n:'Rivera Hernández, Miguel A.',   m:'Matemáticas',               g:'10'},
+    {n:'Rosado, Evelisse',              m:'Matemáticas',               g:'11'},
+    {n:'Matos Ortiz, Glorimar',         m:'Matemáticas',               g:'12'},
+    {n:'Camacho Ortiz, Félix',          m:'Matemáticas',               g:'11'},
+    {n:'Ortiz Berdecia, Diana C.',      m:'Ciencias',                  g:'9'},
+    {n:'Rosado Alvarado, Jacqueline M.',m:'Ciencias',                  g:'10'},
+    {n:'Rivera, Jennifer',              m:'Ciencias',                  g:'11'},
+    {n:'Palomino Luna, Ivette',         m:'Ciencia Física',            g:'12'},
+    {n:'Fuentes Berrios, Elsa',         m:'Aplicaciones Tecnológicas', g:'9'},
+    {n:'Santiago Cruz, Yarimar',        m:'Salud',                     g:'9'},
+    {n:'Vázquez Maldonado, Mayra',      m:'Educación Física',          g:'9-12'},
+    {n:'Collazo Esparra, Brenda E.',    m:'Educación Física',          g:'9-12'},
+    {n:'Alicea Nieves, Melanie',        m:'Artes Culinarias',          g:'10, 11, 12'},
+    {n:'Nieves Alvarado, Madeline',     m:'Historia',                  g:'9'},
+    {n:'Virella Ramos, Desiré',         m:'Historia',                  g:'10'},
+    {n:'Rivas Aponte, Luis E.',         m:'Historia',                  g:'11, 12'},
+    {n:'Soto Pagán, Celimar',           m:'Electiva Salud',            g:'10, 12'},
+    {n:'Ortiz Montesino, Nivia J.',     m:'Cosmetología',              g:'10, 11, 12'},
+    {n:'Vázquez Vázquez, Roberto',      m:'Computec',                  g:'10, 11, 12'},
+    {n:'Ortiz Cartagena, Marta',        m:'Enfermería',                g:'10, 11, 12'},
+    {n:'Rivera Alejandro, Ada J.',      m:'DECACoop',                  g:'10, 11, 12'},
+    {n:'Ríos Berrios, Luis',            m:'Elaboración P.A.',          g:'10, 11, 12'},
+    {n:'Rodríguez Rodríguez, Jelitza',  m:'Electiva Ocupacional',      g:'11'},
+    {n:'Feliciano Rivera, Eliel',       m:'Educación Especial',        g:'11'},
+    {n:'Rivera Berrios, Ana M.',        m:'Educación Especial',        g:'9, 12'},
+    {n:'Rivera Pagan, Zulma I.',        m:'Educación Especial',        g:'10'},
+    {n:'Martínez Maldonado, Iris M.',   m:'Educación Especial',        g:'11'},
+    {n:'Berríos, Ivette',               m:'Educación Especial',        g:'9'},
+    {n:'Colón, W.',                     m:'Educación Especial',        g:'10'},
+    {n:'Núñez, Sra.',                   m:'Español EE',                g:'9, 10, 11'},
+    {n:'Pérez, Sra.',                   m:'Matemática EE',             g:'9, 11'},
+    {n:'Torres, Carmen',                m:'R2 y R3',                   g:'R2, R3'},
+    {n:'Berrios Colón, Carmen I.',      m:'Consejera',                 g:'N/A'},
+    {n:'Berrios Ortiz, Jesús',          m:'Psicólogo',                 g:'N/A'},
+    {n:'Berrios Zayas, Janelyz',        m:'Trabajadora Social',        g:'N/A'},
+    {n:'Bonilla Camacho, José L.',      m:'STEM',                      g:'N/A'},
+    {n:'Colón Aponte, Célida I.',       m:'Enfermera',                 g:'N/A'},
+    {n:'Colón Arroyo, Sheyka',          m:'Bibliotecaria',             g:'N/A'},
+    {n:'Rivera Moreno, Kárem Z.',       m:'Trabajadora Social',        g:'N/A'},
+    {n:'Cruz Maldonado, Sonia I.',      m:'Consejera',                 g:'N/A'},
+    {n:'García Rivera, Maricarmen',     m:'Consejera',                 g:'N/A'},
+    {n:'Cintrón Ortiz, Nydia I.',       m:'---',                       g:'---'}
+  ];
+
+  // ============================================================
+  //  HELPERS
+  // ============================================================
+  var STORAGE_KEY = 'ca_conteos_';
+  function todayKey(){ return STORAGE_KEY + new Date().toISOString().slice(0,10); }
+  function getConteos(){ return JSON.parse(localStorage.getItem(todayKey()) || '[]'); }
+  function saveConteos(d){ localStorage.setItem(todayKey(), JSON.stringify(d)); }
+  function formatFecha(){
+    return new Date().toLocaleDateString('es-PR',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  }
+  function showScreen(id){
+    document.querySelectorAll('.screen').forEach(function(s){ s.classList.remove('active'); });
+    document.getElementById(id).classList.add('active');
+  }
+
+  // ============================================================
+  //  INIT
+  // ============================================================
+  document.addEventListener('DOMContentLoaded', function(){
+    // Poblar dropdown de maestros
+    var sel = document.getElementById('selMaestro');
+    MAESTROS.sort(function(a,b){ return a.n.localeCompare(b.n,'es'); }).forEach(function(m){
+      var o = document.createElement('option');
+      o.value = m.n; o.textContent = m.n;
+      sel.appendChild(o);
+    });
+    document.getElementById('formFecha').textContent = formatFecha();
+    document.getElementById('adminFecha').textContent = formatFecha();
+    document.getElementById('sendTimeText').textContent =
+      'Reporte programado para enviarse automáticamente a las ' +
+      CONFIG.SEND_HOUR + ':' + String(CONFIG.SEND_MINUTE).padStart(2,'0') + ' AM. ' +
+      'También puedes enviarlo manualmente.';
+    scheduleAutoSend();
+  });
+
+  // ============================================================
+  //  LOGIN
+  // ============================================================
+  function doLogin(){
+    var p = document.getElementById('loginPass').value;
+    if(p === CONFIG.TEACHER_PASS){
+      document.getElementById('loginError').style.display='none';
+      document.getElementById('loginPass').value='';
+      showScreen('screenForm');
+      checkAlreadySubmitted();
+    } else {
+      document.getElementById('loginError').style.display='flex';
+      document.getElementById('loginPass').select();
+    }
+  }
+  function doAdminLogin(){
+    var p = document.getElementById('loginPass').value;
+    if(p === CONFIG.ADMIN_PASS){
+      document.getElementById('loginError').style.display='none';
+      document.getElementById('loginPass').value='';
+      renderAdminTable();
+      showScreen('screenAdmin');
+    } else {
+      document.getElementById('loginError').style.display='flex';
+      document.getElementById('loginPass').select();
+    }
+  }
+  function doLogout(){
+    document.getElementById('loginPass').value='';
+    document.getElementById('selMaestro').value='';
+    document.getElementById('inpMateria').value='';
+    document.getElementById('inpGrado').value='';
+    document.getElementById('counterVal').value=0;
+    document.getElementById('alreadySubmitted').style.display='none';
+    showScreen('screenLogin');
+  }
+
+  // ============================================================
+  //  FORMULARIO
+  // ============================================================
+  function onMaestroChange(){
+    var nombre = document.getElementById('selMaestro').value;
+    var m = MAESTROS.find(function(x){ return x.n===nombre; });
+    document.getElementById('inpMateria').value = m ? m.m : '';
+    document.getElementById('inpGrado').value   = m ? m.g : '';
+    // Precargar conteo previo si ya envió hoy
+    var prev = getConteos().find(function(c){ return c.nombre===nombre; });
+    document.getElementById('counterVal').value = prev ? prev.cantidad : 0;
+  }
+  function changeCount(delta){
+    var el = document.getElementById('counterVal');
+    var v = parseInt(el.value)||0;
+    el.value = Math.max(0, v+delta);
+  }
+  function validateCount(el){
+    var v = parseInt(el.value);
+    if(isNaN(v)||v<0) el.value=0;
+    if(v>999) el.value=999;
+  }
+  function checkAlreadySubmitted(){
+    var conteos = getConteos();
+    var msg = document.getElementById('alreadySubmitted');
+    if(conteos.length>0) msg.style.display='flex'; else msg.style.display='none';
+  }
+  function submitCount(){
+    var nombre   = document.getElementById('selMaestro').value;
+    var materia  = document.getElementById('inpMateria').value;
+    var grado    = document.getElementById('inpGrado').value;
+    var cantidad = parseInt(document.getElementById('counterVal').value)||0;
+    if(!nombre){ alert('Por favor selecciona tu nombre.'); return; }
+    var conteos = getConteos();
+    var idx = conteos.findIndex(function(c){ return c.nombre===nombre; });
+    var entry = { nombre:nombre, materia:materia, grado:grado, cantidad:cantidad, hora:new Date().toLocaleTimeString('es-PR') };
+    if(idx>=0) conteos[idx]=entry; else conteos.push(entry);
+    saveConteos(conteos);
+    // Mostrar éxito
+    document.getElementById('successSummary').innerHTML =
+      '<div class="summary-row"><span class="sum-lbl">👤 Maestro</span><span class="sum-val">'+(nombre||'—')+'</span></div>'+
+      '<div class="summary-row"><span class="sum-lbl">📚 Materia</span><span class="sum-val">'+(materia||'—')+'</span></div>'+
+      '<div class="summary-row"><span class="sum-lbl">🎓 Grado</span><span class="sum-val">'+(grado||'—')+'</span></div>'+
+      '<div class="summary-row"><span class="sum-lbl">🍽️ Estudiantes</span><span class="sum-val">'+cantidad+'</span></div>'+
+      '<div class="summary-row"><span class="sum-lbl">🕐 Hora</span><span class="sum-val">'+entry.hora+'</span></div>';
+    showScreen('screenSuccess');
+  }
+
+  // ============================================================
+  //  ADMIN TABLE
+  // ============================================================
+  function renderAdminTable(){
+    var conteos = getConteos();
+    var total = conteos.reduce(function(s,c){ return s+(c.cantidad||0); },0);
+    document.getElementById('totalCount').textContent = total;
+    var tbody = document.getElementById('adminTblBody');
+    if(conteos.length===0){
+      tbody.innerHTML='<tr><td colspan="4" style="text-align:center;color:#94a3b8;padding:1.5rem;">Ningún maestro ha enviado datos aún.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = conteos.map(function(c){
+      return '<tr><td>'+c.nombre+'</td><td>'+c.materia+'</td><td>'+c.grado+'</td>'+
+             '<td style="text-align:center;font-weight:700;font-size:1.1rem;color:#9b59b6;">'+c.cantidad+'</td></tr>';
+    }).join('');
+  }
+  function clearTodayData(){
+    if(!confirm('¿Seguro que deseas eliminar todos los datos del día de hoy?')) return;
+    localStorage.removeItem(todayKey());
+    renderAdminTable();
+  }
+
+  // ============================================================
+  //  EMAIL (EmailJS)
+  // ============================================================
+  function sendEmailReport(manual){
+    var conteos = getConteos();
+    if(conteos.length===0){ if(manual) alert('No hay datos para enviar aún.'); return; }
+    var sentKey = todayKey()+'_sent';
+    if(!manual && localStorage.getItem(sentKey)==='1') return; // ya enviado hoy automáticamente
+    var total = conteos.reduce(function(s,c){ return s+(c.cantidad||0); },0);
+    var tabla = conteos.map(function(c,i){
+      return (i+1)+'. '+c.nombre+' | '+c.materia+' | Grado: '+c.grado+' | Estudiantes: '+c.cantidad+' | Hora: '+c.hora;
+    }).join('\n');
+    var mensaje =
+      'REPORTE DE CONTEO DE ALMUERZO\n'+
+      'Fecha: '+formatFecha()+'\n'+
+      'Generado: '+new Date().toLocaleTimeString('es-PR')+'\n'+
+      '─────────────────────────────\n'+
+      tabla+'\n'+
+      '─────────────────────────────\n'+
+      'TOTAL DE ESTUDIANTES: '+total;
+    if(CONFIG.EJS_PUBLIC==='TU_PUBLIC_KEY'){
+      alert('⚠️ EmailJS no está configurado aún.\n\nEl reporte sería:\n\n'+mensaje+'\n\nConfigura EmailJS en el archivo conteo-almuerzo.html para enviar automáticamente.');
+      return;
+    }
+    emailjs.init(CONFIG.EJS_PUBLIC);
+    emailjs.send(CONFIG.EJS_SERVICE, CONFIG.EJS_TEMPLATE, {
+      to_email: CONFIG.EMAIL_DEST,
+      subject : 'Conteo Almuerzo – '+new Date().toLocaleDateString('es-PR'),
+      message : mensaje,
+      total   : total,
+      fecha   : formatFecha()
+    }).then(function(){
+      localStorage.setItem(sentKey,'1');
+      alert('✅ Reporte enviado a '+CONFIG.EMAIL_DEST);
+    }).catch(function(err){
+      alert('❌ Error al enviar: '+JSON.stringify(err));
+    });
+  }
+
+  // ============================================================
+  //  ENVÍO AUTOMÁTICO PROGRAMADO
+  // ============================================================
+  function scheduleAutoSend(){
+    setInterval(function(){
+      var now = new Date();
+      if(now.getHours()===CONFIG.SEND_HOUR && now.getMinutes()===CONFIG.SEND_MINUTE){
+        sendEmailReport(false);
+      }
+    }, 60000); // revisa cada minuto
+  }
+  </script>
+</body>
+</html>
+

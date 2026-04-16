@@ -1,0 +1,1116 @@
+<!DOCTYPE html>
+<html lang="es" id="htmlRoot">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Comedor Escolar – Escuela Superior Vocacional Pablo Colón Berdecia</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="dark-mode-fix.css">
+  <link rel="stylesheet" href="dropdown-fix.css">
+  <link rel="stylesheet" href="image-popup.css">
+  <!-- <link rel="stylesheet" href="notification-bot.css"> -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <script src="translations.js"></script>
+
+  <style>
+    /* Estilos para la encuesta del comedor */
+    .survey-card {
+      border-left: 4px solid #9b59b6 !important;
+      padding: 40px !important;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .survey-header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .survey-icon {
+      font-size: 4rem;
+      margin-bottom: 20px;
+    }
+
+    .survey-header h3 {
+      color: #2c3e50;
+      font-size: 2rem;
+      margin-bottom: 15px;
+    }
+
+    .survey-header p {
+      color: #7f8c8d;
+      font-size: 1.1rem;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .survey-form {
+      margin-top: 30px;
+    }
+
+    .survey-section {
+      background: #f8f9fa;
+      padding: 30px;
+      border-radius: 15px;
+      margin-bottom: 30px;
+      border: 2px solid #e9ecef;
+      transition: all 0.3s ease;
+    }
+
+    .survey-section:hover {
+      border-color: #9b59b6;
+      box-shadow: 0 5px 20px rgba(155, 89, 182, 0.1);
+    }
+
+    .survey-section-title {
+      color: #9b59b6;
+      font-size: 1.5rem;
+      margin-bottom: 25px;
+      padding-bottom: 15px;
+      border-bottom: 2px solid #e9ecef;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .survey-question {
+      margin-bottom: 25px;
+    }
+
+    .survey-label {
+      display: block;
+      font-weight: 600;
+      color: #2c3e50;
+      margin-bottom: 12px;
+      font-size: 1.05rem;
+    }
+
+    .survey-label i {
+      color: #9b59b6;
+      margin-right: 8px;
+    }
+
+    .rating-stars {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      padding: 15px;
+      background: white;
+      border-radius: 10px;
+      border: 2px solid #e9ecef;
+      transition: all 0.3s ease;
+    }
+
+    .rating-stars:hover {
+      border-color: #9b59b6;
+    }
+
+    .rating-stars .star {
+      font-size: 2.5rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      filter: grayscale(100%);
+      opacity: 0.4;
+    }
+
+    .rating-stars .star:hover,
+    .rating-stars .star.active {
+      filter: grayscale(0%);
+      opacity: 1;
+      transform: scale(1.2);
+    }
+
+    .rating-stars .star.active {
+      animation: starPulse 0.3s ease;
+    }
+
+    @keyframes starPulse {
+      0% {
+        transform: scale(1);
+      }
+
+      50% {
+        transform: scale(1.3);
+      }
+
+      100% {
+        transform: scale(1.2);
+      }
+    }
+
+    .survey-textarea {
+      width: 100%;
+      padding: 15px;
+      border: 2px solid #e9ecef;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-family: inherit;
+      resize: vertical;
+      transition: all 0.3s ease;
+    }
+
+    .survey-textarea:focus {
+      outline: none;
+      border-color: #9b59b6;
+      box-shadow: 0 0 0 3px rgba(155, 89, 182, 0.1);
+    }
+
+    .survey-actions {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      margin-top: 40px;
+    }
+
+    .btn-survey {
+      padding: 15px 40px;
+      border: none;
+      border-radius: 50px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn-submit-survey {
+      background: linear-gradient(135deg, #9b59b6, #8e44ad);
+      color: white;
+      box-shadow: 0 4px 15px rgba(155, 89, 182, 0.3);
+    }
+
+    .btn-submit-survey:hover {
+      background: linear-gradient(135deg, #8e44ad, #7d3c98);
+      box-shadow: 0 6px 20px rgba(155, 89, 182, 0.5);
+      transform: translateY(-2px);
+    }
+
+    .btn-cancel {
+      background: linear-gradient(135deg, #95a5a6, #7f8c8d);
+      color: white;
+      box-shadow: 0 4px 15px rgba(149, 165, 166, 0.3);
+    }
+
+    .btn-cancel:hover {
+      background: linear-gradient(135deg, #7f8c8d, #6c7a7b);
+      box-shadow: 0 6px 20px rgba(149, 165, 166, 0.5);
+      transform: translateY(-2px);
+    }
+
+    .survey-success {
+      text-align: center;
+      padding: 60px 40px;
+    }
+
+    .success-icon {
+      font-size: 5rem;
+      color: #27ae60;
+      margin-bottom: 20px;
+      animation: successPop 0.5s ease;
+    }
+
+    @keyframes successPop {
+      0% {
+        transform: scale(0);
+        opacity: 0;
+      }
+
+      50% {
+        transform: scale(1.2);
+      }
+
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    .survey-success h3 {
+      color: #27ae60;
+      font-size: 2rem;
+      margin-bottom: 15px;
+    }
+
+    .survey-success p {
+      color: #7f8c8d;
+      font-size: 1.1rem;
+      margin-bottom: 30px;
+    }
+
+    /* Dark Mode */
+    body.dark-mode .survey-card {
+      background: rgba(30, 41, 59, 0.95) !important;
+      border-left-color: #9b59b6 !important;
+    }
+
+    body.dark-mode .survey-header h3 {
+      color: #e5e7eb !important;
+    }
+
+    body.dark-mode .survey-header p {
+      color: #9ca3af !important;
+    }
+
+    body.dark-mode .survey-section {
+      background: rgba(15, 23, 42, 0.8);
+      border-color: #334155;
+    }
+
+    body.dark-mode .survey-section:hover {
+      border-color: #9b59b6;
+    }
+
+    body.dark-mode .survey-section-title {
+      color: #a78bfa !important;
+      border-bottom-color: #334155;
+    }
+
+    body.dark-mode .survey-label {
+      color: #e5e7eb !important;
+    }
+
+    body.dark-mode .rating-stars {
+      background: rgba(30, 41, 59, 0.8);
+      border-color: #334155;
+    }
+
+    body.dark-mode .rating-stars:hover {
+      border-color: #9b59b6;
+    }
+
+    body.dark-mode .survey-textarea {
+      background: rgba(30, 41, 59, 0.8) !important;
+      color: #e5e7eb !important;
+      border-color: #334155 !important;
+    }
+
+    body.dark-mode .survey-textarea:focus {
+      border-color: #9b59b6 !important;
+    }
+
+    body.dark-mode .survey-success h3 {
+      color: #34d399 !important;
+    }
+
+    body.dark-mode .survey-success p {
+      color: #9ca3af !important;
+    }
+
+    /* ===== RECOMENDACIONES ===== */
+    .rec-form-card { border-left: 4px solid #9b59b6; max-width: 900px; margin: 0 auto 2rem; }
+    .rec-section-title { font-size: 1.4rem; font-weight: 700; color: #2c3e50; margin-bottom: 0.5rem; }
+    .rec-subtitle { color: #7f8c8d; font-size: 0.95rem; margin-bottom: 1.5rem; }
+    .rec-input {
+      width: 100%; padding: 0.75rem 1rem; border: 2px solid #e9ecef;
+      border-radius: 10px; font-size: 1rem; font-family: inherit;
+      transition: border-color 0.2s; margin-bottom: 0.85rem; box-sizing: border-box;
+    }
+    .rec-input:focus  { outline: none; border-color: #9b59b6; box-shadow: 0 0 0 3px rgba(155,89,182,0.1); }
+    .rec-textarea {
+      width: 100%; padding: 0.75rem 1rem; border: 2px solid #e9ecef;
+      border-radius: 10px; font-size: 1rem; font-family: inherit;
+      resize: vertical; transition: border-color 0.2s; margin-bottom: 0.85rem; box-sizing: border-box;
+    }
+    .rec-textarea:focus { outline: none; border-color: #9b59b6; box-shadow: 0 0 0 3px rgba(155,89,182,0.1); }
+    .rec-submit-btn {
+      background: linear-gradient(135deg, #9b59b6, #8e44ad);
+      color: white; border: none; padding: 0.85rem 2rem; border-radius: 50px;
+      font-size: 1rem; font-weight: 700; cursor: pointer; transition: all 0.3s;
+      display: inline-flex; align-items: center; gap: 8px; font-family: inherit;
+    }
+    .rec-submit-btn:hover {
+      background: linear-gradient(135deg, #8e44ad, #7d3c98);
+      transform: translateY(-2px); box-shadow: 0 6px 20px rgba(155,89,182,0.4);
+    }
+    .rec-cards-wrapper { max-width: 900px; margin: 0 auto; }
+    .rec-cards-header { font-size: 1.3rem; font-weight: 700; color: #2c3e50; margin-bottom: 1.25rem; padding-bottom: 0.75rem; border-bottom: 2px solid #f1f5f9; }
+    .rec-card {
+      background: #f8f9fa; border-radius: 14px; padding: 1.25rem 1.5rem;
+      margin-bottom: 1rem; border-left: 4px solid #9b59b6;
+      display: flex; gap: 1rem; align-items: flex-start; transition: box-shadow 0.2s;
+    }
+    .rec-card:hover { box-shadow: 0 4px 16px rgba(155,89,182,0.12); }
+    .rec-avatar {
+      width: 46px; height: 46px; border-radius: 50%;
+      background: linear-gradient(135deg, #9b59b6, #8e44ad);
+      color: white; display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem; font-weight: 800; flex-shrink: 0;
+    }
+    .rec-body { flex: 1; min-width: 0; }
+    .rec-name { font-weight: 700; color: #2c3e50; font-size: 0.95rem; margin-bottom: 0.3rem; }
+    .rec-text { color: #555; font-size: 0.93rem; line-height: 1.65; margin-bottom: 0.3rem; word-wrap: break-word; }
+    .rec-date { font-size: 0.78rem; color: #94a3b8; }
+    .rec-empty { text-align: center; padding: 2.5rem 1rem; color: #94a3b8; background: #f8fafc; border-radius: 12px; }
+    .rec-empty-icon { font-size: 2.5rem; display: block; margin-bottom: 0.5rem; }
+
+    body.dark-mode .rec-section-title  { color: #e5e7eb; }
+    body.dark-mode .rec-subtitle       { color: #9ca3af; }
+    body.dark-mode .rec-input,
+    body.dark-mode .rec-textarea       { background: rgba(15,23,42,0.8); border-color: #334155; color: #e5e7eb; }
+    body.dark-mode .rec-input:focus,
+    body.dark-mode .rec-textarea:focus { border-color: #9b59b6; }
+    body.dark-mode .rec-cards-header   { color: #e5e7eb; border-color: #334155; }
+    body.dark-mode .rec-card           { background: rgba(30,41,59,0.8); }
+    body.dark-mode .rec-name           { color: #e5e7eb; }
+    body.dark-mode .rec-text           { color: #9ca3af; }
+    body.dark-mode .rec-empty          { background: rgba(15,23,42,0.5); }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .survey-card {
+        padding: 20px !important;
+      }
+
+      .survey-section {
+        padding: 20px;
+      }
+
+      .rating-stars {
+        gap: 5px;
+      }
+
+      .rating-stars .star {
+        font-size: 2rem;
+      }
+
+      .survey-actions {
+        flex-direction: column;
+      }
+
+      .btn-survey {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Popup de selección de tema 
+  <div id="themePopup" class="theme-popup">
+    <div class="theme-popup-content">
+      <h2 data-translate="🎨 Selecciona tu tema preferido">🎨 Selecciona tu tema preferido</h2>
+      <p data-translate="Elige cómo quieres ver el sitio web">Elige cómo quieres ver el sitio web</p>
+      <div class="theme-buttons">
+        <button class="theme-btn theme-btn-light" id="btnLightMode" data-translate="☀️ Modo Claro">
+          ☀️ Modo Claro
+        </button>
+        <button class="theme-btn theme-btn-dark" id="btnDarkMode" data-translate="🌙 Modo Oscuro">
+          🌙 Modo Oscuro
+        </button>
+      </div>
+    </div>
+  </div> -->
+
+  <script>
+    // Script inline para modo claro/oscuro
+    (function () {
+      function hidePopup() {
+        document.getElementById('themePopup').classList.add('hidden');
+      }
+
+      function setLightMode() {
+        document.body.classList.remove('dark-mode');
+        localStorage.setItem('theme', 'light');
+        hidePopup();
+      }
+
+      function setDarkMode() {
+        document.body.classList.add('dark-mode');
+        localStorage.setItem('theme', 'dark');
+        hidePopup();
+      }
+
+      function checkTheme() {
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+          document.body.classList.add('dark-mode');
+          hidePopup();
+        } else if (savedTheme === 'light') {
+          hidePopup();
+        }
+      }
+
+      // Ejecutar inmediatamente
+      checkTheme();
+
+      document.addEventListener('DOMContentLoaded', function () {
+        const btnLight = document.getElementById('btnLightMode');
+        const btnDark = document.getElementById('btnDarkMode');
+
+        if (btnLight) {
+          btnLight.addEventListener('click', setLightMode);
+        }
+        if (btnDark) {
+          btnDark.addEventListener('click', setDarkMode);
+        }
+      });
+    })();
+  </script>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <div class="logo-area">
+        <img src="LOGO6.png" alt="Logo Escuela" class="logo-image">
+        <div class="logo-text">
+          <span class="logo-title" data-translate="Escuela Superior Vocacional">Escuela Superior Vocacional</span>
+          <span class="logo-subtitle">Pablo Colón Berdecia</span>
+        </div>
+      </div>
+
+      <!-- Hamburger Menu Button -->
+      <button class="hamburger-menu" id="hamburgerBtn" aria-label="Menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <button class="menu-toggle" aria-label="Toggle menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      <nav class="main-nav">
+        <ul>
+          <li><a href="index.html#inicio" data-translate="Inicio">Inicio</a></li>
+          <li><a href="index.html#servicios" data-translate="Servicios">Servicios</a></li>
+          <li><a href="index.html#contacto" data-translate="Contacto">Contacto</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Sidebar Menu -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+  <div class="sidebar-menu" id="sidebarMenu">
+    <div class="sidebar-header">
+      <h3 data-translate="Menú">Menú</h3>
+      <button class="sidebar-close" id="closeSidebar">&times;</button>
+    </div>
+    <div class="sidebar-content">
+      <!-- Navegación Principal -->
+      <a href="index.html" class="sidebar-item sidebar-link">
+        <span class="sidebar-icon">🏠</span>
+        <span class="sidebar-text" data-translate="Inicio">Inicio</span>
+        <span class="sidebar-arrow">›</span>
+      </a>
+
+      <a href="quienes-somos.html" class="sidebar-item sidebar-link">
+        <span class="sidebar-icon">🏫</span>
+        <span class="sidebar-text" data-translate="Quiénes Somos">Quiénes Somos</span>
+        <span class="sidebar-arrow">›</span>
+      </a>
+
+      <!-- Servicios Digitales (Expandible) -->
+      <div class="sidebar-item" id="servicesToggle">
+        <span class="sidebar-icon">💻</span>
+        <span class="sidebar-text" data-translate="Servicios Digitales">Servicios Digitales</span>
+        <span class="sidebar-arrow">›</span>
+      </div>
+      <div class="theme-options" id="servicesOptions" style="display: none;">
+        <a href="matricula.html" class="theme-option">
+          <span>📝</span> Matrícula Online
+        </a>
+        <a href="solicitudes.html" class="theme-option">
+          <span>📄</span> Solicitud de Documentos
+        </a>
+        <a href="https://pcbsystempr-cyber.github.io/Servicio-Tecnico/" class="theme-option">
+          <span>🔧</span> Servicios Técnicos
+        </a>
+        <a href="orientacion.html" class="theme-option">
+          <span>🧠</span> Orientación
+        </a>
+        <a href="biblioteca.html" class="theme-option">
+          <span>📚</span> Biblioteca
+        </a>
+        <a href="comedor.html" class="theme-option">
+          <span>🍽️</span> Comedor
+        </a>
+        <a href="padres.html" class="theme-option">
+          <span>👨‍👩‍👧</span> Portal de Padres
+        </a>
+        <a href="seguridad.html" class="theme-option">
+          <span>🛡️</span> Seguridad
+        </a>
+
+      </div>
+
+      <a href="participacion-comunitaria.html" class="sidebar-item sidebar-link">
+        <span class="sidebar-icon">🎓</span>
+        <span class="sidebar-text" data-translate="Vida Estudiantil">Vida Estudiantil</span>
+        <span class="sidebar-arrow">›</span>
+      </a>
+
+      <a href="normas-reglamentos.html" class="sidebar-item sidebar-link">
+        <span class="sidebar-icon">📋</span>
+        <span class="sidebar-text" data-translate="Normas">Normas</span>
+        <span class="sidebar-arrow">›</span>
+      </a>
+
+      <!-- Separador -->
+      <div style="border-top: 1px solid rgba(255,255,255,0.1); margin: 1rem 0;"></div>
+
+      <!-- Cambiar Tema -->
+      <div class="sidebar-item" id="themeToggle">
+        <span class="sidebar-icon">🎨</span>
+        <span class="sidebar-text" data-translate="Cambiar Tema">Cambiar Tema</span>
+        <span class="sidebar-arrow">›</span>
+      </div>
+      <div class="theme-options" id="themeOptions" style="display: none;">
+        <button class="theme-option" id="selectLightTheme" data-translate="Modo Claro">
+          <span>☀️</span> Modo Claro
+        </button>
+        <button class="theme-option" id="selectDarkTheme" data-translate="Modo Oscuro">
+          <span>🌙</span> Modo Oscuro
+        </button>
+      </div>
+
+      <!-- Cambiar Idioma -->
+      <div class="sidebar-item" id="languageToggle">
+        <span class="sidebar-icon">🌐</span>
+        <span class="sidebar-text" data-translate="Cambiar Idioma">Cambiar Idioma</span>
+        <span class="sidebar-arrow">›</span>
+      </div>
+      <div class="theme-options" id="languageOptions" style="display: none;">
+        <button class="theme-option" id="selectSpanish" data-translate="Español">
+          <span>🇵🇷</span> Español
+        </button>
+        <button class="theme-option" id="selectEnglish" data-translate="English">
+          <span>🇺🇸</span> English
+        </button>
+      </div>
+
+      <!-- Separador -->
+      <div style="border-top: 1px solid rgba(255,255,255,0.1); margin: 1rem 0;"></div>
+
+      <!-- Dashboard Administrativo -->
+      <a href="admin.html" class="sidebar-item sidebar-link">
+        <span class="sidebar-icon">⚙️</span>
+        <span class="sidebar-text" data-translate="Dashboard Admin">Dashboard Admin</span>
+        <span class="sidebar-arrow">›</span>
+      </a>
+    </div>
+  </div>
+
+  <script>
+    // Hamburger menu functionality
+    (function () {
+      const hamburgerBtn = document.getElementById('hamburgerBtn');
+      const sidebarMenu = document.getElementById('sidebarMenu');
+      const sidebarOverlay = document.getElementById('sidebarOverlay');
+      const themeToggle = document.getElementById('themeToggle');
+      const themeOptions = document.getElementById('themeOptions');
+      const languageToggle = document.getElementById('languageToggle');
+      const languageOptions = document.getElementById('languageOptions');
+      const selectLightTheme = document.getElementById('selectLightTheme');
+      const selectDarkTheme = document.getElementById('selectDarkTheme');
+      const selectSpanish = document.getElementById('selectSpanish');
+      const selectEnglish = document.getElementById('selectEnglish');
+
+      function openSidebarMenu() {
+        sidebarMenu.classList.add('active');
+        sidebarOverlay.classList.add('active');
+      }
+
+      function closeSidebarMenu() {
+        sidebarMenu.classList.remove('active');
+        sidebarOverlay.classList.remove('active');
+        themeOptions.classList.remove('active');
+        languageOptions.classList.remove('active');
+      }
+
+      if (hamburgerBtn) {
+        hamburgerBtn.addEventListener('click', openSidebarMenu);
+      }
+
+      if (sidebarOverlay) {
+        sidebarOverlay.addEventListener('click', closeSidebarMenu);
+      }
+
+      // Theme toggle
+      if (themeToggle) {
+        themeToggle.addEventListener('click', function () {
+          themeOptions.classList.toggle('active');
+          languageOptions.classList.remove('active');
+        });
+      }
+
+      // Language toggle
+      if (languageToggle) {
+        languageToggle.addEventListener('click', function () {
+          languageOptions.classList.toggle('active');
+          themeOptions.classList.remove('active');
+        });
+      }
+
+      // Select Light Theme
+      if (selectLightTheme) {
+        selectLightTheme.addEventListener('click', function () {
+          document.body.classList.remove('dark-mode');
+          localStorage.setItem('theme', 'light');
+          closeSidebarMenu();
+        });
+      }
+
+      // Select Dark Theme
+      if (selectDarkTheme) {
+        selectDarkTheme.addEventListener('click', function () {
+          document.body.classList.add('dark-mode');
+          localStorage.setItem('theme', 'dark');
+          closeSidebarMenu();
+        });
+      }
+
+      // Seleccionar idioma español
+      if (selectSpanish) {
+        selectSpanish.addEventListener('click', function () {
+          localStorage.setItem('language', 'es');
+          const htmlRoot = document.getElementById('htmlRoot');
+          if (htmlRoot) htmlRoot.setAttribute('lang', 'es');
+          if (typeof translatePage === 'function') {
+            translatePage('es');
+          }
+          closeSidebarMenu();
+        });
+      }
+
+      // Seleccionar idioma inglés
+      if (selectEnglish) {
+        selectEnglish.addEventListener('click', function () {
+          localStorage.setItem('language', 'en');
+          const htmlRoot = document.getElementById('htmlRoot');
+          if (htmlRoot) htmlRoot.setAttribute('lang', 'en');
+          if (typeof translatePage === 'function') {
+            translatePage('en');
+          }
+          closeSidebarMenu();
+        });
+      }
+    })();
+  </script>
+
+  <!-- Popup de selección de tema -->
+  <div id="themePopup" class="theme-popup">
+    <div class="theme-popup-content">
+      <h2 data-translate="🎨 Selecciona tu tema preferido">🎨 Selecciona tu tema preferido</h2>
+      <p data-translate="Elige cómo quieres ver el sitio web">Elige cómo quieres ver el sitio web</p>
+      <div class="theme-buttons">
+        <button class="theme-btn theme-btn-light" id="btnLightMode" data-translate="☀️ Modo Claro">
+          ☀️ Modo Claro
+        </button>
+        <button class="theme-btn theme-btn-dark" id="btnDarkMode" data-translate="🌙 Modo Oscuro">
+          🌙 Modo Oscuro
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Script inline para modo claro/oscuro
+    (function () {
+      function hidePopup() {
+        document.getElementById('themePopup').classList.add('hidden');
+      }
+
+      function setLightMode() {
+        document.body.classList.remove('dark-mode');
+        localStorage.setItem('theme', 'light');
+        hidePopup();
+      }
+
+      function setDarkMode() {
+        document.body.classList.add('dark-mode');
+        localStorage.setItem('theme', 'dark');
+        hidePopup();
+      }
+
+      function checkTheme() {
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+          document.body.classList.add('dark-mode');
+          hidePopup();
+        } else if (savedTheme === 'light') {
+          hidePopup();
+        }
+      }
+
+      // Ejecutar inmediatamente
+      checkTheme();
+
+      // Agregar event listeners cuando el DOM esté listo
+      document.addEventListener('DOMContentLoaded', function () {
+        const btnLight = document.getElementById('btnLightMode');
+        const btnDark = document.getElementById('btnDarkMode');
+
+        if (btnLight) {
+          btnLight.addEventListener('click', setLightMode);
+        }
+        if (btnDark) {
+          btnDark.addEventListener('click', setDarkMode);
+        }
+      });
+    })();
+  </script>
+
+
+
+  <!-- Hero -->
+  <section class="hero" style="min-height: 350px; padding: 4rem 0;">
+    <div class="container">
+      <div class="section-header" style="margin-bottom: 0;">
+        <div style="font-size: 5rem; margin-bottom: 1rem;">🍽️</div>
+        <h1 style="color: #ffffff; font-size: 3rem; text-shadow: 0 2px 20px rgba(0,0,0,0.5);"
+          data-translate="Comedor Escolar">Comedor Escolar</h1>
+        <p style="color: rgba(255,255,255,0.95); font-size: 1.2rem; max-width: 800px; margin: 1rem auto;"
+          data-translate="Servicio de alimentación escolar para nuestros estudiantes">
+          Servicio de alimentación escolar para nuestros estudiantes
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contenido principal -->
+  <section class="section">
+    <div class="container">
+      <div class="grid-2">
+        <!-- Información general -->
+        <article class="card">
+          <div class="card-icon">🥘</div>
+          <h3 data-translate="Acerca del Comedor">Acerca del Comedor</h3>
+          <p
+            data-translate="El comedor escolar ofrece servicios de alimentación de acuerdo al programa de comedores escolares del Departamento de Educación de Puerto Rico.">
+            El comedor escolar ofrece servicios de alimentación de acuerdo al programa de
+            comedores escolares del Departamento de Educación de Puerto Rico.
+          </p>
+          <p
+            data-translate="Proporcionamos comidas nutritivas y balanceadas que contribuyen al bienestar y desarrollo de nuestros estudiantes durante la jornada escolar.">
+            Proporcionamos comidas nutritivas y balanceadas que contribuyen al bienestar
+            y desarrollo de nuestros estudiantes durante la jornada escolar.
+          </p>
+        </article>
+
+        <!-- Horario -->
+        <article class="card">
+          <div class="card-icon">🕐</div>
+          <h3 data-translate="Horario de Servicio">Horario de Servicio</h3>
+          <p><strong data-translate="Horario de almuerzo:">Horario de almuerzo:</strong></p>
+          <p style="font-size: 1.3rem; color: var(--primary-light); margin: 1rem 0;"
+            data-translate="9no y 10mo 11:00AM a 11:50AM y 11mo 12mo de 11:50AM a 12:50PM">9no y 10mo 11:00AM a 11:50AM
+            y 11mo 12mo de 11:50AM a 12:50PM</p>
+          <p><strong data-translate="Ubicación:">Ubicación:</strong> <span data-translate="Área de comedor escolar">Área
+              de comedor escolar</span></p>
+          <p class="note" data-translate="El horario puede variar según el nivel y grupo">
+            El horario puede variar según el nivel y grupo
+          </p>
+        </article>
+
+        <!-- Menú y nutrición -->
+        <article class="card">
+          <div class="card-icon">🍎</div>
+          <h3 data-translate="Menú del día">Menú del día</h3>
+
+          <div id="menuDelDia">
+            <!-- El menú se cargará dinámicamente -->
+          </div>
+
+          <p class="note" style="margin-top: 1rem;"
+            data-translate="El menú puede variar según disponibilidad y programación del Departamento de Educación">
+            El menú puede variar según disponibilidad y programación del Departamento de Educación
+          </p>
+
+          <!-- Botones de Acción -->
+          <div style="display: flex; gap: 10px; margin-top: 15px; justify-content: center;">
+            <button class="btn btn-secondary"
+              onclick="alert('📊 Información Nutricional:\n\nBalanceado según estándares del USDA.\nBajo en sodio y grasas saturadas.\n\n⚠️ Alergenos comunes: Leche, Trigo, Soya.')">
+              <i class="fas fa-info-circle"></i> Info Nutricional
+            </button>
+            <button class="btn btn-primary"
+              onclick="document.getElementById('recomendacionesSection').scrollIntoView({behavior:'smooth'})">
+              <i class="fas fa-comment-dots"></i> Recomendar
+            </button>
+          </div>
+
+          <p style="margin-top: 0.5rem; text-align: center;">
+            <a href="admin.html" style="color: #667eea; text-decoration: none;">✏️ Editar menú desde el panel
+              administrativo</a>
+          </p>
+        </article>
+
+        <!-- Sección de Recomendaciones -->
+        <article class="card" id="recomendacionesSection" style="margin-top: 2rem;">
+          <div style="text-align: center; margin-bottom: 1.5rem;">
+            <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">💬</div>
+            <h3 style="margin: 0; font-size: 1.5rem; color: var(--primary, #1e293b);">Recomendaciones</h3>
+            <p style="color: #64748b; margin-top: 0.4rem;">Comparte tus sugerencias para mejorar el comedor escolar</p>
+          </div>
+
+          <form id="recomendacionesForm" style="display: flex; flex-direction: column; gap: 1rem; max-width: 600px; margin: 0 auto 2rem;">
+            <div style="display: flex; flex-direction: column; gap: 0.3rem;">
+              <label for="recNombre" style="font-weight: 600; color: var(--primary, #1e293b); font-size: 0.9rem;">
+                <i class="fas fa-user"></i> Tu Nombre
+              </label>
+              <input type="text" id="recNombre" placeholder="Escribe tu nombre..." required
+                style="padding: 0.7rem 1rem; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 0.95rem; outline: none; transition: border-color 0.2s;"
+                onfocus="this.style.borderColor='#667eea'" onblur="this.style.borderColor='#e2e8f0'">
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 0.3rem;">
+              <label for="recTexto" style="font-weight: 600; color: var(--primary, #1e293b); font-size: 0.9rem;">
+                <i class="fas fa-comment-dots"></i> Tu Recomendación
+              </label>
+              <textarea id="recTexto" rows="4" placeholder="¿Qué podemos mejorar? Cuéntanos tu experiencia..." required
+                style="padding: 0.7rem 1rem; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 0.95rem; outline: none; resize: vertical; transition: border-color 0.2s; font-family: inherit;"
+                onfocus="this.style.borderColor='#667eea'" onblur="this.style.borderColor='#e2e8f0'"></textarea>
+            </div>
+            <button type="submit"
+              style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; padding: 0.8rem 1.5rem; border-radius: 10px; font-size: 1rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.5rem; transition: opacity 0.2s; align-self: flex-start;"
+              onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">
+              <i class="fas fa-paper-plane"></i> Enviar Recomendación
+            </button>
+          </form>
+
+          <div id="recomendacionesLista" style="display: flex; flex-direction: column; gap: 1rem; max-width: 600px; margin: 0 auto;">
+            <!-- Las tarjetas se renderizan aquí con JS -->
+          </div>
+        </article>
+
+        <script>
+
+          // ── Recomendaciones ──────────────────────────────────────────────
+          (function () {
+            const STORAGE_KEY = 'comedor_recomendaciones';
+            const form = document.getElementById('recomendacionesForm');
+            const lista = document.getElementById('recomendacionesLista');
+
+            function getRecomendaciones() {
+              return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+            }
+
+            function saveRecomendaciones(data) {
+              localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+            }
+
+            function formatDate(iso) {
+              const d = new Date(iso);
+              return d.toLocaleDateString('es-PR', { year: 'numeric', month: 'long', day: 'numeric' });
+            }
+
+            function renderRecomendaciones() {
+              const recs = getRecomendaciones();
+              if (recs.length === 0) {
+                lista.innerHTML = `
+                  <div style="text-align:center; color:#94a3b8; padding:2rem 1rem;">
+                    <i class="fas fa-comment-slash" style="font-size:2rem; margin-bottom:0.5rem; display:block;"></i>
+                    Aún no hay recomendaciones. ¡Sé el primero en compartir la tuya!
+                  </div>`;
+                return;
+              }
+              lista.innerHTML = recs.map((r, i) => `
+                <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 14px; padding: 1.2rem 1.4rem; position: relative; box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
+                  <div style="display: flex; align-items: center; gap: 0.7rem; margin-bottom: 0.6rem;">
+                    <div style="width:38px; height:38px; border-radius:50%; background: linear-gradient(135deg,#667eea,#764ba2); display:flex; align-items:center; justify-content:center; color:white; font-weight:700; font-size:1rem; flex-shrink:0;">
+                      ${r.nombre.charAt(0).toUpperCase()}
+                    </div>
+                    <div>
+                      <div style="font-weight:700; color:#1e293b; font-size:0.95rem;">${r.nombre}</div>
+                      <div style="font-size:0.78rem; color:#94a3b8;">${formatDate(r.fecha)}</div>
+                    </div>
+                  </div>
+                  <p style="margin:0; color:#475569; line-height:1.6; font-size:0.93rem;">${r.texto}</p>
+                </div>
+              `).join('');
+            }
+
+            form.addEventListener('submit', function (e) {
+              e.preventDefault();
+              const nombre = document.getElementById('recNombre').value.trim();
+              const texto = document.getElementById('recTexto').value.trim();
+              if (!nombre || !texto) return;
+              const recs = getRecomendaciones();
+              recs.unshift({ nombre, texto, fecha: new Date().toISOString() });
+              saveRecomendaciones(recs);
+              form.reset();
+              renderRecomendaciones();
+              lista.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+
+            renderRecomendaciones();
+          })();
+
+          // Cargar menú del día desde JSON o localStorage
+          (function () {
+            const menuContainer = document.getElementById('menuDelDia');
+
+            function renderMenu(menuData) {
+              let menuImageHTML = '';
+              if (menuData.menuImage && menuData.menuImage.src) {
+                menuImageHTML = `
+                   <div class="menu-image-container" style="text-align: center; margin-bottom: 2rem;">
+                      <div class="promotion-item menu-highlight" style="display: inline-block; max-width: 100%; cursor: pointer;" onclick="window.openMenuImage('${menuData.menuImage.src}')">
+                        <div style="position: relative; border-radius: 15px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.2); border: 2px solid var(--accent, #f2c94c);">
+                            <div style="position: absolute; top: 15px; left: -5px; background: var(--accent, #f2c94c); color: #1a1a2e; padding: 5px 15px; font-weight: bold; transform: rotate(-2deg); z-index: 10; box-shadow: 2px 2px 5px rgba(0,0,0,0.3);">
+                                ⭐ Menú del Día
+                            </div>
+                            <img src="${menuData.menuImage.src}" alt="Menú del Día" style="display: block; max-width: 100%; height: auto; max-height: 600px; transition: transform 0.3s;">
+                            <div style="position: absolute; bottom: 10px; right: 10px; background: rgba(0,0,0,0.6); color: white; padding: 5px 10px; border-radius: 20px; font-size: 0.8rem; backdrop-filter: blur(4px);">
+                                <i class="fas fa-expand-arrows-alt"></i> Ampliar
+                            </div>
+                        </div>
+                      </div>
+                   </div>
+                 `;
+              }
+
+              menuContainer.innerHTML = menuImageHTML + `
+                <div style="margin-bottom: 1.5rem;">
+                  <h4 style="color: var(--primary); margin-bottom: 0.8rem; font-size: 1.1rem;" data-translate="🌅 Desayuno">🌅 Desayuno</h4>
+                  <ul>
+                    ${menuData.desayuno.map(item => `<li>${item}</li>`).join('')}
+                  </ul>
+                </div>
+
+                <div>
+                  <h4 style="color: var(--primary); margin-bottom: 0.8rem; font-size: 1.1rem;" data-translate="🍽️ Almuerzo">🍽️ Almuerzo</h4>
+                  <ul>
+                    ${menuData.almuerzo.map(item => `<li>${item}</li>`).join('')}
+                  </ul>
+                </div>
+              `;
+
+              // Smart Auto-popup Logic
+              // "Solo una vez hasta que se le de refresh"
+              const hasSeen = sessionStorage.getItem('pcb_menu_popup_seen');
+              const isReload = window.performance &&
+                window.performance.getEntriesByType &&
+                window.performance.getEntriesByType("navigation")[0] &&
+                window.performance.getEntriesByType("navigation")[0].type === 'reload';
+
+              // Open if it's a reload OR if we haven't seen it yet
+              if (menuData.menuImage && menuData.menuImage.src && (isReload || !hasSeen)) {
+                setTimeout(() => {
+                  if (window.openMenuImage) {
+                    window.openMenuImage(menuData.menuImage.src);
+                    // Mark as seen
+                    sessionStorage.setItem('pcb_menu_popup_seen', 'true');
+                  }
+                }, 1000); // 1 second delay for better UX
+              }
+            }
+
+            // Global function to open menu image
+            window.openMenuImage = function (src) {
+              if (window.imagePopup) {
+                window.imagePopup.open({
+                  src: src,
+                  title: 'Menú del Día',
+                  description: 'Plato especial seleccionado para hoy'
+                }, [{ src: src, title: 'Menú del Día' }], 0);
+              } else {
+                window.open(src, '_blank');
+              }
+            };
+
+            // Priority: localStorage > JSON file
+            const localData = localStorage.getItem('pcb_content_data');
+            let contentData = localData ? JSON.parse(localData) : {};
+
+            // Check if we have menu data in localStorage
+            if (contentData && contentData.menu_comedor) {
+              console.log('🍽️ Cargando menú desde localStorage (prioridad)');
+              renderMenu(contentData.menu_comedor);
+            } else {
+              // Try to load from JSON file
+              console.log('📂 Intentando cargar menú desde JSON...');
+              fetch('data/content-data.json')
+                .then(response => response.json())
+                .then(data => {
+                  console.log('✅ Menú cargado desde JSON');
+                  renderMenu(data.menu_comedor || {
+                    desayuno: ['Revoltillo', 'Peras Frescas', 'Melocotones', 'Leche'],
+                    almuerzo: ['Arroz', 'Habichuelas guisadas con calabaza', 'Carne de Cerdo', 'Zanahoria', 'Manzana', 'Coctel de fruta']
+                  });
+                })
+                .catch(error => {
+                  console.log('⚠️ Error cargando JSON, usando valores por defecto');
+                  renderMenu({
+                    desayuno: ['Revoltillo', 'Peras Frescas', 'Melocotones', 'Leche'],
+                    almuerzo: ['Arroz', 'Habichuelas guisadas con calabaza', 'Carne de Cerdo', 'Zanahoria', 'Manzana', 'Coctel de fruta']
+                  });
+                });
+            }
+          })();
+        </script>
+          <!-- ===== CONTEO DE ALMUERZO – MAESTROS ===== -->
+        <article class="card" style="border-left:4px solid #9b59b6;background:linear-gradient(135deg,#faf5ff,#f3e8ff);">
+          <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem;">
+            <div style="font-size:2.8rem;">📊</div>
+            <div>
+              <h3 style="margin:0 0 0.3rem;color:#7c3aed;font-size:1.3rem;">Conteo de Almuerzo</h3>
+              <p style="margin:0;color:#6b7280;font-size:0.92rem;">Exclusivo para maestros · Registro diario</p>
+            </div>
+          </div>
+          <p style="color:#374151;font-size:0.95rem;margin-bottom:1.25rem;">
+            Maestros: registren aquí cuántos estudiantes almorzarán hoy. La información se consolida y se envía automáticamente al comedor a la hora programada.
+          </p>
+          <a href="conteo-almuerzo.html"
+            style="display:inline-flex;align-items:center;gap:0.5rem;background:linear-gradient(135deg,#9b59b6,#8e44ad);color:white;padding:0.8rem 1.6rem;border-radius:50px;font-weight:700;font-size:0.97rem;text-decoration:none;transition:all 0.25s;box-shadow:0 4px 15px rgba(155,89,182,0.3);"
+            onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 6px 20px rgba(155,89,182,0.45)'"
+            onmouseout="this.style.transform='';this.style.boxShadow='0 4px 15px rgba(155,89,182,0.3)'">
+            <i class="fas fa-clipboard-list"></i> Acceder al Conteo
+          </a>
+        </article>
+
+      <!-- Normas del comedor -->
+        <article class="card">
+          <div class="card-icon">📋</div>
+          <h3 data-translate="Normas del Comedor">Normas del Comedor</h3>
+          <ul>
+            <li data-translate="Mantener orden y respeto en todo momento">Mantener orden y respeto en todo momento</li>
+            <li data-translate="Hacer fila de manera organizada">Hacer fila de manera organizada</li>
+            <li data-translate="Consumir alimentos en el área designada">Consumir alimentos en el área designada</li>
+            <li data-translate="Depositar desperdicios en los recipientes apropiados">Depositar desperdicios en los
+              recipientes apropiados</li>
+            <li data-translate="Mantener limpieza en mesas y área de comedor">Mantener limpieza en mesas y área de
+              comedor</li>
+            <li data-translate="Respetar al personal del comedor">Respetar al personal del comedor</li>
+            <li data-translate="No desperdiciar alimentos">No desperdiciar alimentos</li>
+            <li data-translate="Seguir las instrucciones del personal a cargo">Seguir las instrucciones del personal a
+              cargo</li>
+          </ul>
+          <p class="note"
+            data-translate="El estudiantado debe seguir las normas establecidas por el personal del comedor">
+            El estudiantado debe seguir las normas establecidas por el personal del comedor
+          </p>
+        </article>
+      </div>
+
+      <!-- Información adicional -->
+      <div class="card" style="margin-top: 2rem;">
+        <h3 data-translate="Programa de Comedores Escolares">Programa de Comedores Escolares</h3>
+        <p
+          data-translate="El Programa de Comedores Escolares del Departamento de Educación tiene como objetivo garantizar que todos los estudiantes tengan acceso a alimentos nutritivos durante la jornada escolar, contribuyendo así a su rendimiento académico y desarrollo integral.">
+          El Programa de Comedores Escolares del Departamento de Educación tiene como objetivo
+          garantizar que todos los estudiantes tengan acceso a alimentos nutritivos durante
+          la jornada escolar, contribuyendo así a su rendimiento académico y desarrollo integral.
+        </p>
+      </div>
+
+  </section>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <p data-translate="">&copy;
+        <script>document.write(new Date().getFullYear());</script> Escuela Superior Vocacional Pablo Colón Berdecia. Todos los derechos reservados.</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+  <script src="image-popup.js"></script>
+  <!-- <script src="notification-bot.js"></script> -->
+</body>
+
+</html>
