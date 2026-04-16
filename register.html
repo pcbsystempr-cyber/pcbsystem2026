@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro - Escuela Superior Vocacional Pablo Colon Berdecia</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            min-height: 100vh;
+            color: #1e293b;
+            line-height: 1.6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .register-container {
+            background: white;
+            border-radius: 16px;
+            padding: 3rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            width: 100%;
+            max-width: 450px;
+            text-align: center;
+        }
+
+        .school-name {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #2c5282;
+            margin-bottom: 0.5rem;
+        }
+
+        .department-name {
+            font-size: 1.1rem;
+            color: #6b7280;
+            margin-bottom: 2rem;
+        }
+
+        .register-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: #2c5282;
+            margin-bottom: 2rem;
+        }
+
+        .role-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .role-btn {
+            flex: 1;
+            padding: 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            background: white;
+            color: #374151;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .role-btn.active {
+            border-color: #1d4ed8;
+            background: #eff6ff;
+            color: #1d4ed8;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #374151;
+        }
+
+        .register-input {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .register-input:focus {
+            outline: none;
+            border-color: #1d4ed8;
+        }
+
+        .password-container {
+            position: relative;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #6b7280;
+            font-size: 1.2rem;
+        }
+
+        .toggle-password:hover {
+            color: #1d4ed8;
+        }
+
+        .register-btn {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: transform 0.3s ease;
+        }
+
+        .register-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .register-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .register-error {
+            color: #ef4444;
+            margin-top: 1rem;
+            display: none;
+        }
+
+        .register-success {
+            color: #10b981;
+            margin-top: 1rem;
+            display: none;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 2rem;
+            color: #6b7280;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .back-link:hover {
+            color: #1d4ed8;
+        }
+
+        .login-link {
+            display: block;
+            margin-top: 1rem;
+            color: #1d4ed8;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .login-link:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 480px) {
+            .register-container {
+                padding: 2rem 1.5rem;
+                margin: 1rem;
+            }
+
+            .school-name {
+                font-size: 1.5rem;
+            }
+
+            .department-name {
+                font-size: 1rem;
+            }
+
+            .register-title {
+                font-size: 1.5rem;
+            }
+
+            .role-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="register-container">
+        <div class="school-name">Escuela Superior Vocacional Pablo Colon Berdecia</div>
+        <div class="department-name">Departamento de Tecnología - COMPUTEC</div>
+
+        <h2 class="register-title">Crear Cuenta</h2>
+
+        <div class="role-buttons">
+            <button class="role-btn active" id="adminBtn">Administrador</button>
+            <button class="role-btn" id="techBtn">Técnico</button>
+        </div>
+
+        <form id="registerForm">
+            <div class="form-group">
+                <label for="fullName">Nombre Completo</label>
+                <input type="text" id="fullName" class="register-input" placeholder="Ingrese su nombre completo" required>
+            </div>
+
+            <div class="form-group">
+                <label for="username">Nombre de Usuario</label>
+                <input type="text" id="username" class="register-input" placeholder="Elija un nombre de usuario" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Contraseña</label>
+                <div class="password-container">
+                    <input type="password" id="password" class="register-input" placeholder="Cree una contraseña" required minlength="6">
+                    <button type="button" class="toggle-password" id="togglePassword">👁️</button>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="confirmPassword">Confirmar Contraseña</label>
+                <input type="password" id="confirmPassword" class="register-input" placeholder="Confirme su contraseña" required>
+            </div>
+
+            <button type="submit" class="register-btn" id="registerBtn">Crear Cuenta</button>
+        </form>
+
+        <div class="register-error" id="registerError">Error en el registro. Verifique los datos.</div>
+        <div class="register-success" id="registerSuccess">Cuenta creada exitosamente. Redirigiendo...</div>
+
+        <a href="login.html" class="login-link">¿Ya tienes cuenta? Inicia sesión aquí</a>
+
+        <a href="index.html" class="back-link">← Volver al inicio</a>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            let registerType = 'admin';
+            const adminBtn = document.getElementById('adminBtn');
+            const techBtn = document.getElementById('techBtn');
+            const registerForm = document.getElementById('registerForm');
+            const registerBtn = document.getElementById('registerBtn');
+            const registerError = document.getElementById('registerError');
+            const registerSuccess = document.getElementById('registerSuccess');
+            const togglePasswordBtn = document.getElementById('togglePassword');
+            const passwordInput = document.getElementById('password');
+            const confirmPasswordInput = document.getElementById('confirmPassword');
+
+            // Role selection
+            adminBtn.addEventListener('click', function() {
+                registerType = 'admin';
+                this.classList.add('active');
+                techBtn.classList.remove('active');
+            });
+
+            techBtn.addEventListener('click', function() {
+                registerType = 'technician';
+                this.classList.add('active');
+                adminBtn.classList.remove('active');
+            });
+
+            // Password visibility toggle
+            togglePasswordBtn.addEventListener('click', function() {
+                if (passwordInput.type === 'password') {
+                    passwordInput.type = 'text';
+                    confirmPasswordInput.type = 'text';
+                    togglePasswordBtn.textContent = '🙈';
+                } else {
+                    passwordInput.type = 'password';
+                    confirmPasswordInput.type = 'password';
+                    togglePasswordBtn.textContent = '👁️';
+                }
+            });
+
+            // Password confirmation validation
+            confirmPasswordInput.addEventListener('input', function() {
+                if (this.value !== passwordInput.value) {
+                    this.setCustomValidity('Las contraseñas no coinciden');
+                } else {
+                    this.setCustomValidity('');
+                }
+            });
+
+            // Handle register submission
+            registerForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                const fullName = document.getElementById('fullName').value;
+                const username = document.getElementById('username').value;
+                const password = document.getElementById('password').value;
+                const confirmPassword = document.getElementById('confirmPassword').value;
+
+                // Validate passwords match
+                if (password !== confirmPassword) {
+                    registerError.textContent = 'Las contraseñas no coinciden';
+                    registerError.style.display = 'block';
+                    registerSuccess.style.display = 'none';
+                    return;
+                }
+
+                // Validate password length
+                if (password.length < 6) {
+                    registerError.textContent = 'La contraseña debe tener al menos 6 caracteres';
+                    registerError.style.display = 'block';
+                    registerSuccess.style.display = 'none';
+                    return;
+                }
+
+                // Disable button and show loading
+                registerBtn.disabled = true;
+                registerBtn.textContent = 'Creando cuenta...';
+
+                // Get existing users
+                const existingUsers = JSON.parse(localStorage.getItem('registered_users') || '[]');
+
+                // Check if username already exists
+                const userExists = existingUsers.some(user => user.username === username);
+                if (userExists) {
+                    registerError.textContent = 'El nombre de usuario ya está en uso';
+                    registerError.style.display = 'block';
+                    registerSuccess.style.display = 'none';
+                    registerBtn.disabled = false;
+                    registerBtn.textContent = 'Crear Cuenta';
+                    return;
+                }
+
+                // Create new user
+                const newUser = {
+                    fullName: fullName,
+                    username: username,
+                    password: password, // In production, this should be hashed
+                    role: registerType,
+                    createdAt: new Date().toISOString()
+                };
+
+                // Add to users array
+                existingUsers.push(newUser);
+                localStorage.setItem('registered_users', JSON.stringify(existingUsers));
+
+                // Show success and redirect
+                setTimeout(() => {
+                    registerError.style.display = 'none';
+                    registerSuccess.style.display = 'block';
+                    registerBtn.textContent = 'Cuenta Creada';
+
+                    // Redirect to login after 2 seconds
+                    setTimeout(() => {
+                        window.location.href = 'login.html';
+                    }, 2000);
+                }, 1000);
+            });
+        });
+    </script>
+</body>
+</html>

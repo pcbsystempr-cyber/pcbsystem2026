@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calificación enviada</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{
+      font-family:'Inter',sans-serif;
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:linear-gradient(135deg,#f8fafc 0%,#e2e8f0 100%);
+      padding:1.5rem;
+    }
+    .card{
+      width:100%;
+      max-width:700px;
+      background:white;
+      border-radius:18px;
+      box-shadow:0 20px 50px rgba(0,0,0,.12);
+      padding:3rem 2rem;
+      text-align:center;
+    }
+    .icon{font-size:4rem;margin-bottom:1rem}
+    h1{color:#166534;font-size:2rem;margin-bottom:1rem}
+    p{color:#475569;font-size:1.05rem;margin-bottom:2rem}
+    .buttons{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:1rem;
+    }
+    .btn{
+      text-decoration:none;
+      padding:1rem 1.25rem;
+      border-radius:12px;
+      font-weight:700;
+      transition:.25s ease;
+      display:inline-block;
+      color:white;
+      border:none;
+      cursor:pointer;
+      font-family:inherit;
+      font-size:1rem;
+    }
+    .btn-primary{background:linear-gradient(135deg,#1d4ed8 0%,#2563eb 100%)}
+    .btn-secondary{background:linear-gradient(135deg,#0f766e 0%,#0d9488 100%)}
+    @media (max-width:640px){
+      .buttons{grid-template-columns:1fr}
+      .card{padding:2.25rem 1.25rem}
+      h1{font-size:1.65rem}
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="icon">✅</div>
+    <h1>¡Calificación enviada exitosamente!</h1>
+    <p>La evaluación del servicio fue guardada correctamente en el sistema.</p>
+    <div class="buttons">
+      <a class="btn btn-primary" href="calificar.html">Enviar otra calificación</a>
+      <button class="btn btn-secondary" id="downloadPdfBtn">Descargar PDF de servicio</button>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById("downloadPdfBtn").addEventListener("click", () => {
+      const pdfData = localStorage.getItem("ultimo_pdf_servicio");
+      const fileName = localStorage.getItem("ultimo_pdf_nombre") || "servicio.pdf";
+
+      if (!pdfData) {
+        alert("No se encontró el PDF del servicio para descargar.");
+        return;
+      }
+
+      const link = document.createElement("a");
+      link.href = pdfData;
+      link.download = fileName;
+      link.click();
+    });
+  </script>
+</body>
+</html>

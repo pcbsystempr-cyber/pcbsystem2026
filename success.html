@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Solicitud enviada</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+      padding: 1.5rem;
+      color: #1e293b;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 700px;
+      background: white;
+      border-radius: 18px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.12);
+      padding: 3rem 2rem;
+      text-align: center;
+    }
+
+    .icon {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+    }
+
+    h1 {
+      color: #166534;
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    p {
+      color: #475569;
+      font-size: 1.05rem;
+      margin-bottom: 2rem;
+    }
+
+    .code-box {
+      background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+      border: 2px dashed #d97706;
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin: 1.5rem 0;
+    }
+
+    .code-label {
+      font-size: 0.9rem;
+      color: #92400e;
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+    }
+
+    .code-value {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: #b45309;
+      letter-spacing: 4px;
+      font-family: monospace;
+    }
+
+    .code-hint {
+      font-size: 0.85rem;
+      color: #92400e;
+      margin-top: 0.75rem;
+      opacity: 0.8;
+    }
+
+    .tracking-section {
+      background: #f0fdf4;
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin: 1.5rem 0;
+      border: 2px solid #86efac;
+    }
+
+    .tracking-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #166534;
+      margin-bottom: 1rem;
+    }
+
+    .tracking-form {
+      display: flex;
+      gap: 0.75rem;
+      justify-content: center;
+    }
+
+    .tracking-input {
+      flex: 1;
+      max-width: 200px;
+      padding: 0.75rem 1rem;
+      border: 2px solid #cbd5e1;
+      border-radius: 8px;
+      font-size: 1rem;
+      text-transform: uppercase;
+      text-align: center;
+      letter-spacing: 2px;
+      font-weight: 600;
+    }
+
+    .tracking-input:focus {
+      outline: none;
+      border-color: #22c55e;
+    }
+
+    .tracking-btn {
+      background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+      color: white;
+      padding: 0.75rem 1.25rem;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .tracking-result {
+      margin-top: 1rem;
+      padding: 1rem;
+      border-radius: 8px;
+      display: none;
+    }
+
+    .tracking-result.show {
+      display: block;
+    }
+
+    .tracking-result.success {
+      background: #ffffff;
+      border: 1px solid #22c55e;
+    }
+
+    .tracking-result.not-found {
+      background: #fef2f2;
+      border: 1px solid #ef4444;
+      color: #dc2626;
+    }
+
+    .tracking-status {
+      display: inline-block;
+      padding: 0.35rem 1rem;
+      border-radius: 20px;
+      font-size: 0.875rem;
+      font-weight: 600;
+    }
+
+    .tracking-status.success {
+      background: #d1fae5;
+      color: #065f46;
+    }
+
+    .tracking-status.en-proceso {
+      background: #dbeafe;
+      color: #1e40af;
+    }
+
+    .tracking-status.pendiente {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .buttons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+
+    .btn {
+      text-decoration: none;
+      padding: 1rem 1.25rem;
+      border-radius: 12px;
+      font-weight: 600;
+      transition: 0.25s ease;
+      display: inline-block;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(37, 99, 235, 0.25);
+    }
+
+    .btn-secondary {
+      background: linear-gradient(135deg, #0f766e 0%, #0d9488 100%);
+      color: white;
+    }
+
+    .btn-secondary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(13, 148, 136, 0.25);
+    }
+
+    @media (max-width: 640px) {
+      .buttons {
+        grid-template-columns: 1fr;
+      }
+
+      .card {
+        padding: 2.25rem 1.25rem;
+      }
+
+      h1 {
+        font-size: 1.65rem;
+      }
+    }
+    </style>
+    <script>
+        if (localStorage.getItem('darkMode') === 'enabled') document.body.classList.add('dark-mode');
+    </script>
+    <style>
+        body.dark-mode { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: #e2e8f0; }
+        body.dark-mode .card { background: #1e293b; }
+        body.dark-mode .code-box { background: #334155; border-color: #64748b; }
+        body.dark-mode .code-label, body.dark-mode .code-hint { color: #94a3b8; }
+        body.dark-mode .code-value { color: #60a5fa; }
+        body.dark-mode .tracking-section { background: #334155; border-color: #64748b; }
+        body.dark-mode .tracking-input { background: #475569; border-color: #64748b; color: #e2e8f0; }
+    </style>
+</head>
+<body>
+  <div class="dark-mode-toggle" style="position:fixed;top:1rem;right:4rem;z-index:9999;">
+    <label style="position:relative;display:inline-block;width:50px;height:26px;">
+        <input type="checkbox" style="opacity:0;width:0;height:0;" ${localStorage.getItem('darkMode') === 'enabled' ? 'checked' : ''} id="dmToggle">
+        <span style="position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:#1e293b;transition:.4s;border-radius:26px;"></span>
+    </label>
+  </div>
+  <div class="card">
+    <div class="icon">✅</div>
+    <h1>¡Solicitud enviada exitosamente!</h1>
+    <p>Su solicitud fue registrada correctamente en el sistema.</p>
+
+    <div class="code-box">
+      <div class="code-label">Tu código de seguimiento:</div>
+      <div class="code-value" id="trackingCode">---</div>
+      <div class="code-hint">Guarda este código para consultar el estado de tu solicitud</div>
+      <button type="button" class="tracking-btn" onclick="copyCode()" style="margin-top:1rem;background:#b45309;">📋 Copiar código</button>
+      <div id="copiedMsg" style="margin-top:0.5rem;color:#16a34a;font-weight:600;opacity:0;transition:opacity 0.3s;">¡Copiado!</div>
+    </div>
+
+    <div class="status-box" id="statusBox" style="background:#fef3c7;border:2px solid #f59e0b;border-radius:12px;padding:1.5rem;margin:1.5rem 0;display:none;">
+      <div style="font-size:0.9rem;color:#92400e;font-weight:500;margin-bottom:0.5rem;">Estado actual de tu solicitud:</div>
+      <div id="currentStatus" style="font-size:1.5rem;font-weight:700;color:#b45309;">Pendiente</div>
+    </div>
+
+    <div class="tracking-section">
+      <div class="tracking-title">🔍 Consultar estado de solicitud</div>
+      <div class="tracking-form">
+        <input type="text" class="tracking-input" id="searchCode" placeholder="ST-XXXX" maxlength="8" />
+        <button type="button" class="tracking-btn" onclick="searchSolicitud()">Buscar</button>
+      </div>
+      <div class="tracking-result" id="searchResult"></div>
+    </div>
+
+    <div class="buttons">
+      <a class="btn btn-primary" href="index.html">Nueva solicitud</a>
+      <a class="btn btn-secondary" href="https://pcbsystempr-cyber.github.io/pcbsystem/" target="_blank" rel="noopener noreferrer">Ir al PCB System</a>
+    </div>
+  </div>
+
+  <script type="module">
+    import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+
+    const supabase = createClient(
+        "https://alqdcxtzwximorkkyecp.supabase.co",
+        "sb_publishable_V6kHfLnjsyODWSgJXJ9igg_gv1QPebb"
+    );
+
+    const ultimoCodigo = localStorage.getItem('ultimo_codigo') || 'ST-----';
+    document.getElementById('trackingCode').textContent = ultimoCodigo;
+
+    // Fetch status from Supabase
+    async function fetchStatusFromSupabase(codigo) {
+        try {
+            const { data, error } = await supabase
+                .from('solicitudes_servicio')
+                .select('estado, tipo_problema, fecha')
+                .eq('codigo_seguimiento', codigo)
+                .single();
+            
+            if (error) throw error;
+            return data;
+        } catch (e) {
+            console.error('Error fetching from Supabase:', e);
+            return null;
+        }
+    }
+
+    // Show current status
+    async function showCurrentStatus() {
+        const codigo = localStorage.getItem('ultimo_codigo');
+        if (!codigo) return;
+        
+        // Try Supabase first
+        const supabaseData = await fetchStatusFromSupabase(codigo);
+        
+        if (supabaseData) {
+            const statusBox = document.getElementById('statusBox');
+            const currentStatus = document.getElementById('currentStatus');
+            
+            statusBox.style.display = 'block';
+            currentStatus.textContent = supabaseData.estado || 'Pendiente';
+            
+            if (supabaseData.estado === 'En Proceso') {
+                currentStatus.style.color = '#1d4ed8';
+                statusBox.style.borderColor = '#3b82f6';
+                statusBox.style.background = '#dbeafe';
+            } else if (supabaseData.estado === 'Resuelto') {
+                currentStatus.style.color = '#059669';
+                statusBox.style.borderColor = '#10b981';
+                statusBox.style.background = '#d1fae5';
+            }
+            return;
+        }
+        
+        // Fallback to localStorage
+        const historial = JSON.parse(localStorage.getItem('solicitudes_historial') || '[]');
+        const found = historial.find(s => s.codigo === codigo);
+        
+        if (found) {
+            const statusBox = document.getElementById('statusBox');
+            const currentStatus = document.getElementById('currentStatus');
+            
+            statusBox.style.display = 'block';
+            currentStatus.textContent = found.estado || 'Pendiente';
+            
+            if (found.estado === 'En Proceso') {
+                currentStatus.style.color = '#1d4ed8';
+                statusBox.style.borderColor = '#3b82f6';
+                statusBox.style.background = '#dbeafe';
+            } else if (found.estado === 'Resuelto') {
+                currentStatus.style.color = '#059669';
+                statusBox.style.borderColor = '#10b981';
+                statusBox.style.background = '#d1fae5';
+            }
+        }
+    }
+    
+    showCurrentStatus();
+
+    // Auto-refresh status every 30 seconds
+    setInterval(showCurrentStatus, 30000);
+
+    window.copyCode = function() {
+      const code = document.getElementById('trackingCode').textContent;
+      
+      // Try clipboard API first, fallback to textarea
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(code).then(() => {
+          showCopiedMessage();
+        }).catch(() => {
+          fallbackCopy(code);
+        });
+      } else {
+        fallbackCopy(code);
+      }
+    };
+
+    function fallbackCopy(text) {
+      const textarea = document.createElement('textarea');
+      textarea.value = text;
+      textarea.style.position = 'fixed';
+      textarea.style.left = '-9999px';
+      document.body.appendChild(textarea);
+      textarea.select();
+      try {
+        document.execCommand('copy');
+        showCopiedMessage();
+      } catch(e) {
+        alert('No se pudo copiar. Copia manualmente: ' + text);
+      }
+      document.body.removeChild(textarea);
+    }
+
+    function showCopiedMessage() {
+      const msg = document.getElementById('copiedMsg');
+      if (msg) {
+        msg.style.opacity = '1';
+        setTimeout(() => { msg.style.opacity = '0'; }, 2000);
+      }
+    }
+
+    async function searchSolicitud() {
+      const code = document.getElementById('searchCode').value.trim().toUpperCase();
+      if (!code) return;
+      
+      const resultDiv = document.getElementById('searchResult');
+      resultDiv.classList.add('show');
+      
+      // Try Supabase first
+      try {
+        const { data, error } = await supabase
+            .from('solicitudes_servicio')
+            .select('*')
+            .eq('codigo_seguimiento', code)
+            .single();
+        
+        if (data) {
+            const estadoClass = data.estado === 'Resuelto' ? 'success' : data.estado === 'En Proceso' ? 'en-proceso' : 'pendiente';
+            const fechaFormateada = data.fecha ? new Date(data.fecha).toLocaleDateString('es-ES') : 'N/A';
+            
+            resultDiv.className = 'tracking-result show success';
+            resultDiv.innerHTML = `
+              <strong>✅ Solicitud encontrada</strong><br>
+              <hr style="margin:0.5rem 0;border:none;border-top:1px solid #e2e8f0;">
+              <div style="text-align:left;">
+                <div><strong>Código:</strong> ${data.codigo_seguimiento}</div>
+                <div><strong>Estado:</strong> <span class="tracking-status ${estadoClass}">${data.estado || 'Pendiente'}</span></div>
+                <div><strong>Problema:</strong> ${data.tipo_problema || data.problema || 'N/A'}</div>
+                <div><strong>Maestro:</strong> ${data.nombre_maestro || data.maestro || 'N/A'}</div>
+                <div><strong>Departamento:</strong> ${data.departamento || 'N/A'}</div>
+                <div><strong>Fecha:</strong> ${fechaFormateada}</div>
+              </div>
+            `;
+            return;
+        }
+      } catch (e) {
+          console.error('Error searching in Supabase:', e);
+      }
+      
+      // Fallback to localStorage
+      const historial = JSON.parse(localStorage.getItem('solicitudes_historial') || '[]');
+      const found = historial.find(s => s.codigo.toUpperCase() === code.toUpperCase());
+      
+      if (found) {
+        const estadoClass = found.estado === 'Resuelto' ? 'success' : 'en-proceso';
+        resultDiv.className = 'tracking-result show success';
+        resultDiv.innerHTML = `
+          <strong>✅ Solicitud encontrada</strong><br>
+          <hr style="margin:0.5rem 0;border:none;border-top:1px solid #e2e8f0;">
+          <div style="text-align:left;">
+            <div><strong>Código:</strong> ${found.codigo}</div>
+            <div><strong>Estado:</strong> <span class="tracking-status ${estadoClass}">${found.estado}</span></div>
+            <div><strong>Problema:</strong> ${found.tipoProblema}</div>
+            <div><strong>Fecha:</strong> ${found.fecha}</div>
+          </div>
+        `;
+      } else {
+        resultDiv.className = 'tracking-result show not-found';
+        resultDiv.innerHTML = '❌ Código no encontrado. Verifica que el código sea correcto.';
+      }
+    }
+    document.getElementById('dmToggle')?.addEventListener('change', function() {
+        document.body.classList.toggle('dark-mode', this.checked);
+        localStorage.setItem('darkMode', this.checked ? 'enabled' : 'disabled');
+        window.dispatchEvent(new Event('darkModeSync'));
+    });
+    window.addEventListener('darkModeSync', () => {
+        const isDark = localStorage.getItem('darkMode') === 'enabled';
+        document.body.classList.toggle('dark-mode', isDark);
+        const dm = document.getElementById('dmToggle');
+        if (dm) dm.checked = isDark;
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="es" id="htmlRoot">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Recursos para Estudiantes – Escuela Superior Vocacional Pablo Colón Berdecia</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="dark-mode-fix-v2.css?v=2">
+  <link rel="stylesheet" href="dropdown-fix.css">
+  <link rel="stylesheet" href="image-popup.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <script src="translations.js"></script>
+  <style>
+    /* ── Cuadrícula de recursos ── */
+    .resources-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+    @media (max-width: 700px) { .resources-grid { grid-template-columns: 1fr; } }
+
+    /* ── Tarjeta de recurso (extiende .card de styles.css) ── */
+    .resource-card {
+      display: flex;
+      flex-direction: column;
+    }
+    .resource-icon {
+      font-size: 3rem;
+      text-align: center;
+      margin-bottom: 0.75rem;
+    }
+    .resource-card h2 {
+      color: var(--primary-light, #667eea);
+      font-size: 1.4rem;
+      text-align: center;
+      margin-bottom: 0.5rem;
+    }
+    body.dark-mode .resource-card h2 { color: #a78bfa; }
+    .resource-card > p {
+      color: var(--text-soft, #64748b);
+      text-align: center;
+      font-size: 0.95rem;
+      flex-grow: 1;
+      margin-bottom: 1.25rem;
+    }
+    body.dark-mode .resource-card > p { color: #9ca3af; }
+
+    /* ── Lista de enlaces ── */
+    .resource-links {
+      border-top: 1.5px solid #f1f5f9;
+      padding-top: 1rem;
+      margin-top: auto;
+    }
+    body.dark-mode .resource-links { border-color: #334155; }
+    .resource-links h4 {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #475569;
+      margin-bottom: 0.6rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    body.dark-mode .resource-links h4 { color: #94a3b8; }
+    .link-list { list-style: none; padding: 0; margin: 0; }
+    .link-list li { margin-bottom: 0.35rem; }
+    .link-list a {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      color: var(--primary-light, #667eea);
+      text-decoration: none;
+      font-size: 0.88rem;
+      padding: 0.45rem 0.6rem;
+      border-radius: 8px;
+      transition: background 0.2s;
+    }
+    .link-list a:hover { background: rgba(102,126,234,0.10); }
+    body.dark-mode .link-list a { color: #a78bfa; }
+    body.dark-mode .link-list a:hover { background: rgba(167,139,250,0.12); }
+
+    /* ── Botón "Repasar" ── */
+    .btn-repasar {
+      display: block;
+      width: 100%;
+      padding: 0.85rem 1rem;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      text-align: center;
+      text-decoration: none;
+      border-radius: 50px;
+      font-weight: 700;
+      font-size: 0.97rem;
+      margin-top: 1.25rem;
+      transition: transform 0.25s, box-shadow 0.25s;
+      box-shadow: 0 4px 14px rgba(102,126,234,0.28);
+    }
+    .btn-repasar:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(102,126,234,0.42);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── Popup de tema ── -->
+  <div id="themePopup" class="theme-popup">
+    <div class="theme-popup-content">
+      <h2 data-translate="🎨 Selecciona tu tema preferido">🎨 Selecciona tu tema preferido</h2>
+      <p data-translate="Elige cómo quieres ver el sitio web">Elige cómo quieres ver el sitio web</p>
+      <div class="theme-buttons">
+        <button type="button" class="theme-btn theme-btn-light" id="btnLightMode">☀️ Modo Claro</button>
+        <button type="button" class="theme-btn theme-btn-dark"  id="btnDarkMode">🌙 Modo Oscuro</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      function hidePopup() { var p=document.getElementById('themePopup'); if(p) p.classList.add('hidden'); }
+      function setLight()  { document.body.classList.remove('dark-mode'); localStorage.setItem('theme','light'); hidePopup(); }
+      function setDark()   { document.body.classList.add('dark-mode');    localStorage.setItem('theme','dark');  hidePopup(); }
+      var t = localStorage.getItem('theme');
+      if (t === 'dark')  { document.body.classList.add('dark-mode'); hidePopup(); }
+      else if (t === 'light') { hidePopup(); }
+      document.addEventListener('DOMContentLoaded', function () {
+        var bl = document.getElementById('btnLightMode'), bd = document.getElementById('btnDarkMode');
+        if (bl) bl.onclick = setLight;
+        if (bd) bd.onclick = setDark;
+
+        // ── Hamburger / sidebar ──
+        var hamburgerBtn   = document.getElementById('hamburgerBtn');
+        var sidebarMenu    = document.getElementById('sidebarMenu');
+        var sidebarOverlay = document.getElementById('sidebarOverlay');
+        var closeSidebar   = document.getElementById('closeSidebar');
+        var themeToggle    = document.getElementById('themeToggle');
+        var themeOptions   = document.getElementById('themeOptions');
+        var selectLightMode= document.getElementById('selectLightMode');
+        var selectDarkMode = document.getElementById('selectDarkMode');
+        var languageToggle = document.getElementById('languageToggle');
+        var languageOptions= document.getElementById('languageOptions');
+        var selectSpanish  = document.getElementById('selectSpanish');
+        var selectEnglish  = document.getElementById('selectEnglish');
+        var servicesToggle = document.getElementById('servicesToggle');
+        var servicesOptions= document.getElementById('servicesOptions');
+
+        function closeSidebarMenu() {
+          if (sidebarMenu)    sidebarMenu.classList.remove('active');
+          if (sidebarOverlay) sidebarOverlay.classList.remove('active');
+          if (themeOptions)   themeOptions.style.display = 'none';
+          if (languageOptions)languageOptions.style.display = 'none';
+          if (servicesOptions)servicesOptions.style.display = 'none';
+        }
+        if (hamburgerBtn)   hamburgerBtn.addEventListener('click', function(){ sidebarMenu.classList.add('active'); sidebarOverlay.classList.add('active'); });
+        if (closeSidebar)   closeSidebar.addEventListener('click', closeSidebarMenu);
+        if (sidebarOverlay) sidebarOverlay.addEventListener('click', closeSidebarMenu);
+        if (themeToggle)    themeToggle.addEventListener('click', function(){ themeOptions.style.display = themeOptions.style.display==='block'?'none':'block'; if(languageOptions) languageOptions.style.display='none'; });
+        if (languageToggle) languageToggle.addEventListener('click', function(){ languageOptions.style.display = languageOptions.style.display==='block'?'none':'block'; if(themeOptions) themeOptions.style.display='none'; });
+        if (servicesToggle) servicesToggle.addEventListener('click', function(){ servicesOptions.style.display = servicesOptions.style.display==='block'?'none':'block'; });
+        if (selectLightMode) selectLightMode.addEventListener('click', function(){ setLight(); closeSidebarMenu(); });
+        if (selectDarkMode)  selectDarkMode.addEventListener('click',  function(){ setDark();  closeSidebarMenu(); });
+        if (selectSpanish)   selectSpanish.addEventListener('click',   function(){ localStorage.setItem('language','es'); var h=document.getElementById('htmlRoot'); if(h) h.setAttribute('lang','es'); if(typeof translatePage==='function') translatePage('es'); closeSidebarMenu(); });
+        if (selectEnglish)   selectEnglish.addEventListener('click',   function(){ localStorage.setItem('language','en'); var h=document.getElementById('htmlRoot'); if(h) h.setAttribute('lang','en'); if(typeof translatePage==='function') translatePage('en'); closeSidebarMenu(); });
+      });
+    })();
+  </script>
+
+  <!-- ── Header ── -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <div class="logo-area">
+        <img src="LOGO6.png" alt="Logo Escuela" class="logo-image">
+        <div class="logo-text">
+          <span class="logo-title" data-translate="Escuela Superior Vocacional">Escuela Superior Vocacional</span>
+          <span class="logo-subtitle">Pablo Colón Berdecia</span>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:1rem;">
+        <nav class="main-nav">
+          <ul>
+            <li><a href="index.html#inicio" data-translate="Inicio">Inicio</a></li>
+            <li><a href="quienes-somos.html" data-translate="Quiénes Somos">Quiénes Somos</a></li>
+            <li class="dropdown">
+              <a href="#" style="pointer-events:none;">Servicios Digitales <i class="fas fa-chevron-down"></i></a>
+              <ul class="dropdown-menu">
+                <li><a href="matricula.html">📝 Matrícula Online</a></li>
+                <li><a href="solicitudes.html">📄 Solicitud de Documentos</a></li>
+                <li><a href="https://pcbsystempr-cyber.github.io/Servicio-Tecnico/">🔧 Servicios Técnicos</a></li>
+                <li><a href="orientacion.html">🧠 Orientación</a></li>
+                <li><a href="biblioteca.html">📚 Biblioteca</a></li>
+                <li><a href="comedor.html">🍽️ Comedor</a></li>
+                <li><a href="padres.html">👨‍👩‍👧 Portal de Padres</a></li>
+                <li><a href="seguridad.html">🛡️ Seguridad</a></li>
+              </ul>
+            </li>
+            <li><a href="participacion-comunitaria.html" data-translate="Vida Estudiantil">Vida Estudiantil</a></li>
+            <li><a href="normas-reglamentos.html" data-translate="Normas">Normas</a></li>
+          </ul>
+        </nav>
+        <button class="hamburger-menu" id="hamburgerBtn" aria-label="Abrir menú">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ── Sidebar (idéntico al index.html) ── -->
+  <div class="sidebar-menu" id="sidebarMenu">
+    <div class="sidebar-header">
+      <h3 data-translate="Menú">Menú</h3>
+      <button class="sidebar-close" id="closeSidebar">&times;</button>
+    </div>
+    <div class="sidebar-content">
+      <a href="index.html" class="sidebar-item sidebar-link">
+        <span class="sidebar-icon">🏠</span>
+        <span class="sidebar-text" data-translate="Inicio">Inicio</span>
+        <span class="sidebar-arrow">›</span>
+      </a>
+      <a href="quienes-somos.html" class="sidebar-item sidebar-link">
+        <span class="sidebar-icon">🏫</span>
+        <span class="sidebar-text" data-translate="Quiénes Somos">Quiénes Somos</span>
+        <span class="sidebar-arrow">›</span>
+      </a>
+      <div class="sidebar-item" id="servicesToggle">
+        <span class="sidebar-icon">💻</span>
+        <span class="sidebar-text" data-translate="Servicios Digitales">Servicios Digitales</span>
+        <span class="sidebar-arrow">›</span>
+      </div>
+      <div class="theme-options" id="servicesOptions" style="display:none;">
+        <a href="matricula.html"  class="theme-option"><span>📝</span> Matrícula Online</a>
+        <a href="solicitudes.html" class="theme-option"><span>📄</span> Solicitud de Documentos</a>
+        <a href="https://pcbsystempr-cyber.github.io/Servicio-Tecnico/" class="theme-option"><span>🔧</span> Servicios Técnicos</a>
+        <a href="orientacion.html" class="theme-option"><span>🧠</span> Orientación</a>
+        <a href="biblioteca.html"  class="theme-option"><span>📚</span> Biblioteca</a>
+        <a href="comedor.html"     class="theme-option"><span>🍽️</span> Comedor</a>
+        <a href="padres.html"      class="theme-option"><span>👨‍👩‍👧</span> Portal de Padres</a>
+        <a href="seguridad.html"   class="theme-option"><span>🛡️</span> Seguridad</a>
+      </div>
+      <a href="participacion-comunitaria.html" class="sidebar-item sidebar-link">
+        <span class="sidebar-icon">🎓</span>
+        <span class="sidebar-text" data-translate="Vida Estudiantil">Vida Estudiantil</span>
+        <span class="sidebar-arrow">›</span>
+      </a>
+      <a href="normas-reglamentos.html" class="sidebar-item sidebar-link">
+        <span class="sidebar-icon">📋</span>
+        <span class="sidebar-text" data-translate="Normas">Normas</span>
+        <span class="sidebar-arrow">›</span>
+      </a>
+      <div style="border-top:1px solid rgba(255,255,255,0.1);margin:1rem 0;"></div>
+      <div class="sidebar-item" id="themeToggle">
+        <span class="sidebar-icon">🎨</span>
+        <span class="sidebar-text" data-translate="Cambiar Tema">Cambiar Tema</span>
+        <span class="sidebar-arrow">›</span>
+      </div>
+      <div class="theme-options" id="themeOptions" style="display:none;">
+        <button class="theme-option" id="selectLightMode">☀️ Modo Claro</button>
+        <button class="theme-option" id="selectDarkMode">🌙 Modo Oscuro</button>
+      </div>
+      <div class="sidebar-item" id="languageToggle">
+        <span class="sidebar-icon">🌐</span>
+        <span class="sidebar-text" data-translate="Cambiar Idioma">Cambiar Idioma</span>
+        <span class="sidebar-arrow">›</span>
+      </div>
+      <div class="theme-options" id="languageOptions" style="display:none;">
+        <button class="theme-option" id="selectSpanish"><span>🇵🇷</span> Español</button>
+        <button class="theme-option" id="selectEnglish"><span>🇺🇸</span> English</button>
+      </div>
+      <div style="border-top:1px solid rgba(255,255,255,0.1);margin:1rem 0;"></div>
+      <a href="admin.html" class="sidebar-item sidebar-link">
+        <span class="sidebar-icon">⚙️</span>
+        <span class="sidebar-text" data-translate="Dashboard Admin">Dashboard Admin</span>
+        <span class="sidebar-arrow">›</span>
+      </a>
+    </div>
+  </div>
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- ── Hero ── -->
+  <section class="hero" style="min-height:320px;padding:4rem 0;">
+    <div class="container">
+      <div class="section-header" style="margin-bottom:0;">
+        <div style="font-size:5rem;margin-bottom:1rem;">📚</div>
+        <h1 style="color:#fff;font-size:3rem;text-shadow:0 2px 20px rgba(0,0,0,0.5);"
+            data-translate="Recursos para Estudiantes">Recursos para Estudiantes</h1>
+        <p style="color:rgba(255,255,255,0.92);font-size:1.15rem;max-width:700px;margin:1rem auto;"
+           data-translate="Materiales de preparación académica para tu éxito educativo">
+          Materiales de preparación académica para tu éxito educativo
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Recursos principales ── -->
+  <section class="section">
+    <div class="container">
+      <div class="resources-grid">
+
+        <!-- College Board -->
+        <article class="card resource-card">
+          <div class="resource-icon">🎯</div>
+          <h2>College Board</h2>
+          <p>Preparación para exámenes de admisión a universidades y colleges. Incluye práctica para SAT y orientación sobre admisión universitaria.</p>
+          
+          <div class="resource-links">
+            <h4>📌 Recursos Oficiales:</h4>
+            <ul class="link-list">
+              <li><a href="https://pr，孔" target="_blank">🔗 Portal Oficial College Board Puerto Rico</a></li>
+              <li><a href="https://www.collegeboard.org/" target="_blank">🔗 College Board USA</a></li>
+              <li><a href="https://prportal3.ed.gov/IGS/Account/LogOn?Url=pg" target="_blank">🔗 Portal de Solicitud de Transcript - DEPR</a></li>
+              <li><a href="https://apstudents.collegeboard.org/" target="_blank">🔗 AP Students - Resultados AP</a></li>
+              <li><a href="https://www.khanacademy.org/test-prep/sat" target="_blank">🔗 Khan Academy - Prep SAT (Gratis)</a></li>
+            </ul>
+          </div>
+          
+          <a href="https://www.collegeboard.org/" class="btn-repasar" target="_blank">📝 Repasar Ahora</a>
+        </article>
+
+        <!-- Exámenes de Avanzado -->
+        <article class="card resource-card">
+          <div class="resource-icon">📊</div>
+          <h2>Exámenes de Avanzado</h2>
+          <p>Recursos para exámenes AP (Advanced Placement). Prepárate para los exámenes de college level en la escuela.</p>
+          
+          <div class="resource-links">
+            <h4>📌 Recursos Oficiales:</h4>
+            <ul class="link-list">
+              <li><a href="https://apportal.ed.gov/" target="_blank">🔗 AP Central - Portal Oficial</a></li>
+              <li><a href="https://apstudents.collegeboard.org/" target="_blank">🔗 AP Students</a></li>
+              <li><a href="https://apclassroom.collegeboard.org/" target="_blank">🔗 AP Classroom</a></li>
+              <li><a href="https://www.khanacademy.org/ap" target="_blank">🔗 Khan Academy AP (Gratis)</a></li>
+              <li><a href="https://www.youtube.com/channel/UC--7_JKGcljL7qLqcA3e9YA" target="_blank">🔗 Aprende y Crece - Videos Educativos</a></li>
+            </ul>
+          </div>
+          
+          <a href="https://apstudents.collegeboard.org/" class="btn-repasar" target="_blank">📝 Repasar Ahora</a>
+        </article>
+
+        <!-- CRECE -->
+        <article class="card resource-card">
+          <div class="resource-icon">📋</div>
+          <h2>Pruebas CRECE</h2>
+          <p>Preparación para las pruebas del Proyecto CRECE del Departamento de Educación de Puerto Rico.</p>
+          
+          <div class="resource-links">
+            <h4>📌 Recursos Oficiales:</h4>
+            <ul class="link-list">
+              <li><a href="https://www.de.pr.gov/" target="_blank">🔗 Departamento de Educación PR</a></li>
+              <li><a href="https://www.educacion.pr.gov/" target="_blank">🔗 Portal Educación PR</a></li>
+              <li><a href="https://www.inter.edu/portal/crece" target="_blank">🔗 Recursos CRECE - Universidad Inter</a></li>
+              <li><a href="https://www.youtube.com/results?search_query=pruebas+CRECE+ejercicios+PR" target="_blank">🔗 Videos de Práctica en YouTube</a></li>
+              <li><a href="https://www.mentelearning.com/puerto-rico-crece" target="_blank">🔗 Práctica CRECE - Mente Learning</a></li>
+            </ul>
+          </div>
+          
+          <a href="https://www.de.pr.gov/" class="btn-repasar" target="_blank">📝 Repasar Ahora</a>
+        </article>
+
+        <!-- ASVA -->
+        <article class="card resource-card">
+          <div class="resource-icon">✅</div>
+          <h2>ASVA</h2>
+          <p>Preparación para las pruebas de Aval Académico (ASVA). Evaluación de competencias académicas del DEPR.</p>
+          
+          <div class="resource-links">
+            <h4>📌 Recursos Oficiales:</h4>
+            <ul class="link-list">
+              <li><a href="https://www.de.pr.gov/" target="_blank">🔗 Departamento de Educación PR</a></li>
+              <li><a href="https://www.educacion.pr.gov/" target="_blank">🔗 Portal Educación PR</a></li>
+              <li><a href="https://recursos.educacion.pr.gov/" target="_blank">🔗 Recursos Educativos PR</a></li>
+              <li><a href="https://www.mentelearning.com/asva" target="_blank">🔗 Práctica ASVA - Mente Learning</a></li>
+              <li><a href="https://www.youtube.com/results?search_query=ASVA+prueba+Puero+Rico+ejercicios" target="_blank">🔗 Videos de Práctica YouTube</a></li>
+            </ul>
+          </div>
+          
+          <a href="https://www.de.pr.gov/" class="btn-repasar" target="_blank">📝 Repasar Ahora</a>
+        </article>
+
+        <!-- Matemáticas -->
+        <article class="card resource-card">
+          <div class="resource-icon">🔢</div>
+          <h2>Matemáticas</h2>
+          <p>Recursos de práctica para matemáticas desde nivel básico hasta cálculo. Incluye álgebra, geometría, estadística y más.</p>
+          
+          <div class="resource-links">
+            <h4>📌 Recursos Recomendados:</h4>
+            <ul class="link-list">
+              <li><a href="https://www.khanacademy.org/math" target="_blank">🔗 Khan Academy Matemáticas (Gratis)</a></li>
+              <li><a href="https://www.geogebra.org/" target="_blank">🔗 GeoGebra - Geometría Interactiva</a></li>
+              <li><a href="https://www.desmos.com/calculator" target="_blank">🔗 Desmos - Calculadora Gráfica</a></li>
+              <li><a href="https://www.mathway.com/" target="_blank">🔗 Mathway - Resuelve Problemas</a></li>
+              <li><a href="https://www.ixl.com/" target="_blank">🔗 IXL - Práctica de Matemáticas</a></li>
+            </ul>
+          </div>
+          
+          <a href="https://www.khanacademy.org/math" class="btn-repasar" target="_blank">📝 Repasar Ahora</a>
+        </article>
+
+        <!-- Inglés -->
+        <article class="card resource-card">
+          <div class="resource-icon">🌎</div>
+          <h2>Inglés</h2>
+          <p>Preparación para pruebas de inglés, incluyendo lectura, escritura y gramática. Recursos para ESL y estudiantes bilingües.</p>
+          
+          <div class="resource-links">
+            <h4>📌 Recursos Recomendados:</h4>
+            <ul class="link-list">
+              <li><a href="https://www.khanacademy.org/test-prep/sat/sat-reading" target="_blank">🔗 Khan Academy SAT Reading</a></li>
+              <li><a href="https://www.khanacademy.org/test-prep/sat/sat-writing-language" target="_blank">🔗 Khan Academy SAT Writing</a></li>
+              <li><a href="https://www.grammarly.com/" target="_blank">🔗 Grammarly - Ayuda con Escritura</a></li>
+              <li><a href="https://www.bbc.co.uk/learningenglish/" target="_blank">🔗 BBC Learning English</a></li>
+              <li><a href="https://www.newsela.com/" target="_blank">🔗 Newsela - Lectura con Actualidad</a></li>
+            </ul>
+          </div>
+          
+          <a href="https://www.khanacademy.org/test-prep/sat" class="btn-repasar" target="_blank">📝 Repasar Ahora</a>
+        </article>
+
+      </div>
+
+      <!-- Consejos -->
+      <div class="card" style="margin-top:2.5rem;">
+        <h3 style="color:var(--primary-light,#667eea);margin-bottom:1rem;">💡 Consejos para tus Pruebas</h3>
+        <ul style="margin-left:1.4rem;line-height:2;">
+          <li><strong>Comienza temprano:</strong> Dale tiempo suficiente para prepararte antes de las fechas de examen.</li>
+          <li><strong>Practica con exámenes anteriores:</strong> Familiarízate con el formato y tipo de preguntas.</li>
+          <li><strong>Usa recursos gratuitos:</strong> Khan Academy y los portales del DEPR ofrecen materiales gratis.</li>
+          <li><strong>Organiza tu tiempo:</strong> Crea un calendario de estudio semanal.</li>
+          <li><strong>Pide ayuda:</strong> Consulta con tus maestros si necesitas apoyo adicional.</li>
+          <li><strong>Duerme bien:</strong> El día antes de la prueba, descansa adecuadamente.</li>
+        </ul>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ── Footer ── -->
+  <footer class="site-footer">
+    <div class="container">
+      <p>&copy; <script>document.write(new Date().getFullYear());</script>
+        Escuela Superior Vocacional Pablo Colón Berdecia. Todos los derechos reservados.</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

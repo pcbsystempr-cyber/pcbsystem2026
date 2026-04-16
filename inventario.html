@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Inventario del Taller - COMPUTEC</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+      background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+      min-height: 100vh;
+      color: #1e293b;
+      line-height: 1.6;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #2c5282 0%, #1a365d 100%);
+      color: white;
+      padding: 2rem 0;
+      text-align: center;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .header::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="white" opacity="0.1"/><circle cx="75" cy="75" r="1" fill="white" opacity="0.1"/><circle cx="50" cy="50" r="0.5" fill="white" opacity="0.05"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+      pointer-events: none;
+    }
+
+    .school-name {
+      font-size: 1.9rem;
+      font-weight: 700;
+      margin-bottom: 0.4rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .department-name {
+      font-size: 1.05rem;
+      opacity: 0.95;
+      font-weight: 400;
+      position: relative;
+      z-index: 1;
+    }
+
+    .container {
+      max-width: 1380px;
+      margin: 2rem auto;
+      padding: 0 1.25rem;
+    }
+
+    .top-actions {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+    }
+
+    .back-btn,
+    .export-btn {
+      text-decoration: none;
+      border: none;
+      border-radius: 10px;
+      padding: 0.85rem 1.25rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      font-family: inherit;
+      font-size: 0.95rem;
+    }
+
+    .back-btn {
+      background: linear-gradient(135deg, #2c5282 0%, #4299e1 100%);
+      color: white;
+      display: inline-block;
+    }
+
+    .export-btn {
+      background: #0f766e;
+      color: white;
+    }
+
+    .back-btn:hover,
+    .export-btn:hover,
+    .btn:hover,
+    .btn-small:hover {
+      transform: translateY(-2px);
+    }
+
+    .page-title {
+      font-size: 2rem;
+      color: #2c5282;
+      text-align: center;
+      margin: 1rem 0 2rem;
+      font-weight: 700;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 380px 1fr;
+      gap: 1.5rem;
+      align-items: start;
+    }
+
+    .card {
+      background: white;
+      border-radius: 14px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    }
+
+    .form-card {
+      padding: 1.5rem;
+      position: sticky;
+      top: 1rem;
+    }
+
+    .form-title,
+    .section-title {
+      color: #2c5282;
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+      font-weight: 700;
+    }
+
+    .form-group {
+      margin-bottom: 1rem;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 0.45rem;
+      font-weight: 600;
+      color: #374151;
+      font-size: 0.92rem;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      padding: 0.95rem 1rem;
+      border: 2px solid #e2e8f0;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      font-family: inherit;
+      background: #fafafa;
+      transition: all 0.25s ease;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      outline: none;
+      border-color: #2563eb;
+      background: white;
+      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.08);
+    }
+
+    textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    .btn {
+      width: 100%;
+      border: none;
+      border-radius: 12px;
+      padding: 1rem 1.2rem;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.25s ease;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%);
+      color: white;
+    }
+
+    .btn-secondary {
+      margin-top: 0.75rem;
+      background: #e5e7eb;
+      color: #1f2937;
+    }
+
+    .message {
+      margin-top: 1rem;
+      padding: 1rem;
+      border-radius: 10px;
+      display: none;
+      font-weight: 500;
+    }
+
+    .message.success {
+      background: #dcfce7;
+      color: #166534;
+      border: 1px solid #86efac;
+    }
+
+    .message.error {
+      background: #fee2e2;
+      color: #991b1b;
+      border: 1px solid #fca5a5;
+    }
+
+    .right-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+    }
+
+    .stat-card {
+      padding: 1.35rem;
+      text-align: center;
+      background: white;
+      border-radius: 14px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    }
+
+    .stat-number {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #2c5282;
+      margin-bottom: 0.35rem;
+    }
+
+    .stat-label {
+      color: #6b7280;
+      font-size: 0.92rem;
+    }
+
+    .filters-card,
+    .table-card {
+      padding: 1.5rem;
+    }
+
+    .filters-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+    }
+
+    .filters-actions {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      margin-top: 1rem;
+    }
+
+    .btn-small {
+      border: none;
+      border-radius: 10px;
+      padding: 0.8rem 1rem;
+      font-size: 0.92rem;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.25s ease;
+    }
+
+    .btn-filter {
+      background: #1d4ed8;
+      color: white;
+    }
+
+    .btn-clear {
+      background: #e5e7eb;
+      color: #1f2937;
+    }
+
+    .table-wrapper {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 1050px;
+    }
+
+    th,
+    td {
+      text-align: left;
+      padding: 1rem 0.85rem;
+      border-bottom: 1px solid #e5e7eb;
+      vertical-align: top;
+    }
+
+    th {
+      color: #2c5282;
+      font-size: 0.9rem;
+      font-weight: 700;
+      background: #f8fafc;
+    }
+
+    td {
+      color: #475569;
+      font-size: 0.93rem;
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 0.4rem 0.7rem;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .status-disponible {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .status-en-uso {
+      background: #dbeafe;
+      color: #1d4ed8;
+    }
+
+    .status-danado {
+      background: #fee2e2;
+      color: #b91c1c;
+    }
+
+    .status-reparacion {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .row-actions {
+      display: flex;
+      gap: 0.45rem;
+      flex-wrap: wrap;
+    }
+
+    .action-btn {
+      border: none;
+      border-radius: 8px;
+      padding: 0.55rem 0.7rem;
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    .edit-btn {
+      background: #2563eb;
+      color: white;
+    }
+
+    .delete-btn {
+      background: #dc2626;
+      color: white;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: #64748b;
+    }
+
+    .empty-state .icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      opacity: 0.6;
+    }
+
+    @media (max-width: 1100px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .form-card {
+        position: static;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .container {
+        padding: 0 1rem;
+      }
+
+      .page-title {
+        font-size: 1.6rem;
+      }
+
+      .top-actions {
+        flex-direction: column;
+      }
+
+      .back-btn,
+      .export-btn {
+        width: 100%;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="school-name">Escuela Superior Vocacional Pablo Colón Berdecia</div>
+    <div class="department-name">Inventario del Taller - COMPUTEC</div>
+  </div>
+
+  <div class="container">
+    <div class="top-actions">
+      <a href="dashboard.html" class="back-btn">← Volver al Panel</a>
+      <button class="export-btn" id="exportCsvBtn">Exportar inventario CSV</button>
+    </div>
+
+    <h1 class="page-title">Control de Inventario del Taller</h1>
+
+    <div class="grid">
+      <div class="card form-card">
+        <h2 class="form-title" id="formTitle">Registrar equipo</h2>
+
+        <form id="inventoryForm">
+          <input type="hidden" id="itemId" />
+
+          <div class="form-group">
+            <label for="tipoEquipo">Tipo de equipo</label>
+            <select id="tipoEquipo" required>
+              <option value="">Seleccione una opción</option>
+              <option value="Computadora">Computadora</option>
+              <option value="Laptop">Laptop</option>
+              <option value="Monitor">Monitor</option>
+              <option value="Impresora">Impresora</option>
+              <option value="Teclado">Teclado</option>
+              <option value="Mouse">Mouse</option>
+              <option value="Tablet">Tablet</option>
+              <option value="Proyector">Proyector</option>
+              <option value="Router">Router</option>
+              <option value="Switch">Switch</option>
+              <option value="Otro">Otro</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="marca">Marca</label>
+            <input type="text" id="marca" required placeholder="Ej: HP, Dell, Lenovo" />
+          </div>
+
+          <div class="form-group">
+            <label for="modelo">Modelo</label>
+            <input type="text" id="modelo" placeholder="Ej: ProDesk 400 G5" />
+          </div>
+
+          <div class="form-group">
+            <label for="numeroSerie">Número de serie</label>
+            <input type="text" id="numeroSerie" placeholder="Ej: SN-123456789" />
+          </div>
+
+          <div class="form-group">
+            <label for="cantidad">Cantidad</label>
+            <input type="number" id="cantidad" min="1" value="1" required />
+          </div>
+
+          <div class="form-group">
+            <label for="estado">Estado</label>
+            <select id="estado" required>
+              <option value="Disponible">Disponible</option>
+              <option value="En uso">En uso</option>
+              <option value="Dañado">Dañado</option>
+              <option value="En reparación">En reparación</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="ubicacion">Ubicación</label>
+            <input type="text" id="ubicacion" placeholder="Ej: Taller, Salón 12, Almacén" />
+          </div>
+
+          <div class="form-group">
+            <label for="observaciones">Observaciones</label>
+            <textarea id="observaciones" placeholder="Detalles adicionales del equipo..."></textarea>
+          </div>
+
+          <button type="submit" class="btn btn-primary" id="saveBtn">Guardar en inventario</button>
+          <button type="button" class="btn btn-secondary" id="cancelEditBtn" style="display:none;">Cancelar edición</button>
+        </form>
+
+        <div class="message success" id="successMessage"></div>
+        <div class="message error" id="errorMessage"></div>
+      </div>
+
+      <div class="right-panel">
+        <div class="stats">
+          <div class="stat-card">
+            <div class="stat-number" id="totalItems">0</div>
+            <div class="stat-label">Total registros</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number" id="totalQuantity">0</div>
+            <div class="stat-label">Cantidad total</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number" id="availableItems">0</div>
+            <div class="stat-label">Disponibles</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number" id="repairItems">0</div>
+            <div class="stat-label">En reparación</div>
+          </div>
+        </div>
+
+        <div class="card filters-card">
+          <h2 class="section-title">Buscar y filtrar inventario</h2>
+
+          <div class="filters-grid">
+            <div>
+              <label for="searchTipo">Tipo de equipo</label>
+              <input type="text" id="searchTipo" placeholder="Ej: Laptop" />
+            </div>
+
+            <div>
+              <label for="searchMarca">Marca</label>
+              <input type="text" id="searchMarca" placeholder="Ej: HP" />
+            </div>
+
+            <div>
+              <label for="searchUbicacion">Ubicación</label>
+              <input type="text" id="searchUbicacion" placeholder="Ej: Taller" />
+            </div>
+
+            <div>
+              <label for="filterEstado">Estado</label>
+              <select id="filterEstado">
+                <option value="">Todos</option>
+                <option value="Disponible">Disponible</option>
+                <option value="En uso">En uso</option>
+                <option value="Dañado">Dañado</option>
+                <option value="En reparación">En reparación</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="filters-actions">
+            <button class="btn-small btn-filter" id="applyFiltersBtn">Aplicar filtros</button>
+            <button class="btn-small btn-clear" id="clearFiltersBtn">Limpiar filtros</button>
+          </div>
+        </div>
+
+        <div class="card table-card">
+          <h2 class="section-title">Lista de inventario</h2>
+
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Tipo</th>
+                  <th>Marca</th>
+                  <th>Modelo</th>
+                  <th>Serie</th>
+                  <th>Cantidad</th>
+                  <th>Estado</th>
+                  <th>Ubicación</th>
+                  <th>Observaciones</th>
+                  <th>Fecha</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="inventoryTableBody"></tbody>
+            </table>
+          </div>
+
+          <div class="empty-state" id="emptyState" style="display:none;">
+            <div class="icon">🖥️</div>
+            <p>No hay equipos registrados en el inventario.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+
+    const supabase = createClient(
+      "https://alqdcxtzwximorkkyecp.supabase.co",
+      "sb_publishable_V6kHfLnjsyODWSgJXJ9igg_gv1QPebb"
+    );
+
+    const inventoryForm = document.getElementById("inventoryForm");
+    const formTitle = document.getElementById("formTitle");
+    const saveBtn = document.getElementById("saveBtn");
+    const cancelEditBtn = document.getElementById("cancelEditBtn");
+    const successMessage = document.getElementById("successMessage");
+    const errorMessage = document.getElementById("errorMessage");
+
+    const itemId = document.getElementById("itemId");
+    const tipoEquipo = document.getElementById("tipoEquipo");
+    const marca = document.getElementById("marca");
+    const modelo = document.getElementById("modelo");
+    const numeroSerie = document.getElementById("numeroSerie");
+    const cantidad = document.getElementById("cantidad");
+    const estado = document.getElementById("estado");
+    const ubicacion = document.getElementById("ubicacion");
+    const observaciones = document.getElementById("observaciones");
+
+    const inventoryTableBody = document.getElementById("inventoryTableBody");
+    const emptyState = document.getElementById("emptyState");
+
+    const totalItems = document.getElementById("totalItems");
+    const totalQuantity = document.getElementById("totalQuantity");
+    const availableItems = document.getElementById("availableItems");
+    const repairItems = document.getElementById("repairItems");
+
+    const searchTipo = document.getElementById("searchTipo");
+    const searchMarca = document.getElementById("searchMarca");
+    const searchUbicacion = document.getElementById("searchUbicacion");
+    const filterEstado = document.getElementById("filterEstado");
+    const applyFiltersBtn = document.getElementById("applyFiltersBtn");
+    const clearFiltersBtn = document.getElementById("clearFiltersBtn");
+    const exportCsvBtn = document.getElementById("exportCsvBtn");
+
+    let inventoryData = [];
+
+    function showSuccess(message) {
+      successMessage.textContent = message;
+      successMessage.style.display = "block";
+      errorMessage.style.display = "none";
+    }
+
+    function showError(message) {
+      errorMessage.textContent = message;
+      errorMessage.style.display = "block";
+      successMessage.style.display = "none";
+    }
+
+    function clearMessages() {
+      successMessage.style.display = "none";
+      errorMessage.style.display = "none";
+      successMessage.textContent = "";
+      errorMessage.textContent = "";
+    }
+
+    function resetForm() {
+      inventoryForm.reset();
+      itemId.value = "";
+      cantidad.value = 1;
+      estado.value = "Disponible";
+      formTitle.textContent = "Registrar equipo";
+      saveBtn.textContent = "Guardar en inventario";
+      cancelEditBtn.style.display = "none";
+    }
+
+    function normalize(value) {
+      return (value || "").toString().trim().toLowerCase();
+    }
+
+    function formatDate(dateString) {
+      if (!dateString) return "";
+      const date = new Date(dateString);
+      return date.toLocaleString("es-ES", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit"
+      });
+    }
+
+    function getStatusClass(value) {
+      const v = normalize(value);
+      if (v === "disponible") return "status-disponible";
+      if (v === "en uso") return "status-en-uso";
+      if (v === "dañado") return "status-danado";
+      if (v === "en reparación") return "status-reparacion";
+      return "status-disponible";
+    }
+
+    function updateStats(data) {
+      totalItems.textContent = data.length;
+      totalQuantity.textContent = data.reduce((sum, item) => sum + (Number(item.cantidad) || 0), 0);
+      availableItems.textContent = data.filter(item => normalize(item.estado) === "disponible").length;
+      repairItems.textContent = data.filter(item => normalize(item.estado) === "en reparación").length;
+    }
+
+    function getFilteredData() {
+      const tipoValue = normalize(searchTipo.value);
+      const marcaValue = normalize(searchMarca.value);
+      const ubicacionValue = normalize(searchUbicacion.value);
+      const estadoValue = normalize(filterEstado.value);
+
+      return inventoryData.filter(item => {
+        const tipoMatch = !tipoValue || normalize(item.tipo_equipo).includes(tipoValue);
+        const marcaMatch = !marcaValue || normalize(item.marca).includes(marcaValue);
+        const ubicacionMatch = !ubicacionValue || normalize(item.ubicacion).includes(ubicacionValue);
+        const estadoMatch = !estadoValue || normalize(item.estado) === estadoValue;
+        return tipoMatch && marcaMatch && ubicacionMatch && estadoMatch;
+      });
+    }
+
+    function renderTable(data) {
+      inventoryTableBody.innerHTML = "";
+
+      if (!data.length) {
+        emptyState.style.display = "block";
+        return;
+      }
+
+      emptyState.style.display = "none";
+
+      data.forEach(item => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${item.tipo_equipo || ""}</td>
+          <td>${item.marca || ""}</td>
+          <td>${item.modelo || ""}</td>
+          <td>${item.numero_serie || ""}</td>
+          <td>${item.cantidad ?? ""}</td>
+          <td><span class="status-badge ${getStatusClass(item.estado)}">${item.estado || ""}</span></td>
+          <td>${item.ubicacion || ""}</td>
+          <td>${item.observaciones || ""}</td>
+          <td>${formatDate(item.created_at)}</td>
+          <td>
+            <div class="row-actions">
+              <button class="action-btn edit-btn" data-edit-id="${item.id}">Editar</button>
+              <button class="action-btn delete-btn" data-delete-id="${item.id}">Eliminar</button>
+            </div>
+          </td>
+        `;
+        inventoryTableBody.appendChild(row);
+      });
+
+      document.querySelectorAll("[data-edit-id]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const id = Number(btn.dataset.editId);
+          const item = inventoryData.find(x => x.id === id);
+          if (!item) return;
+
+          itemId.value = item.id;
+          tipoEquipo.value = item.tipo_equipo || "";
+          marca.value = item.marca || "";
+          modelo.value = item.modelo || "";
+          numeroSerie.value = item.numero_serie || "";
+          cantidad.value = item.cantidad || 1;
+          estado.value = item.estado || "Disponible";
+          ubicacion.value = item.ubicacion || "";
+          observaciones.value = item.observaciones || "";
+
+          formTitle.textContent = "Editar equipo";
+          saveBtn.textContent = "Actualizar inventario";
+          cancelEditBtn.style.display = "block";
+          clearMessages();
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        });
+      });
+
+      document.querySelectorAll("[data-delete-id]").forEach(btn => {
+        btn.addEventListener("click", async () => {
+          const id = Number(btn.dataset.deleteId);
+          const confirmed = confirm("¿Seguro que deseas eliminar este equipo del inventario?");
+          if (!confirmed) return;
+
+          const { error } = await supabase
+            .from("inventario_taller")
+            .delete()
+            .eq("id", id);
+
+          if (error) {
+            showError("No se pudo eliminar el equipo: " + error.message);
+            return;
+          }
+
+          showSuccess("Equipo eliminado correctamente.");
+          await loadInventory();
+        });
+      });
+    }
+
+    function applyFilters() {
+      const filtered = getFilteredData();
+      updateStats(filtered);
+      renderTable(filtered);
+    }
+
+    async function loadInventory() {
+      const { data, error } = await supabase
+        .from("inventario_taller")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      if (error) {
+        showError("No se pudo cargar el inventario: " + error.message);
+        return;
+      }
+
+      inventoryData = data || [];
+      applyFilters();
+    }
+
+    inventoryForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      clearMessages();
+
+      const payload = {
+        tipo_equipo: tipoEquipo.value.trim(),
+        marca: marca.value.trim(),
+        modelo: modelo.value.trim(),
+        numero_serie: numeroSerie.value.trim(),
+        cantidad: Number(cantidad.value),
+        estado: estado.value,
+        ubicacion: ubicacion.value.trim(),
+        observaciones: observaciones.value.trim()
+      };
+
+      if (!payload.tipo_equipo || !payload.marca || !payload.cantidad) {
+        showError("Completa los campos obligatorios.");
+        return;
+      }
+
+      let error;
+
+      if (itemId.value) {
+        ({ error } = await supabase
+          .from("inventario_taller")
+          .update(payload)
+          .eq("id", Number(itemId.value)));
+      } else {
+        ({ error } = await supabase
+          .from("inventario_taller")
+          .insert([payload]));
+      }
+
+      if (error) {
+        showError("No se pudo guardar el inventario: " + error.message);
+        return;
+      }
+
+      showSuccess(itemId.value ? "Equipo actualizado correctamente." : "Equipo guardado correctamente en el inventario.");
+      resetForm();
+      await loadInventory();
+    });
+
+    cancelEditBtn.addEventListener("click", () => {
+      resetForm();
+      clearMessages();
+    });
+
+    applyFiltersBtn.addEventListener("click", applyFilters);
+
+    clearFiltersBtn.addEventListener("click", () => {
+      searchTipo.value = "";
+      searchMarca.value = "";
+      searchUbicacion.value = "";
+      filterEstado.value = "";
+      applyFilters();
+    });
+
+    searchTipo.addEventListener("input", applyFilters);
+    searchMarca.addEventListener("input", applyFilters);
+    searchUbicacion.addEventListener("input", applyFilters);
+    filterEstado.addEventListener("change", applyFilters);
+
+    exportCsvBtn.addEventListener("click", () => {
+      const data = getFilteredData();
+
+      if (!data.length) {
+        alert("No hay datos para exportar.");
+        return;
+      }
+
+      const headers = [
+        "Tipo de equipo",
+        "Marca",
+        "Modelo",
+        "Numero de serie",
+        "Cantidad",
+        "Estado",
+        "Ubicacion",
+        "Observaciones",
+        "Fecha"
+      ];
+
+      const rows = data.map(item => [
+        item.tipo_equipo || "",
+        item.marca || "",
+        item.modelo || "",
+        item.numero_serie || "",
+        item.cantidad ?? "",
+        item.estado || "",
+        item.ubicacion || "",
+        item.observaciones || "",
+        formatDate(item.created_at)
+      ]);
+
+      const csvContent = [headers, ...rows]
+        .map(row => row.map(value => `"${String(value).replace(/"/g, '""')}"`).join(","))
+        .join(",\n");
+
+      const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "inventario_taller.csv";
+      link.click();
+      URL.revokeObjectURL(url);
+    });
+
+    document.addEventListener("DOMContentLoaded", async () => {
+      await loadInventory();
+
+      supabase
+        .channel("inventario-realtime")
+        .on(
+          "postgres_changes",
+          { event: "*", schema: "public", table: "inventario_taller" },
+          async () => {
+            await loadInventory();
+          }
+        )
+        .subscribe();
+    });
+  </script>
+</body>
+</html>

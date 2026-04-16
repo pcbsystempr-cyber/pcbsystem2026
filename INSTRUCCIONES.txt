@@ -1,0 +1,29 @@
+INSTRUCCIONES PARA FONDO ANIMADO "COMPUTEC"
+
+ARCHIVOS CREADOS:
+1. computec-background.html - El fondo animado principal
+2. abrir-fondo.bat - Archivo para abrir automáticamente en pantalla completa
+
+MÉTODOS PARA USAR:
+
+MÉTODO 1 (RECOMENDADO):
+1. Haz doble clic en "abrir-fondo.bat"
+2. Se abrirá automáticamente en pantalla completa
+3. Para cerrar: presiona ALT+F4
+
+MÉTODO 2:
+1. Abre "computec-background.html" en tu navegador
+2. Presiona F11 para pantalla completa
+3. Para cerrar: presiona F11 de nuevo
+
+MÉTODO 3 (PARA FONDO PERMANENTE):
+- Descarga Wallpaper Engine desde Steam (de pago)
+- O usa Rainmeter (gratuito)
+- Configura el programa para usar el archivo HTML
+
+NOTAS:
+- Funciona mejor con Chrome o Edge
+- El archivo .bat intenta detectar tu navegador automáticamente
+- Si no funciona, usa el método 2 manualmente
+
+¡Disfruta tu fondo animado COMPUTEC!

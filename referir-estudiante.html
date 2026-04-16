@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Referir Estudiante - PCB System</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="dark-mode-fix-v2.css?v=2">
+  <link rel="stylesheet" href="dropdown-fix.css">
+  <link rel="stylesheet" href="image-popup.css">
+  <script src="translations.js"></script>
+  <style>
+    :root {
+      --primary: #667eea;
+      --secondary: #764ba2;
+      --bg: #ffffff;
+      --bg-alt: #f8f9fc;
+      --text-main: #1e293b;
+      --text-soft: #64748b;
+      --border-soft: #e2e8f0;
+    }
+
+    body.dark-mode {
+      --bg: #0B1220;
+      --bg-alt: #1a1a2e;
+      --text-main: #E5E7EB;
+      --text-soft: #9CA3AF;
+      --border-soft: #374151;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: var(--bg-alt);
+      color: var(--text-main);
+      line-height: 1.6;
+      padding: 2rem;
+    }
+
+    .referral-container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: var(--bg);
+      padding: 2.5rem;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    }
+
+    body.dark-mode .referral-container {
+      background: rgba(30, 41, 59, 0.95);
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 2rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 2px solid var(--primary);
+    }
+
+    .header h1 {
+      color: var(--primary);
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .header p {
+      color: var(--text-soft);
+    }
+
+    .form-section {
+      margin-bottom: 2rem;
+    }
+
+    .form-section h2 {
+      color: var(--primary);
+      font-size: 1.25rem;
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--border-soft);
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+
+    .form-group {
+      margin-bottom: 1rem;
+    }
+
+    .form-group.full-width {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: var(--text-main);
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid var(--border-soft);
+      border-radius: 8px;
+      font-size: 1rem;
+      font-family: inherit;
+      background: var(--bg);
+      color: var(--text-main);
+    }
+
+    body.dark-mode input,
+    body.dark-mode select,
+    body.dark-mode textarea {
+      background: #1a1a2e;
+      border-color: var(--border-soft);
+      color: var(--text-main);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .checkbox-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .checkbox-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .checkbox-item input {
+      width: auto;
+    }
+
+    .severity-buttons {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .severity-btn {
+      flex: 1;
+      min-width: 120px;
+      padding: 1rem;
+      border: 2px solid var(--border-soft);
+      border-radius: 8px;
+      background: var(--bg);
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.3s;
+    }
+
+    body.dark-mode .severity-btn {
+      background: #1a1a2e;
+    }
+
+    .severity-btn:hover {
+      border-color: var(--primary);
+    }
+
+    .severity-btn.selected {
+      border-color: var(--primary);
+      background: rgba(102, 126, 234, 0.1);
+    }
+
+    .severity-btn.low { border-left: 4px solid #22c55e; }
+    .severity-btn.medium { border-left: 4px solid #f59e0b; }
+    .severity-btn.high { border-left: 4px solid #ef4444; }
+    .severity-btn.urgent { border-left: 4px solid #dc2626; border-width: 4px; }
+
+    .actions {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      margin-top: 2rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border-soft);
+    }
+
+    .btn {
+      padding: 1rem 2rem;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-secondary {
+      background: var(--bg-alt);
+      color: var(--text-main);
+      border: 1px solid var(--border-soft);
+    }
+
+    .btn-secondary:hover {
+      background: var(--border-soft);
+    }
+
+    .info-box {
+      background: rgba(102, 126, 234, 0.1);
+      padding: 1rem;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      border-left: 4px solid var(--primary);
+    }
+
+    .info-box h4 {
+      color: var(--primary);
+      margin-bottom: 0.5rem;
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding: 1rem;
+      }
+      .referral-container {
+        padding: 1.5rem;
+      }
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="referral-container">
+    <div class="header">
+      <h1>📋 Referir Estudiante</h1>
+      <p>Escuela Superior Vocacional Pablo Colón Berdecia</p>
+    </div>
+
+    <form id="referralForm">
+      <!-- Información del Estudiante -->
+      <div class="form-section">
+        <h2>👨‍🎓 Información del Estudiante</h2>
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="studentName">Nombre Completo del Estudiante *</label>
+            <input type="text" id="studentName" name="studentName" required placeholder="Nombre completo">
+          </div>
+          <div class="form-group">
+            <label for="studentID">Número de Estudiante (ID)</label>
+            <input type="text" id="studentID" name="studentID" placeholder="ID del estudiante">
+          </div>
+          <div class="form-group">
+            <label for="grade">Grado *</label>
+            <select id="grade" name="grade" required>
+              <option value="">Seleccionar grado</option>
+              <option value="7">7mo Grado</option>
+              <option value="8">8vo Grado</option>
+              <option value="9">9no Grado</option>
+              <option value="10">10mo Grado</option>
+              <option value="11">11vo Grado</option>
+              <option value="12">12vo Grado</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="homeroom">Salón Hogar (Homeroom) *</label>
+            <input type="text" id="homeroom" name="homeroom" required placeholder="Ej: 7-101">
+          </div>
+        </div>
+      </div>
+
+      <!-- Información del Maestro Referente -->
+      <div class="form-section">
+        <h2>👨‍🏫 Información del Maestro Referente</h2>
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="teacherName">Nombre del Maestro *</label>
+            <input type="text" id="teacherName" name="teacherName" required placeholder="Nombre completo">
+          </div>
+          <div class="form-group">
+            <label for="subject">Materia/Área *</label>
+            <input type="text" id="subject" name="subject" required placeholder="Ej: Inglés, Matemáticas">
+          </div>
+          <div class="form-group">
+            <label for="referralDate">Fecha de Referido *</label>
+            <input type="date" id="referralDate" name="referralDate" required>
+          </div>
+          <div class="form-group">
+            <label for="contactEmail">Correo Electrónico</label>
+            <input type="email" id="contactEmail" name="contactEmail" placeholder="correo@escuela.pr">
+          </div>
+        </div>
+      </div>
+
+      <!-- Tipo de Referido -->
+      <div class="form-section">
+        <h2>🎯 Tipo de Referido</h2>
+        <div class="checkbox-group">
+          <label class="checkbox-item">
+            <input type="checkbox" name="referralType" value="academico">
+            Académico
+          </label>
+          <label class="checkbox-item">
+            <input type="checkbox" name="referralType" value="conducta">
+            Conducta
+          </label>
+          <label class="checkbox-item">
+            <input type="checkbox" name="referralType" value="emocional">
+            Emocional/Social
+          </label>
+          <label class="checkbox-item">
+            <input type="checkbox" name="referralType" value="asistencia">
+            Asistencia
+          </label>
+          <label class="checkbox-item">
+            <input type="checkbox" name="referralType" value="salud">
+            Salud/Enfermería
+          </label>
+          <label class="checkbox-item">
+            <input type="checkbox" name="referralType" value="orientacion">
+            Orientación
+          </label>
+        </div>
+      </div>
+
+      <!-- Descripción del Problema -->
+      <div class="form-section">
+        <h2>📝 Descripción del Problema</h2>
+        <div class="form-group">
+          <label for="problemDescription">Descripción detallada del problema *</label>
+          <textarea id="problemDescription" name="problemDescription" required placeholder="Describa具体情况 del problema que motiva el referido..."></textarea>
+        </div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="startDate">¿Cuándo comenzó el problema?</label>
+            <input type="date" id="startDate" name="startDate">
+          </div>
+          <div class="form-group">
+            <label for="frequency">Frecuencia del problema</label>
+            <select id="frequency" name="frequency">
+              <option value="">Seleccionar</option>
+              <option value="diaria">Diaria</option>
+              <option value="semanal">Semanal</option>
+              <option value="ocasional">Ocasional</option>
+              <option value="esporadica">Esporádica</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Observaciones del Comportamiento -->
+      <div class="form-section">
+        <h2>👁️ Observaciones del Comportamiento</h2>
+        <div class="info-box">
+          <h4>📌 Marque las conductas observadas:</h4>
+        </div>
+        <div class="checkbox-group" style="margin-bottom: 1rem;">
+          <label class="checkbox-item"><input type="checkbox" name="behavior" value="desatencion"> Desatención en clase</label>
+          <label class="checkbox-item"><input type="checkbox" name="behavior" value="interrupciones"> Interrumpe constantemente</label>
+          <label class="checkbox-item"><input type="checkbox" name="behavior" value="agresion"> Agresión física</label>
+          <label class="checkbox-item"><input type="checkbox" name="behavior" value="verbal"> Agresión verbal</label>
+          <label class="checkbox-item"><input type="checkbox" name="behavior" value="ausencias"> Ausencias excesivas</label>
+          <label class="checkbox-item"><input type="checkbox" name="behavior" value="tardanzas"> Tardanzas frecuentes</label>
+          <label class="checkbox-item"><input type="checkbox" name="behavior" value="tareas"> No entrega tareas</label>
+          <label class="checkbox-item"><input type="checkbox" name="behavior" value="rendimiento"> Bajo rendimiento académico</label>
+          <label class="checkbox-item"><input type="checkbox" name="behavior" value="ansiedad"> Muestra ansiedad</label>
+          <label class="checkbox-item"><input type="checkbox" name="behavior" value="tristeza"> Tristeza persistente</label>
+          <label class="checkbox-item"><input type="checkbox" name="behavior" value="aislamiento"> Aislamiento social</label>
+          <label class="checkbox-item"><input type="checkbox" name="behavior" value="cambios"> Cambios de comportamiento</label>
+        </div>
+        <div class="form-group">
+          <label for="otherBehavior">Otras observaciones:</label>
+          <textarea id="otherBehavior" name="otherBehavior" placeholder="Describa otras conductas observadas..."></textarea>
+        </div>
+      </div>
+
+      <!-- Intervenciones Implementadas -->
+      <div class="form-section">
+        <h2>🛠️ Intervenciones Implementadas</h2>
+        <div class="info-box">
+          <h4>📌 Indique qué intervenciones ha尝试ado anteriormente:</h4>
+        </div>
+        <div class="checkbox-group" style="margin-bottom: 1rem;">
+          <label class="checkbox-item"><input type="checkbox" name="intervention" value="conferencia"> Conferencia con el estudiante</label>
+          <label class="checkbox-item"><input type="checkbox" name="intervention" value="padres"> Comunicación con padres/tutores</label>
+          <label class="checkbox-item"><input type="checkbox" name="intervention" value="refuerzo"> Refuerzo positivo</label>
+          <label class="checkbox-item"><input type="checkbox" name="intervention" value="tiempo"> Tiempo fuera/reflect</label>
+          <label class="checkbox-item"><input type="checkbox" name="intervention" value="asignaciones"> Asignaciones extras</label>
+          <label class="checkbox-item"><input type="checkbox" name="intervention" value="acuerdo"> Acuerdo de comportamiento</label>
+          <label class="checkbox-item"><input type="checkbox" name="intervention" value="referido_anterior"> Referido anterior</label>
+          <label class="checkbox-item"><input type="checkbox" name="intervention" value="ninguna"> Ninguna</label>
+        </div>
+        <div class="form-group">
+          <label for="interventionDetails">Detalles de las intervenciones y resultados:</label>
+          <textarea id="interventionDetails" name="interventionDetails" placeholder="Describa las intervenciones que ha implementado y sus resultados..."></textarea>
+        </div>
+      </div>
+
+      <!-- Nivel de Severidad -->
+      <div class="form-section">
+        <h2>⚠️ Nivel de Severidad</h2>
+        <label>Seleccione el nivel de urgencia del referido:</label>
+        <div class="severity-buttons" style="margin-top: 1rem;">
+          <button type="button" class="severity-btn low" onclick="selectSeverity(this, 'bajo')">
+            <strong>Bajo</strong><br><small>Seguimiento routine</small>
+          </button>
+          <button type="button" class="severity-btn medium" onclick="selectSeverity(this, 'medio')">
+            <strong>Medio</strong><br><small>Intervención necesaria</small>
+          </button>
+          <button type="button" class="severity-btn high" onclick="selectSeverity(this, 'alto')">
+            <strong>Alto</strong><br><small>Intervención urgente</small>
+          </button>
+          <button type="button" class="severity-btn urgent" onclick="selectSeverity(this, 'urgente')">
+            <strong>Urgente</strong><br><small>¡Atención inmediata!</small>
+          </button>
+        </div>
+        <input type="hidden" id="severityLevel" name="severityLevel">
+      </div>
+
+      <!-- Acción Solicitada -->
+      <div class="form-section">
+        <h2>📨 Acción Solicitada</h2>
+        <div class="form-group">
+          <label for="actionRequested">¿Qué acción solicita? *</label>
+          <select id="actionRequested" name="actionRequested" required>
+            <option value="">Seleccionar acción</option>
+            <option value="evaluacion">Evaluación/Revisión de caso</option>
+            <option value="citacion">Citación a padres</option>
+            <option value="orientacion">Servicios de Orientación</option>
+            <option value="enfermeria">Referido a Enfermería</option>
+            <option value="disciplina">Proceso Disciplinario</option>
+            <option value="comision">Comisión de Servicios Sociales</option>
+            <option value="otro">Otro (especificar)</option>
+          </select>
+        </div>
+        <div class="form-group" id="otherActionGroup" style="display: none;">
+          <label for="otherAction">Especificar otra acción:</label>
+          <input type="text" id="otherAction" name="otherAction" placeholder="Describa la acción">
+        </div>
+      </div>
+
+      <!-- Información Adicional -->
+      <div class="form-section">
+        <h2>📎 Información Adicional</h2>
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="studentStrengths">Fortalezas del estudiante:</label>
+            <textarea id="studentStrengths" name="studentStrengths" placeholder="¿Cuáles son las fortalezas o habilidades del estudiante?"></textarea>
+          </div>
+          <div class="form-group">
+            <label for="additionalComments">Comentarios adicionales:</label>
+            <textarea id="additionalComments" name="additionalComments" placeholder="Información adicional relevante..."></textarea>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="attachments">¿Desea adjuntar documentación?</label>
+          <input type="file" id="attachments" name="attachments" multiple accept=".pdf,.doc,.docx,.jpg,.png">
+          <small>Formatos aceptados: PDF, DOC, DOCX, JPG, PNG</small>
+        </div>
+      </div>
+
+      <!-- Información Confidencial -->
+      <div class="form-section">
+        <h2>🔒 Información Confidencial</h2>
+        <div class="info-box">
+          <p>Esta información es confidencial y será utilizada únicamente para fines educativos y de protección del estudiante. Los datos proporcionados serán almacenados de forma segura y solo serán compartidos con el personal autorizado.</p>
+        </div>
+        <div class="checkbox-group">
+          <label class="checkbox-item">
+            <input type="checkbox" id="confidential" required>
+            Confirmo que la información proporcionada es correcta y authorize el procesamiento de este referido. *
+          </label>
+        </div>
+      </div>
+
+      <!-- Botones de Acción -->
+      <div class="actions">
+        <button type="button" class="btn btn-secondary" onclick="saveDraft()">💾 Guardar Borrador</button>
+        <button type="submit" class="btn btn-primary">📤 Enviar Referido</button>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    // Establecer fecha actual
+    document.getElementById('referralDate').valueAsDate = new Date();
+
+    // Función para seleccionar severidad
+    function selectSeverity(btn, level) {
+      document.querySelectorAll('.severity-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      document.getElementById('severityLevel').value = level;
+    }
+
+    // Mostrar campo "Otro" cuando se seleccione
+    document.getElementById('actionRequested').addEventListener('change', function() {
+      const otherGroup = document.getElementById('otherActionGroup');
+      otherGroup.style.display = this.value === 'otro' ? 'block' : 'none';
+    });
+
+    // Guardar borrador
+    function saveDraft() {
+      const form = document.getElementById('referralForm');
+      const formData = new FormData(form);
+      const data = {};
+      for (let [key, value] of formData.entries()) {
+        if (data[key]) {
+          if (Array.isArray(data[key])) {
+            data[key].push(value);
+          } else {
+            data[key] = [data[key], value];
+          }
+        } else {
+          data[key] = value;
+        }
+      }
+      localStorage.setItem('referralDraft', JSON.stringify(data));
+      alert('Borrador guardado exitosamente. Puede continuar más tarde.');
+    }
+
+    // Cargar borrador al iniciar
+    window.addEventListener('load', function() {
+      const draft = localStorage.getItem('referralDraft');
+      if (draft && confirm('¿Desea cargar el borrador guardado anteriormente?')) {
+        const data = JSON.parse(draft);
+        for (let key in data) {
+          const input = document.querySelector(`[name="${key}"]`);
+          if (input) {
+            if (input.type === 'checkbox') {
+              const values = Array.isArray(data[key]) ? data[key] : [data[key]];
+              values.forEach(val => {
+                const checkbox = document.querySelector(`[name="${key}"][value="${val}"]`);
+                if (checkbox) checkbox.checked = true;
+              });
+            } else {
+              input.value = data[key];
+            }
+          }
+        }
+      }
+    });
+
+    // Enviar formulario
+    document.getElementById('referralForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      // Validar que se haya seleccionado severidad
+      const severity = document.getElementById('severityLevel').value;
+      if (!severity) {
+        alert('Por favor seleccione el nivel de severidad del referido.');
+        return;
+      }
+
+      // Aquí iría la lógica para enviar el formulario al servidor
+      // Por ahora, mostraremos un mensaje de éxito
+      alert('¡Referido enviado exitosamente! El personal de orientación recibirá la información y contactará según corresponda.');
+      
+      // Limpiar borrador
+      localStorage.removeItem('referralDraft');
+      
+      // Resetear formulario
+      this.reset();
+      document.getElementById('referralDate').valueAsDate = new Date();
+      document.querySelectorAll('.severity-btn').forEach(b => b.classList.remove('selected'));
+    });
+  </script>
+</body>
+</html>

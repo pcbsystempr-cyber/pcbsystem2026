@@ -1,0 +1,30 @@
+GUÍA COMPLETA PARA USAR FONDO COMPUTEC CON RAINMETER
+
+PASO 1: INSTALAR RAINMETER
+1. Ejecuta "descargar-rainmeter.bat" para ir a la página de descarga
+2. Descarga e instala Rainmeter
+3. Reinicia la computadora si es necesario
+
+PASO 2: CONFIGURAR EL FONDO
+1. Después de instalar Rainmeter, copia TODOS los archivos de esta carpeta a:
+   C:\Users\[TuUsuario]\Documents\Rainmeter\Skins\ComputecBackground\
+
+2. Abre Rainmeter (busca "Rainmeter" en el menú Inicio)
+
+3. En Rainmeter:
+   - Haz clic derecho en el ícono de Rainmeter en la bandeja del sistema
+   - Selecciona "Skins"
+   - Busca "ComputecBackground" en la lista
+   - Haz clic en "ComputecBackground.ini"
+   - Selecciona "Load skin"
+
+PASO 3: AJUSTES FINALES
+- El fondo aparecerá inmediatamente
+- Puedes ajustar el tamaño desde la configuración de Rainmeter
+- Para quitarlo: clic derecho en Rainmeter -> Skins -> ComputecBackground -> Unload skin
+
+ARCHIVOS NECESARIOS:
+- computec-background.html (el fondo animado)
+- ComputecBackground.ini (configuración de Rainmeter)
+
+¡Listo! Tendrás tu fondo COMPUTEC animado como fondo de escritorio real.
