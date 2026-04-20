@@ -357,6 +357,7 @@ const translations = {
     '¡Entendido!': '¡Entendido!',
 
     // quienes-somos.html
+    'Conoce nuestra historia, misión y visión': 'Conoce nuestra historia, misión y visión',
     '👋 Bienvenidos': '👋 Bienvenidos',
     'Les damos la más cordial bienvenida a nuestra Escuela Pablo Colón Berdecia del Distrito Escolar de Barranquitas. Nuestra misión es ser colaboradores efectivos en el proceso educativo que se desarrolla en nuestra escuela para garantizarles a todos nuestros estudiantes una educación de excelencia que le permita desarrollar al máximo sus capacidades intelectuales y los valores morales y sociales que necesitan para disfrutar de una mejor calidad de vida.': 'Les damos la más cordial bienvenida a nuestra Escuela Pablo Colón Berdecia del Distrito Escolar de Barranquitas. Nuestra misión es ser colaboradores efectivos en el proceso educativo que se desarrolla en nuestra escuela para garantizarles a todos nuestros estudiantes una educación de excelencia que le permita desarrollar al máximo sus capacidades intelectuales y los valores morales y sociales que necesitan para disfrutar de una mejor calidad de vida.',
     '"Nuestra escuela se compromete a formar ciudadanos responsables y capaces de contribuir positivamente a la sociedad."': '"Nuestra escuela se compromete a formar ciudadanos responsables y capaces de contribuir positivamente a la sociedad."',
@@ -974,6 +975,7 @@ const translations = {
     '¡Entendido!': 'Got it!',
 
     // quienes-somos.html
+    'Conoce nuestra historia, misión y visión': 'Learn about our history, mission and vision',
     '👋 Bienvenidos': '👋 Welcome',
     'Les damos la más cordial bienvenida a nuestra Escuela Pablo Colón Berdecia del Distrito Escolar de Barranquitas. Nuestra misión es ser colaboradores efectivos en el proceso educativo que se desarrolla en nuestra escuela para garantizarles a todos nuestros estudiantes una educación de excelencia que le permita desarrollar al máximo sus capacidades intelectuales y los valores morales y sociales que necesitan para disfrutar de una mejor calidad de vida.': 'We warmly welcome you to our Pablo Colón Berdecia School of the Barranquitas School District. Our mission is to be effective collaborators in the educational process at our school, guaranteeing all our students an excellent education that allows them to fully develop their intellectual capacities and the moral and social values they need to enjoy a better quality of life.',
     '"Nuestra escuela se compromete a formar ciudadanos responsables y capaces de contribuir positivamente a la sociedad."': '"Our school is committed to educating responsible citizens capable of contributing positively to society."',
