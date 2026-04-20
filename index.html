@@ -1842,6 +1842,7 @@
   <script src="js/eventos-escolares.js"></script>
 
   <script src="js/services-manager.js"></script>
+  <script src="js/novedades-db.js"></script>
   <script src="script.js"></script>
   <script src="image-popup.js"></script>
   <!-- Notification Bot removed as requested -->
@@ -1893,28 +1894,33 @@
       }
     });
 
-    // Show promo after 3 seconds with Dynamic Content
-    setTimeout(() => {
-      const latestNews = window.serviceManager ? window.serviceManager.getLatestNews() : null;
-      const popup = document.getElementById('promoPopup');
+    // Show promo after 3 seconds — lee la novedad activa desde Supabase
+    setTimeout(async () => {
+      const popup        = document.getElementById('promoPopup');
       const expandedPopup = document.getElementById('promoPopupExpanded');
 
-      if (latestNews) {
-        // Update small popup content
-        popup.querySelector('.promo-title').textContent = latestNews.title;
-        popup.querySelector('.promo-preview').textContent = latestNews.message;
+      try {
+        const latestNews = window.novedadesDB ? await window.novedadesDB.getLatest() : null;
 
-        // Update expanded popup content
-        expandedPopup.querySelector('.promo-expanded-title').textContent = latestNews.title;
-        expandedPopup.querySelector('.promo-expanded-message').textContent = latestNews.message;
+        if (latestNews) {
+          // Actualizar popup pequeño
+          popup.querySelector('.promo-title').textContent   = latestNews.title;
+          popup.querySelector('.promo-preview').textContent = latestNews.message;
 
-        const expandedImg = expandedPopup.querySelector('.promo-expanded-img');
-        if (latestNews.imageUrl) {
-          expandedImg.src = latestNews.imageUrl;
-          expandedImg.style.display = 'block';
-        } else {
-          expandedImg.style.display = 'none';
+          // Actualizar popup expandido
+          expandedPopup.querySelector('.promo-expanded-title').textContent   = latestNews.title;
+          expandedPopup.querySelector('.promo-expanded-message').textContent = latestNews.message;
+
+          const expandedImg = expandedPopup.querySelector('.promo-expanded-img');
+          if (latestNews.image_url) {
+            expandedImg.src          = latestNews.image_url;
+            expandedImg.style.display = 'block';
+          } else {
+            expandedImg.style.display = 'none';
+          }
         }
+      } catch (e) {
+        console.warn('No se pudo cargar la novedad desde Supabase:', e);
       }
 
       popup.classList.add('active');
