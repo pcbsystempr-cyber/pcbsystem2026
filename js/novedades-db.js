@@ -9,7 +9,9 @@
 
   const SUPABASE_URL = 'https://micoqkitypworxporqqf.supabase.co/rest/v1/';
   const SUPABASE_KEY = 'sb_publishable_CKNU73KZt712SV4Y5MFhCw_is4mQpdR';
-  const BASE = SUPABASE_URL + '/rest/v1/novedades';
+  // SUPABASE_URL ya puede incluir /rest/v1/ — se normaliza para evitar rutas duplicadas
+  const _base = SUPABASE_URL.replace(/\/+$/, '');
+  const BASE  = _base.includes('/rest/v1') ? _base + '/novedades' : _base + '/rest/v1/novedades';
 
   const HEADERS = {
     'apikey': SUPABASE_KEY,
