@@ -7,8 +7,8 @@
 (function () {
   'use strict';
 
-  const SUPABASE_URL = 'https://alqdcxtzwximorkkyecp.supabase.co';
-  const SUPABASE_KEY = 'sb_publishable_V6kHfLnjsyODWSgJXJ9igg_gv1QPebb';
+  const SUPABASE_URL = 'https://micoqkitypworxporqqf.supabase.co/rest/v1/';
+  const SUPABASE_KEY = 'sb_publishable_CKNU73KZt712SV4Y5MFhCw_is4mQpdR';
   const BASE = SUPABASE_URL + '/rest/v1/novedades';
 
   const HEADERS = {
