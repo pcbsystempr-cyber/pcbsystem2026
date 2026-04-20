@@ -121,6 +121,7 @@
       }
     }
   </style>
+  <script src="translations.js"></script>
 </head>
 
 <body>
@@ -197,25 +198,18 @@
         </div>
       </div>
 
-      <!-- Hamburger Menu Button -->
-      <button class="hamburger-menu" id="hamburgerBtn" aria-label="Menu">
-        <span></span>
-        <span></span>
-        <span></span>
-      </button>
-
-      <button class="menu-toggle" aria-label="Toggle menu">
-        <span></span>
-        <span></span>
-        <span></span>
-      </button>
-      <nav class="main-nav">
-        <ul>
-          <li><a href="index.html" data-translate="Inicio">Inicio</a></li>
-          <li><a href="index.html#servicios" data-translate="Servicios">Servicios</a></li>
-          <li><a href="index.html#contacto" data-translate="Contacto">Contacto</a></li>
-        </ul>
-      </nav>
+      <div style="display:flex;align-items:center;gap:1rem;">
+        <nav class="main-nav">
+          <ul>
+            <li><a href="index.html" data-translate="Inicio">Inicio</a></li>
+            <li><a href="index.html#portal-padres" data-translate="Portal de Padres">Portal de Padres</a></li>
+            <li><a href="index.html#contacto" data-translate="Contacto">Contacto</a></li>
+          </ul>
+        </nav>
+        <button class="hamburger-menu" id="hamburgerBtn" aria-label="Abrir menú">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
     </div>
   </header>
 
@@ -385,12 +379,11 @@
     <div
       style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 50px 40px; border-radius: 20px; text-align: center; margin-bottom: 50px; box-shadow: 0 10px 40px rgba(0,0,0,0.1);">
       <div style="font-size: 3rem; margin-bottom: 15px;">👨‍👩‍👧‍👦</div>
-      <h1 style="font-size: 2.2rem; margin-bottom: 15px; font-weight: 700;">Bienvenido al Portal de Familias PCB</h1>
-      <p style="font-size: 1.2rem; max-width: 800px; margin: 0 auto 20px; line-height: 1.6; opacity: 0.95;">
-        Este es tu espacio digital para conectar con la escuela, gestionar trámites, acceder a formación y participar en
-        nuestra comunidad educativa.
+      <h1 style="font-size: 2.2rem; margin-bottom: 15px; font-weight: 700;" data-translate="Bienvenido al Portal de Familias PCB">Bienvenido al Portal de Familias PCB</h1>
+      <p style="font-size: 1.2rem; max-width: 800px; margin: 0 auto 20px; line-height: 1.6; opacity: 0.95;" data-translate="Este es tu espacio digital para conectar con la escuela, gestionar trámites, acceder a formación y participar en nuestra comunidad educativa.">
+        Este es tu espacio digital para conectar con la escuela, gestionar trámites, acceder a formación y participar en nuestra comunidad educativa.
       </p>
-      <p style="font-size: 1rem; opacity: 0.9; font-style: italic;">
+      <p style="font-size: 1rem; opacity: 0.9; font-style: italic;" data-translate="💙 Estamos aquí para apoyarte en cada paso del camino educativo de tu hijo/a">
         💙 Estamos aquí para apoyarte en cada paso del camino educativo de tu hijo/a
       </p>
     </div>
@@ -401,25 +394,25 @@
         style="display: flex; align-items: center; gap: 15px; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 3px solid #3498db;">
         <div style="font-size: 2.5rem; color: #3498db;">📚</div>
         <div>
-          <h2 style="color: #2c3e50; margin: 0; font-size: 1.8rem;">Gestiones Académicas</h2>
-          <p style="color: #7f8c8d; margin: 5px 0 0 0;">Documentos, matrícula y seguimiento del progreso</p>
+          <h2 style="color: #2c3e50; margin: 0; font-size: 1.8rem;" data-translate="Gestiones Académicas">Gestiones Académicas</h2>
+          <p style="color: #7f8c8d; margin: 5px 0 0 0;" data-translate="Documentos, matrícula y seguimiento del progreso">Documentos, matrícula y seguimiento del progreso</p>
         </div>
       </div>
       <div class="portal-grid">
         <div class="action-card primary" onclick="window.location.href='solicitudes.html'">
           <div class="icon-circle" style="color: #3498db;"><i class="fas fa-file-alt"></i></div>
-          <h3>Solicitar Documentos</h3>
-          <p>Certificaciones, cartas y transcripciones sin visitar la escuela.</p>
+          <h3 data-translate="Solicitar Documentos">Solicitar Documentos</h3>
+          <p data-translate="Certificaciones, cartas y transcripciones sin visitar la escuela.">Certificaciones, cartas y transcripciones sin visitar la escuela.</p>
         </div>
         <div class="action-card primary" onclick="window.location.href='https://mimatricula.dde.pr/sign-in'">
           <div class="icon-circle" style="color: #3498db;"><i class="fas fa-user-plus"></i></div>
-          <h3>Matrícula en Línea</h3>
-          <p>Proceso de admisión y actualización de datos.</p>
+          <h3 data-translate="Matrícula en Línea">Matrícula en Línea</h3>
+          <p data-translate="Proceso de admisión y actualización de datos.">Proceso de admisión y actualización de datos.</p>
         </div>
         <div class="action-card primary" onclick="window.location.href='https://informacionestudiantil.dde.pr/public/home.html'">
           <div class="icon-circle" style="color: #3498db;"><i class="fas fa-chart-line"></i></div>
-          <h3>Progreso Académico</h3>
-          <p>Seguimiento general del desempeño de tu hijo/a.</p>
+          <h3 data-translate="Progreso Académico">Progreso Académico</h3>
+          <p data-translate="Seguimiento general del desempeño de tu hijo/a.">Seguimiento general del desempeño de tu hijo/a.</p>
         </div>
       </div>
     </div>
@@ -430,20 +423,20 @@
         style="display: flex; align-items: center; gap: 15px; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 3px solid #2ecc71;">
         <div style="font-size: 2.5rem; color: #2ecc71;">💬</div>
         <div>
-          <h2 style="color: #2c3e50; margin: 0; font-size: 1.8rem;">Comunicación Escuela-Familia</h2>
-          <p style="color: #7f8c8d; margin: 5px 0 0 0;">Mantente conectado con maestros y personal</p>
+          <h2 style="color: #2c3e50; margin: 0; font-size: 1.8rem;" data-translate="Comunicación Escuela-Familia">Comunicación Escuela-Familia</h2>
+          <p style="color: #7f8c8d; margin: 5px 0 0 0;" data-translate="Mantente conectado con maestros y personal">Mantente conectado con maestros y personal</p>
         </div>
       </div>
       <div class="portal-grid">
         <div class="action-card success" onclick="window.location.href='correos-maestros-tabla.html'">
           <div class="icon-circle" style="color: #2ecc71;"><i class="fas fa-calendar-alt"></i></div>
-          <h3>Citas con Personal</h3>
-          <p>Coordine reuniones con maestros, directores u orientadores.</p>
+          <h3 data-translate="Citas con Personal">Citas con Personal</h3>
+          <p data-translate="Coordine reuniones con maestros, directores u orientadores.">Coordine reuniones con maestros, directores u orientadores.</p>
         </div>
         <div class="action-card success" onclick="window.location.href='promociones.html'">
           <div class="icon-circle" style="color: #2ecc71;"><i class="fas fa-bell"></i></div>
-          <h3>Notificaciones</h3>
-          <p>Avisos importantes y recordatorios escolares.</p>
+          <h3 data-translate="Notificaciones">Notificaciones</h3>
+          <p data-translate="Avisos importantes y recordatorios escolares.">Avisos importantes y recordatorios escolares.</p>
         </div>
       </div>
     </div>
@@ -454,28 +447,28 @@
         style="display: flex; align-items: center; gap: 15px; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 3px solid #9b59b6;">
         <div style="font-size: 2.5rem; color: #9b59b6;">🎓</div>
         <div>
-          <h2 style="color: #2c3e50; margin: 0; font-size: 1.8rem;">Formación y Apoyo</h2>
-          <p style="color: #7f8c8d; margin: 5px 0 0 0;">Talleres, certificaciones y educación continua</p>
+          <h2 style="color: #2c3e50; margin: 0; font-size: 1.8rem;" data-translate="Formación y Apoyo">Formación y Apoyo</h2>
+          <p style="color: #7f8c8d; margin: 5px 0 0 0;" data-translate="Talleres, certificaciones y educación continua">Talleres, certificaciones y educación continua</p>
         </div>
       </div>
       <div class="portal-grid">
         <div class="action-card" style="border-top-color: #9b59b6;"
           onclick="window.location.href='talleres-padres.html'">
           <div class="icon-circle" style="color: #9b59b6;"><i class="fas fa-chalkboard-teacher"></i></div>
-          <h3>Talleres para Padres</h3>
-          <p>Tecnología, apoyo académico y bienestar familiar.</p>
+          <h3 data-translate="Talleres para Padres">Talleres para Padres</h3>
+          <p data-translate="Tecnología, apoyo académico y bienestar familiar.">Tecnología, apoyo académico y bienestar familiar.</p>
         </div>
         <div class="action-card" style="border-top-color: #9b59b6;"
           onclick="window.location.href='certificaciones-padres.html'">
           <div class="icon-circle" style="color: #9b59b6;"><i class="fas fa-certificate"></i></div>
-          <h3>Certificaciones Digitales</h3>
-          <p>Micro-certificaciones verificables con código QR.</p>
+          <h3 data-translate="Certificaciones Digitales">Certificaciones Digitales</h3>
+          <p data-translate="Micro-certificaciones verificables con código QR.">Micro-certificaciones verificables con código QR.</p>
         </div>
         <div class="action-card" style="border-top-color: #9b59b6;"
           onclick="window.location.href='educacion-comunitaria.html'">
           <div class="icon-circle" style="color: #9b59b6;"><i class="fas fa-laptop"></i></div>
-          <h3>Educación Continua</h3>
-          <p>Cursos prácticos: computadoras, resumé, empleo.</p>
+          <h3 data-translate="Educación Continua">Educación Continua</h3>
+          <p data-translate="Cursos prácticos: computadoras, resumé, empleo.">Cursos prácticos: computadoras, resumé, empleo.</p>
         </div>
       </div>
     </div>
@@ -486,25 +479,25 @@
         style="display: flex; align-items: center; gap: 15px; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 3px solid #e67e22;">
         <div style="font-size: 2.5rem; color: #e67e22;">🤝</div>
         <div>
-          <h2 style="color: #2c3e50; margin: 0; font-size: 1.8rem;">Participación Comunitaria</h2>
-          <p style="color: #7f8c8d; margin: 5px 0 0 0;">Únete, colabora y fortalece nuestra comunidad</p>
+          <h2 style="color: #2c3e50; margin: 0; font-size: 1.8rem;" data-translate="Participación Comunitaria">Participación Comunitaria</h2>
+          <p style="color: #7f8c8d; margin: 5px 0 0 0;" data-translate="Únete, colabora y fortalece nuestra comunidad">Únete, colabora y fortalece nuestra comunidad</p>
         </div>
       </div>
       <div class="portal-grid">
         <div class="action-card warning" onclick="window.location.href='participacion-comunitaria.html'">
           <div class="icon-circle" style="color: #e67e22;"><i class="fas fa-hands-helping"></i></div>
-          <h3>Voluntariado</h3>
-          <p>Ofrece tu tiempo en biblioteca, eventos o mentoría.</p>
+          <h3 data-translate="Voluntariado">Voluntariado</h3>
+          <p data-translate="Ofrece tu tiempo en biblioteca, eventos o mentoría.">Ofrece tu tiempo en biblioteca, eventos o mentoría.</p>
         </div>
         <div class="action-card warning" onclick="window.location.href='participacion-comunitaria.html#charlas'">
           <div class="icon-circle" style="color: #e67e22;"><i class="fas fa-microphone"></i></div>
-          <h3>Ofrecer Charlas</h3>
-          <p>Comparte tu profesión, hobby o experiencia.</p>
+          <h3 data-translate="Ofrecer Charlas">Ofrecer Charlas</h3>
+          <p data-translate="Comparte tu profesión, hobby o experiencia.">Comparte tu profesión, hobby o experiencia.</p>
         </div>
         <div class="action-card warning" onclick="window.location.href='participacion-comunitaria.html#eventos'">
           <div class="icon-circle" style="color: #e67e22;"><i class="fas fa-calendar-check"></i></div>
-          <h3>Eventos Escolares</h3>
-          <p>Apoya y participa en actividades de la escuela.</p>
+          <h3 data-translate="Eventos Escolares">Eventos Escolares</h3>
+          <p data-translate="Apoya y participa en actividades de la escuela.">Apoya y participa en actividades de la escuela.</p>
         </div>
       </div>
     </div>
@@ -512,38 +505,38 @@
     <!-- Formulario de Mensajería (Expandible) -->
     <div class="message-box" id="parentMessageBox">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-        <h2 style="color: #2c3e50;"><i class="fas fa-paper-plane"></i> Enviar Mensaje a la Escuela</h2>
+        <h2 style="color: #2c3e50;" data-translate="Enviar Mensaje a la Escuela"><i class="fas fa-paper-plane"></i> Enviar Mensaje a la Escuela</h2>
         <button class="btn btn-secondary" onclick="toggleMessageBox()" style="padding: 5px 15px;">X</button>
       </div>
 
       <form id="parentMessageForm">
         <div class="grid-2" style="gap: 20px;">
           <div class="form-group">
-            <label class="form-label">Nombre del Padre/Madre</label>
+            <label class="form-label" data-translate="Nombre del Padre/Madre">Nombre del Padre/Madre</label>
             <input type="text" name="parentName" class="futuristic-input" required>
           </div>
           <div class="form-group">
-            <label class="form-label">Nombre del Estudiante</label>
+            <label class="form-label" data-translate="Nombre del Estudiante">Nombre del Estudiante</label>
             <input type="text" name="studentName" class="futuristic-input" required>
           </div>
         </div>
 
         <div class="form-group">
-          <label class="form-label">Tipo de Mensaje</label>
+          <label class="form-label" data-translate="Tipo de Mensaje">Tipo de Mensaje</label>
           <select name="type" class="futuristic-input">
-            <option value="ausencia">Justificación de Ausencia</option>
-            <option value="duda">Duda Académica</option>
-            <option value="queja">Queja o Sugerencia</option>
-            <option value="otro">Otro</option>
+            <option value="ausencia" data-translate="Justificación de Ausencia">Justificación de Ausencia</option>
+            <option value="duda" data-translate="Duda Académica">Duda Académica</option>
+            <option value="queja" data-translate="Queja o Sugerencia">Queja o Sugerencia</option>
+            <option value="otro" data-translate="Otro">Otro</option>
           </select>
         </div>
 
         <div class="form-group">
-          <label class="form-label">Mensaje</label>
+          <label class="form-label" data-translate="Mensaje">Mensaje</label>
           <textarea name="message" class="futuristic-input" rows="4" required></textarea>
         </div>
 
-        <button type="submit" class="futuristic-btn" style="width: 100%;">Enviar Mensaje</button>
+        <button type="submit" class="futuristic-btn" style="width: 100%;" data-translate="Enviar Mensaje">Enviar Mensaje</button>
       </form>
     </div>
 

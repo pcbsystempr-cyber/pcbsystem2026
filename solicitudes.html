@@ -237,6 +237,7 @@
       color: #38BDF8 !important;
     }
   </style>
+  <script src="translations.js"></script>
 </head>
 
 <body>
@@ -280,25 +281,18 @@
         </div>
       </div>
 
-      <!-- Hamburger Menu Button -->
-      <button class="hamburger-menu" id="hamburgerBtn" aria-label="Menu">
-        <span></span>
-        <span></span>
-        <span></span>
-      </button>
-
-      <button class="menu-toggle" aria-label="Toggle menu">
-        <span></span>
-        <span></span>
-        <span></span>
-      </button>
-      <nav class="main-nav">
-        <ul>
-          <li><a href="index.html" data-translate="Inicio">Inicio</a></li>
-          <li><a href="index.html#servicios" data-translate="Servicios">Servicios</a></li>
-          <li><a href="index.html#contacto" data-translate="Contacto">Contacto</a></li>
-        </ul>
-      </nav>
+      <div style="display:flex;align-items:center;gap:1rem;">
+        <nav class="main-nav">
+          <ul>
+            <li><a href="index.html" data-translate="Inicio">Inicio</a></li>
+            <li><a href="index.html#servicios" data-translate="Servicios">Servicios</a></li>
+            <li><a href="index.html#contacto" data-translate="Contacto">Contacto</a></li>
+          </ul>
+        </nav>
+        <button class="hamburger-menu" id="hamburgerBtn" aria-label="Abrir menú">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
     </div>
   </header>
 

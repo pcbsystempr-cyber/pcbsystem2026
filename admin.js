@@ -28,6 +28,16 @@
       title: 'Gestión de Novedades',
       folder: null,
       page: null
+    },
+    talleres: {
+      title: 'Talleres para Padres',
+      folder: null,
+      page: 'talleres-padres.html'
+    },
+    certificaciones: {
+      title: 'Certificaciones Online',
+      folder: null,
+      page: 'certificaciones-padres.html'
     }
   };
 
@@ -323,55 +333,63 @@
       btn.classList.toggle('active', btn.dataset.section === section);
     });
 
-    // Update title
+    // Update title & subtitle
     sectionTitle.textContent = SECTIONS[section].title;
+    const subtitles = {
+      comedor: 'Administra las imágenes y menú del comedor escolar',
+      promociones: 'Gestiona las promociones e inscripciones visibles en el sitio',
+      avisos: 'Publicación y edición de avisos institucionales',
+      bot: 'Selecciona qué avisos muestra el bot flotante del sitio',
+      novedades: 'La novedad más reciente aparecerá en el popup del portal',
+      talleres: 'Crea y edita talleres para padres — visibles en talleres-padres.html',
+      certificaciones: 'Crea y edita certificaciones online — visibles en certificaciones-padres.html'
+    };
+    const subtitleEl = document.getElementById('sectionSubtitle');
+    if (subtitleEl) subtitleEl.textContent = subtitles[section] || '';
 
-    // Show/hide buttons based on section
-    if (section === 'comedor') {
-      btnEditMenu.style.display = 'inline-block';
-      btnAddImage.style.display = 'inline-block';
-    } else if (section === 'bot' || section === 'novedades') {
-      btnEditMenu.style.display = 'none';
-      btnAddImage.style.display = 'none';
-    } else {
-      btnEditMenu.style.display = 'none';
-      btnAddImage.style.display = 'inline-block';
-    }
+    // Show/hide topbar buttons
+    const gallerySections = ['comedor', 'promociones', 'avisos'];
+    btnEditMenu.style.display = section === 'comedor' ? 'inline-flex' : 'none';
+    btnAddImage.style.display = gallerySections.includes(section) ? 'inline-flex' : 'none';
 
-    // Show/hide sections
+    // Fetch extra sections
+    const talleresSection = document.getElementById('talleresSection');
+    const certificacionesSection = document.getElementById('certificacionesSection');
+
+    // Hide all special sections
+    botConfigSection.style.display = 'none';
+    recomendacionesAdminSection.style.display = 'none';
+    novedadesSection.style.display = 'none';
+    if (talleresSection) talleresSection.style.display = 'none';
+    if (certificacionesSection) certificacionesSection.style.display = 'none';
+    galleryGrid.style.display = 'none';
+    emptyState.style.display = 'none';
+
     if (section === 'bot') {
-      galleryGrid.style.display = 'none';
-      emptyState.style.display = 'none';
       botConfigSection.style.display = 'block';
-      recomendacionesAdminSection.style.display = 'none';
-      novedadesSection.style.display = 'none';
       renderBotConfig();
     } else if (section === 'novedades') {
-      galleryGrid.style.display = 'none';
-      emptyState.style.display = 'none';
-      botConfigSection.style.display = 'none';
-      recomendacionesAdminSection.style.display = 'none';
       novedadesSection.style.display = 'block';
       renderNovedades();
+    } else if (section === 'talleres') {
+      if (talleresSection) talleresSection.style.display = 'block';
+      renderTalleres();
+    } else if (section === 'certificaciones') {
+      if (certificacionesSection) certificacionesSection.style.display = 'block';
+      renderCertificaciones();
     } else if (section === 'comedor') {
       galleryGrid.style.display = 'grid';
-      botConfigSection.style.display = 'none';
       recomendacionesAdminSection.style.display = 'block';
-      novedadesSection.style.display = 'none';
       renderRecomendaciones();
+      renderGallery();
     } else {
       galleryGrid.style.display = 'grid';
-      botConfigSection.style.display = 'none';
-      recomendacionesAdminSection.style.display = 'none';
-      novedadesSection.style.display = 'none';
-    }
-
-    // Hide forms and render gallery
-    hideUploadForm();
-    hideMenuEditor();
-    if (section !== 'bot') {
       renderGallery();
     }
+
+    hideUploadForm();
+    hideMenuEditor();
+    updateStats();
   }
 
   // Show upload form
@@ -1145,6 +1163,142 @@
     }
   };
 
+  // ══════════════════════════════════════════════
+  //  TALLERES PARA PADRES — CRUD
+  // ══════════════════════════════════════════════
+  function getTalleres() {
+    try { return JSON.parse(localStorage.getItem('pcb_talleres') || '[]'); } catch(e) { return []; }
+  }
+  function saveTalleres(list) {
+    localStorage.setItem('pcb_talleres', JSON.stringify(list));
+    updateStats();
+  }
+
+  function renderTalleres() {
+    const list = getTalleres();
+    const container = document.getElementById('talleresList');
+    if (!container) return;
+    if (list.length === 0) {
+      container.innerHTML = '<div class="empty-state"><div class="empty-icon">🎓</div><h3>No hay talleres</h3><p>Agrega el primer taller usando el formulario de arriba</p></div>';
+      return;
+    }
+    const modalityMap = { virtual:'🖥️ Virtual', presencial:'🏫 Presencial', hibrido:'🔀 Híbrido' };
+    const badgeMap = { virtual:'badge-virtual', presencial:'badge-presencial', hibrido:'badge-hibrido' };
+    container.innerHTML = list.map((t, i) => `
+      <div class="item-row">
+        <div class="item-row-info">
+          <h4>${t.nombre}</h4>
+          <p>${t.instructor ? t.instructor + ' · ' : ''}${t.fecha || ''} ${t.duracion ? '· ' + t.duracion : ''}</p>
+        </div>
+        <span class="item-badge ${badgeMap[t.modalidad] || 'badge-virtual'}">${modalityMap[t.modalidad] || t.modalidad}</span>
+        <div class="item-row-actions">
+          <button class="btn btn-secondary btn-sm" onclick="adminApp.editTaller(${i})">✏️ Editar</button>
+          <button class="btn btn-danger btn-sm" onclick="adminApp.deleteTaller(${i})">🗑️</button>
+        </div>
+      </div>`).join('');
+  }
+
+  function editTaller(index) {
+    const list = getTalleres();
+    const t = list[index];
+    if (!t) return;
+    document.getElementById('tallerEditId').value = index;
+    document.getElementById('tallerNombre').value = t.nombre || '';
+    document.getElementById('tallerInstructor').value = t.instructor || '';
+    document.getElementById('tallerDescripcion').value = t.descripcion || '';
+    document.getElementById('tallerCategoria').value = t.categoria || 'tecnologia';
+    document.getElementById('tallerModalidad').value = t.modalidad || 'virtual';
+    document.getElementById('tallerFecha').value = t.fecha || '';
+    document.getElementById('tallerDuracion').value = t.duracion || '';
+    document.getElementById('tallerCupos').value = t.cupos || '';
+    document.getElementById('tallerImagen').value = t.imagen || '';
+    document.getElementById('tallerEnlace').value = t.enlace || '';
+    document.getElementById('tallerForm').scrollIntoView({ behavior: 'smooth' });
+  }
+
+  function deleteTaller(index) {
+    if (!confirm('¿Eliminar este taller?')) return;
+    const list = getTalleres();
+    list.splice(index, 1);
+    saveTalleres(list);
+    renderTalleres();
+  }
+
+  // ══════════════════════════════════════════════
+  //  CERTIFICACIONES ONLINE — CRUD
+  // ══════════════════════════════════════════════
+  function getCertificaciones() {
+    try { return JSON.parse(localStorage.getItem('pcb_certificaciones') || '[]'); } catch(e) { return []; }
+  }
+  function saveCertificaciones(list) {
+    localStorage.setItem('pcb_certificaciones', JSON.stringify(list));
+    updateStats();
+  }
+
+  function renderCertificaciones() {
+    const list = getCertificaciones();
+    const container = document.getElementById('certsList');
+    if (!container) return;
+    if (list.length === 0) {
+      container.innerHTML = '<div class="empty-state"><div class="empty-icon">🏆</div><h3>No hay certificaciones</h3><p>Agrega la primera certificación usando el formulario de arriba</p></div>';
+      return;
+    }
+    const formatoMap = { enlinea:'🌐 En línea', grabado:'🎥 Grabado', hibrido:'🔀 Híbrido' };
+    const badgeMap = { enlinea:'badge-enlinea', grabado:'badge-grabado', hibrido:'badge-hibrido' };
+    container.innerHTML = list.map((c, i) => `
+      <div class="item-row">
+        <div class="item-row-info">
+          <h4>${c.nombre}</h4>
+          <p>${c.proveedor ? c.proveedor + ' · ' : ''}${c.duracion || ''} ${c.precio ? '· ' + c.precio : ''}</p>
+        </div>
+        <span class="item-badge ${badgeMap[c.formato] || 'badge-enlinea'}">${formatoMap[c.formato] || c.formato}</span>
+        <div class="item-row-actions">
+          <button class="btn btn-secondary btn-sm" onclick="adminApp.editCert(${i})">✏️ Editar</button>
+          <button class="btn btn-danger btn-sm" onclick="adminApp.deleteCert(${i})">🗑️</button>
+        </div>
+      </div>`).join('');
+  }
+
+  function editCert(index) {
+    const list = getCertificaciones();
+    const c = list[index];
+    if (!c) return;
+    document.getElementById('certEditId').value = index;
+    document.getElementById('certNombre').value = c.nombre || '';
+    document.getElementById('certProveedor').value = c.proveedor || '';
+    document.getElementById('certDescripcion').value = c.descripcion || '';
+    document.getElementById('certDuracion').value = c.duracion || '';
+    document.getElementById('certNivel').value = c.nivel || 'principiante';
+    document.getElementById('certFormato').value = c.formato || 'enlinea';
+    document.getElementById('certPrecio').value = c.precio || '';
+    document.getElementById('certEnlace').value = c.enlace || '';
+    document.getElementById('certImagen').value = c.imagen || '';
+    document.getElementById('certForm').scrollIntoView({ behavior: 'smooth' });
+  }
+
+  function deleteCert(index) {
+    if (!confirm('¿Eliminar esta certificación?')) return;
+    const list = getCertificaciones();
+    list.splice(index, 1);
+    saveCertificaciones(list);
+    renderCertificaciones();
+  }
+
+  // ══════════════════════════════════════════════
+  //  STATS
+  // ══════════════════════════════════════════════
+  function updateStats() {
+    const data = contentData || {};
+    const promos = (data.promociones || []).length;
+    const avisos = (data.avisos || []).length;
+    const talleres = getTalleres().length;
+    const certs = getCertificaciones().length;
+    const sP = document.getElementById('statPromos'); if (sP) sP.textContent = promos;
+    const sA = document.getElementById('statAvisos'); if (sA) sA.textContent = avisos;
+    const sT = document.getElementById('statTalleres'); if (sT) sT.textContent = talleres;
+    const sC = document.getElementById('statCerts'); if (sC) sC.textContent = certs;
+  }
+
   // Export functions for global access
   window.adminApp = {
     deleteImage,
@@ -1155,8 +1309,98 @@
     editNews,
     editBotItem,
     deleteBotItem,
-    editGalleryItem
+    editGalleryItem,
+    editTaller,
+    deleteTaller,
+    editCert,
+    deleteCert
   };
+
+  // ── Talleres form submit ──
+  document.addEventListener('DOMContentLoaded', function() {
+    const tallerForm = document.getElementById('tallerForm');
+    if (tallerForm) {
+      tallerForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const editId = document.getElementById('tallerEditId').value;
+        const taller = {
+          nombre: document.getElementById('tallerNombre').value.trim(),
+          instructor: document.getElementById('tallerInstructor').value.trim(),
+          descripcion: document.getElementById('tallerDescripcion').value.trim(),
+          categoria: document.getElementById('tallerCategoria').value,
+          modalidad: document.getElementById('tallerModalidad').value,
+          fecha: document.getElementById('tallerFecha').value,
+          duracion: document.getElementById('tallerDuracion').value.trim(),
+          cupos: document.getElementById('tallerCupos').value,
+          imagen: document.getElementById('tallerImagen').value.trim(),
+          enlace: document.getElementById('tallerEnlace').value.trim(),
+          id: editId !== '' ? getTalleres()[parseInt(editId)]?.id : ('t_' + Date.now())
+        };
+        const list = getTalleres();
+        if (editId !== '') { list[parseInt(editId)] = taller; }
+        else { list.push(taller); }
+        saveTalleres(list);
+        tallerForm.reset();
+        document.getElementById('tallerEditId').value = '';
+        renderTalleres();
+        alert('✅ Taller guardado correctamente.');
+      });
+      document.getElementById('btnCancelTaller').addEventListener('click', function() {
+        tallerForm.reset();
+        document.getElementById('tallerEditId').value = '';
+      });
+    }
+
+    // ── Certificaciones form submit ──
+    const certForm = document.getElementById('certForm');
+    if (certForm) {
+      certForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const editId = document.getElementById('certEditId').value;
+        const cert = {
+          nombre: document.getElementById('certNombre').value.trim(),
+          proveedor: document.getElementById('certProveedor').value.trim(),
+          descripcion: document.getElementById('certDescripcion').value.trim(),
+          duracion: document.getElementById('certDuracion').value.trim(),
+          nivel: document.getElementById('certNivel').value,
+          formato: document.getElementById('certFormato').value,
+          precio: document.getElementById('certPrecio').value.trim(),
+          enlace: document.getElementById('certEnlace').value.trim(),
+          imagen: document.getElementById('certImagen').value.trim(),
+          id: editId !== '' ? getCertificaciones()[parseInt(editId)]?.id : ('c_' + Date.now())
+        };
+        const list = getCertificaciones();
+        if (editId !== '') { list[parseInt(editId)] = cert; }
+        else { list.push(cert); }
+        saveCertificaciones(list);
+        certForm.reset();
+        document.getElementById('certEditId').value = '';
+        renderCertificaciones();
+        alert('✅ Certificación guardada correctamente.');
+      });
+      document.getElementById('btnCancelCert').addEventListener('click', function() {
+        certForm.reset();
+        document.getElementById('certEditId').value = '';
+      });
+    }
+
+    // ── Theme Toggle ──
+    const themeBtn = document.getElementById('adminThemeToggle');
+    const themeLabel = document.getElementById('themeLabel');
+    function applyTheme(isDark) {
+      document.body.classList.toggle('admin-dark', isDark);
+      localStorage.setItem('adminTheme', isDark ? 'dark' : 'light');
+      if (themeLabel) themeLabel.textContent = isDark ? '☀️ Modo Claro' : '🌙 Modo Oscuro';
+    }
+    // Set initial label
+    const isDark = localStorage.getItem('adminTheme') === 'dark';
+    if (themeLabel) themeLabel.textContent = isDark ? '☀️ Modo Claro' : '🌙 Modo Oscuro';
+    if (themeBtn) {
+      themeBtn.addEventListener('click', function() {
+        applyTheme(!document.body.classList.contains('admin-dark'));
+      });
+    }
+  });
 
   // Start the app
   init();

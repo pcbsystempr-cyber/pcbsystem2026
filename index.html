@@ -227,6 +227,7 @@
               localStorage.setItem('language', 'es');
               const htmlRoot = document.getElementById('htmlRoot');
               if (htmlRoot) htmlRoot.setAttribute('lang', 'es');
+              if (typeof translatePage === 'function') translatePage('es');
               closeSidebarMenu();
             });
           }
@@ -235,6 +236,7 @@
               localStorage.setItem('language', 'en');
               const htmlRoot = document.getElementById('htmlRoot');
               if (htmlRoot) htmlRoot.setAttribute('lang', 'en');
+              if (typeof translatePage === 'function') translatePage('en');
               closeSidebarMenu();
             });
           }
@@ -259,18 +261,17 @@
             <li><a href="#inicio" data-translate="Inicio">Inicio</a></li>
             <li><a href="#escuela" data-translate="La escuela">La escuela</a></li>
             <li class="dropdown">
-              <a href="#" style="pointer-events: none;">Servicios Digitales <i class="fas fa-chevron-down"></i></a>
+              <a href="#" style="pointer-events: none;"><span data-translate="Servicios Digitales">Servicios Digitales</span> <i class="fas fa-chevron-down"></i></a>
               <ul class="dropdown-menu">
-                <li><a href="https://de.pr.gov/MATRICULA//">📝 Matrícula Online</a></li>
-                <li><a href="solicitudes.html">📄 Solicitud de Documentos</a></li> 
-                <li><a href="https://pcbsystempr-cyber.github.io/Servicio-Tecnico/">🔧 Servicios Técnicos</a></li>
+                <li><a href="https://de.pr.gov/MATRICULA//" data-translate="📝 Matrícula Online">📝 Matrícula Online</a></li>
+                <li><a href="solicitudes.html" data-translate="📄 Solicitud de Documentos">📄 Solicitud de Documentos</a></li>
+                <li><a href="https://pcbsystempr-cyber.github.io/Servicio-Tecnico/" data-translate="🔧 Servicios Técnicos">🔧 Servicios Técnicos</a></li>
                 <!-- <li><a href="enfermeria.html">⚕️ Enfermería</a></li> -->
-                <li><a href="https://pcbsystempr-cyber.github.io/Unidad-de-ApoyoSocioEmocional/">🧠 Orientación</a></li>
-                <li><a href="biblioteca.html">📚 Biblioteca</a></li>
-                <li><a href="comedor.html">🍽️ Comedor</a></li>
-                <li><a href="padres.html">👨‍👩‍👧 Portal de Padres</a></li>
-                <li><a href="seguridad.html">🛡️ Seguridad</a></li>
-
+                <li><a href="https://pcbsystempr-cyber.github.io/Unidad-de-ApoyoSocioEmocional/" data-translate="🧠 Orientación">🧠 Orientación</a></li>
+                <li><a href="biblioteca.html" data-translate="📚 Biblioteca">📚 Biblioteca</a></li>
+                <li><a href="comedor.html" data-translate="🍽️ Comedor">🍽️ Comedor</a></li>
+                <li><a href="padres.html" data-translate="👨‍👩‍👧 Portal de Padres">👨‍👩‍👧 Portal de Padres</a></li>
+                <li><a href="seguridad.html" data-translate="🛡️ Seguridad">🛡️ Seguridad</a></li>
               </ul>
             </li>
             <li><a href="#vida" data-translate="Vida estudiantil">Vida estudiantil</a></li>
@@ -567,29 +568,29 @@
     <div class="container">
       <div class="section-header">
         <h2 data-translate="🎓 Clase Graduanda 2026">🎓 Clase Graduanda 2026</h2>
-        <p>Información importante para los estudiantes de la clase graduanda.</p>
+        <p data-translate="Información importante para los estudiantes de la clase graduanda.">Información importante para los estudiantes de la clase graduanda.</p>
       </div>
 
       <div class="grid-3">
         <article class="card service-card">
           <div class="service-icon">📅</div>
-          <h3>Calendario</h3>
-          <p>Fechas importantes y cronograma de actividades.</p>
-          <a href="#" class="btn btn-secondary btn-small" onclick="event.preventDefault();showProntoPopup()">Ver calendario</a>
+          <h3 data-translate="Calendario">Calendario</h3>
+          <p data-translate="Fechas importantes y cronograma de actividades.">Fechas importantes y cronograma de actividades.</p>
+          <a href="#" class="btn btn-secondary btn-small" onclick="event.preventDefault();showProntoPopup()" data-translate="Ver calendario">Ver calendario</a>
         </article>
 
         <article class="card service-card">
           <div class="service-icon">🎉</div>
-          <h3>Actividades</h3>
-          <p>Eventos y actividades de la clase.</p>
-          <a href="#" class="btn btn-secondary btn-small" onclick="event.preventDefault();showProntoPopup()">Ver actividades</a>
+          <h3 data-translate="Actividades">Actividades</h3>
+          <p data-translate="Eventos y actividades de la clase.">Eventos y actividades de la clase.</p>
+          <a href="#" class="btn btn-secondary btn-small" onclick="event.preventDefault();showProntoPopup()" data-translate="Ver actividades">Ver actividades</a>
         </article>
 
         <article class="card service-card">
           <div class="service-icon">📸</div>
-          <h3>Fotos</h3>
-          <p>Reservación de fotos formales.</p>
-          <a href="#" class="btn btn-secondary btn-small" onclick="event.preventDefault();showProntoPopup()">Reservar</a>
+          <h3 data-translate="Fotos">Fotos</h3>
+          <p data-translate="Reservación de fotos formales.">Reservación de fotos formales.</p>
+          <a href="#" class="btn btn-secondary btn-small" onclick="event.preventDefault();showProntoPopup()" data-translate="Reservar">Reservar</a>
         </article>
       </div>
     </div>
@@ -617,14 +618,14 @@
       <div id="prontoIcon" style="font-size:4.5rem;line-height:1;margin-bottom:1.1rem;display:inline-block;">🎓</div>
 
       <!-- Título -->
-      <div style="font-size:2.4rem;font-weight:900;background:linear-gradient(90deg,#a78bfa,#38bdf8,#a78bfa);background-size:200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:0.5rem;animation:prontoPulse 2.5s ease-in-out infinite;">
+      <div style="font-size:2.4rem;font-weight:900;background:linear-gradient(90deg,#a78bfa,#38bdf8,#a78bfa);background-size:200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:0.5rem;animation:prontoPulse 2.5s ease-in-out infinite;" data-translate="¡Pronto!">
         ¡Pronto!
       </div>
 
       <!-- Subtítulo -->
-      <p style="color:rgba(255,255,255,0.72);font-size:1rem;line-height:1.6;margin:0.6rem 0 1.6rem;max-width:320px;margin-left:auto;margin-right:auto;">
+      <p style="color:rgba(255,255,255,0.72);font-size:1rem;line-height:1.6;margin:0.6rem 0 1.6rem;max-width:320px;margin-left:auto;margin-right:auto;" data-translate="Esta sección estará disponible muy pronto.">
         Esta sección estará disponible muy pronto.<br>
-        <span style="color:#a78bfa;font-weight:600;">Clase Graduanda 2026</span> — ¡Mantente pendiente! 🎉
+        <span style="color:#a78bfa;font-weight:600;" data-translate="Clase Graduanda 2026">Clase Graduanda 2026</span> — <span data-translate="¡Mantente pendiente! 🎉">¡Mantente pendiente! 🎉</span>
       </p>
 
       <!-- Barra de progreso decorativa -->
@@ -636,7 +637,8 @@
       <button onclick="hideProntoPopup()"
         style="background:linear-gradient(135deg,#7c3aed,#2563eb);color:white;border:none;padding:0.8rem 2.2rem;border-radius:50px;font-size:1rem;font-weight:700;cursor:pointer;transition:all 0.25s;box-shadow:0 4px 18px rgba(124,58,237,0.45);font-family:inherit;"
         onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 6px 24px rgba(124,58,237,0.6)'"
-        onmouseout="this.style.transform='';this.style.boxShadow='0 4px 18px rgba(124,58,237,0.45)'">
+        onmouseout="this.style.transform='';this.style.boxShadow='0 4px 18px rgba(124,58,237,0.45)'"
+        data-translate="¡Entendido!">
         ¡Entendido!
       </button>
     </div>
@@ -704,6 +706,66 @@
     }
 
     function escPronto(e) { if (e.key === 'Escape') hideProntoPopup(); }
+  </script>
+
+  <!-- ══════════════════════════════════════
+       POPUP CONTACTOS DE EMERGENCIA
+       ══════════════════════════════════════ -->
+  <div id="contactosOverlay" onclick="if(event.target===this)hideContactosPopup()"
+    style="display:none;position:fixed;inset:0;z-index:9999;align-items:center;justify-content:center;background:rgba(0,0,0,0.65);backdrop-filter:blur(6px);opacity:0;transition:opacity 0.3s;"></div>
+  <div id="contactosModal"
+    style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-60%);z-index:10000;width:min(92vw,500px);opacity:0;transition:opacity 0.35s,transform 0.35s;">
+    <div style="background:linear-gradient(160deg,#0f172a 0%,#1e1b4b 100%);border-radius:24px;padding:2.2rem 2rem;box-shadow:0 25px 70px rgba(0,0,0,0.55),0 0 0 1px rgba(239,68,68,0.3);position:relative;overflow:hidden;">
+      <div style="position:absolute;top:-40px;right:-40px;width:200px;height:200px;background:radial-gradient(circle,rgba(239,68,68,0.18) 0%,transparent 70%);pointer-events:none;"></div>
+      <button onclick="hideContactosPopup()" title="Cerrar"
+        style="position:absolute;top:14px;right:16px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.7);width:32px;height:32px;border-radius:50%;font-size:1rem;cursor:pointer;font-family:inherit;"
+        onmouseover="this.style.background='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.08)'">✕</button>
+      <div style="text-align:center;margin-bottom:1.5rem;">
+        <div style="font-size:3rem;margin-bottom:0.5rem;">🚨</div>
+        <h2 style="color:#fff;font-size:1.55rem;font-weight:800;margin:0 0 0.3rem;">Contactos de Emergencia</h2>
+        <p style="color:rgba(255,255,255,0.6);font-size:0.88rem;margin:0;">Escuela Superior Vocacional Pablo Colón Berdecia</p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:0.75rem;">
+        <a href="tel:911" style="display:flex;align-items:center;gap:1rem;background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.35);border-radius:14px;padding:0.85rem 1.1rem;text-decoration:none;transition:background 0.2s;" onmouseover="this.style.background='rgba(239,68,68,0.25)'" onmouseout="this.style.background='rgba(239,68,68,0.15)'">
+          <span style="font-size:1.8rem;flex-shrink:0;">🆘</span>
+          <div><div style="color:#fca5a5;font-weight:700;font-size:0.82rem;letter-spacing:0.05em;">EMERGENCIA</div><div style="color:#fff;font-weight:800;font-size:1.2rem;">9-1-1</div></div>
+        </a>
+        <a href="tel:7878575050" style="display:flex;align-items:center;gap:1rem;background:rgba(59,130,246,0.12);border:1px solid rgba(59,130,246,0.3);border-radius:14px;padding:0.85rem 1.1rem;text-decoration:none;transition:background 0.2s;" onmouseover="this.style.background='rgba(59,130,246,0.22)'" onmouseout="this.style.background='rgba(59,130,246,0.12)'">
+          <span style="font-size:1.8rem;flex-shrink:0;">👮</span>
+          <div><div style="color:#93c5fd;font-weight:700;font-size:0.82rem;letter-spacing:0.05em;">POLICÍA DE PUERTO RICO</div><div style="color:#fff;font-weight:800;font-size:1.2rem;">(787) 857-5050</div></div>
+        </a>
+        <a href="tel:7878572020" style="display:flex;align-items:center;gap:1rem;background:rgba(16,185,129,0.12);border:1px solid rgba(16,185,129,0.3);border-radius:14px;padding:0.85rem 1.1rem;text-decoration:none;transition:background 0.2s;" onmouseover="this.style.background='rgba(16,185,129,0.22)'" onmouseout="this.style.background='rgba(16,185,129,0.12)'">
+          <span style="font-size:1.8rem;flex-shrink:0;">🏫</span>
+          <div><div style="color:#6ee7b7;font-weight:700;font-size:0.82rem;letter-spacing:0.05em;">DIRECCIÓN ESCOLAR</div><div style="color:#fff;font-weight:800;font-size:1.2rem;">(787) 857-2020</div></div>
+        </a>
+        <a href="tel:7878572021" style="display:flex;align-items:center;gap:1rem;background:rgba(168,85,247,0.12);border:1px solid rgba(168,85,247,0.3);border-radius:14px;padding:0.85rem 1.1rem;text-decoration:none;transition:background 0.2s;" onmouseover="this.style.background='rgba(168,85,247,0.22)'" onmouseout="this.style.background='rgba(168,85,247,0.12)'">
+          <span style="font-size:1.8rem;flex-shrink:0;">🏥</span>
+          <div><div style="color:#c4b5fd;font-weight:700;font-size:0.82rem;letter-spacing:0.05em;">ENFERMERÍA ESCOLAR</div><div style="color:#fff;font-weight:800;font-size:1.2rem;">(787) 857-2021</div></div>
+        </a>
+        <a href="tel:7878572022" style="display:flex;align-items:center;gap:1rem;background:rgba(245,158,11,0.12);border:1px solid rgba(245,158,11,0.3);border-radius:14px;padding:0.85rem 1.1rem;text-decoration:none;transition:background 0.2s;" onmouseover="this.style.background='rgba(245,158,11,0.22)'" onmouseout="this.style.background='rgba(245,158,11,0.12)'">
+          <span style="font-size:1.8rem;flex-shrink:0;">🛡️</span>
+          <div><div style="color:#fcd34d;font-weight:700;font-size:0.82rem;letter-spacing:0.05em;">GUARDIA DE SEGURIDAD</div><div style="color:#fff;font-weight:800;font-size:1.2rem;">(787) 857-2022</div></div>
+        </a>
+      </div>
+      <p style="text-align:center;color:rgba(255,255,255,0.38);font-size:0.78rem;margin-top:1.25rem;">Toca cualquier número para llamar directamente</p>
+      <button onclick="hideContactosPopup()"
+        style="display:block;width:100%;margin-top:1rem;padding:0.8rem;background:linear-gradient(135deg,#dc2626,#b91c1c);color:white;border:none;border-radius:50px;font-size:0.97rem;font-weight:700;cursor:pointer;font-family:inherit;"
+        onmouseover="this.style.opacity='0.88'" onmouseout="this.style.opacity='1'">Cerrar</button>
+    </div>
+  </div>
+  <script>
+    function showContactosPopup(){
+      var o=document.getElementById('contactosOverlay'),m=document.getElementById('contactosModal');
+      o.style.display='flex'; m.style.display='block';
+      o.offsetHeight;
+      o.style.opacity='1'; m.style.opacity='1'; m.style.transform='translate(-50%,-50%)';
+    }
+    function hideContactosPopup(){
+      var o=document.getElementById('contactosOverlay'),m=document.getElementById('contactosModal');
+      o.style.opacity='0'; m.style.opacity='0'; m.style.transform='translate(-50%,-60%)';
+      setTimeout(function(){ o.style.display='none'; m.style.display='none'; },320);
+    }
+    document.addEventListener('keydown',function(e){ if(e.key==='Escape') hideContactosPopup(); });
   </script>
 
   <!-- PROGRAMAS VOCACIONALES (SLIDESHOW) -->
@@ -1018,6 +1080,157 @@
     </div>
   </section>
 
+  <!-- PORTAL DE PADRES -->
+  <section id="portal-padres" class="section">
+    <div class="container">
+      <div class="section-header">
+        <h2 data-translate="Portal de Padres">👨‍👩‍👧 Portal de Padres</h2>
+        <p data-translate="Recursos y herramientas para que los padres y tutores estén siempre informados y conectados con la escuela.">
+          Recursos y herramientas para que los padres y tutores estén siempre informados y conectados con la escuela.
+        </p>
+      </div>
+
+      <div class="grid-3">
+        <!-- Calificaciones -->
+        <article class="card service-card">
+          <div class="service-icon">📊</div>
+          <h3 data-translate="Calificaciones">Calificaciones</h3>
+          <p data-translate="Monitorea el progreso académico y las notas de tu hijo en tiempo real.">
+            Monitorea el progreso académico y las notas de tu hijo en tiempo real.
+          </p>
+          <a href="https://informacionestudiantil.dde.pr/public/home.html" class="btn btn-secondary btn-small"
+            target="_blank" rel="noopener" data-translate="Ver calificaciones">
+            Ver calificaciones
+          </a>
+        </article>
+
+        <!-- Comunicados -->
+        <article class="card service-card">
+          <div class="service-icon">📢</div>
+          <h3 data-translate="Comunicados Escolares">Comunicados Escolares</h3>
+          <p data-translate="Notificaciones, avisos importantes y mensajes directos de la escuela.">
+            Notificaciones, avisos importantes y mensajes directos de la escuela.
+          </p>
+          <a href="promociones.html" class="btn btn-secondary btn-small" data-translate="Ver comunicados">
+            Ver comunicados
+          </a>
+        </article>
+
+        <!-- Formularios y permisos -->
+        <article class="card service-card">
+          <div class="service-icon">📝</div>
+          <h3 data-translate="Formularios y Permisos">Formularios y Permisos</h3>
+          <p data-translate="Autorización de actividades, permisos escolares y documentos oficiales.">
+            Autorización de actividades, permisos escolares y documentos oficiales.
+          </p>
+          <a href="padres.html" class="btn btn-secondary btn-small" data-translate="Ver formularios">
+            Ver formularios
+          </a>
+        </article>
+
+        <!-- Asistencia -->
+        <article class="card service-card">
+          <div class="service-icon">🗓️</div>
+          <h3 data-translate="Asistencia">Asistencia</h3>
+          <p data-translate="Consulta el récord de asistencia, tardanzas y ausencias de tu hijo.">
+            Consulta el récord de asistencia, tardanzas y ausencias de tu hijo.
+          </p>
+          <a href="https://informacionestudiantil.dde.pr/public/home.html" class="btn btn-secondary btn-small"
+            target="_blank" rel="noopener" data-translate="Ver asistencia">
+            Ver asistencia
+          </a>
+        </article>
+
+        <!-- Contacto con Maestros -->
+        <article class="card service-card">
+          <div class="service-icon">✉️</div>
+          <h3 data-translate="Contacto con Maestros">Contacto con Maestros</h3>
+          <p data-translate="Comunícate directamente con los maestros a través del directorio de correos.">
+            Comunícate directamente con los maestros a través del directorio de correos.
+          </p>
+          <a href="correos-maestros-tabla.html" class="btn btn-secondary btn-small" data-translate="Ver directorio">
+            Ver directorio
+          </a>
+        </article>
+
+        <!-- Orientación y Apoyo -->
+        <article class="card service-card">
+          <div class="service-icon">🧠</div>
+          <h3 data-translate="Orientación y Apoyo">Orientación y Apoyo</h3>
+          <p data-translate="Accede a los servicios de orientación, consejería y apoyo socioemocional.">
+            Accede a los servicios de orientación, consejería y apoyo socioemocional.
+          </p>
+          <a href="orientacion.html" class="btn btn-secondary btn-small" data-translate="Ver servicios">
+            Ver servicios
+          </a>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- SEGURIDAD -->
+  <section id="seguridad-escolar" class="section section-alt">
+    <div class="container">
+      <div class="section-header">
+        <h2 data-translate="Seguridad Escolar">🛡️ Seguridad Escolar</h2>
+        <p data-translate="Protocolos, recursos y contactos para garantizar un ambiente escolar seguro para toda la comunidad.">
+          Protocolos, recursos y contactos para garantizar un ambiente escolar seguro para toda la comunidad.
+        </p>
+      </div>
+
+      <div class="grid-3">
+        <!-- Protocolo de Emergencias -->
+        <article class="card service-card">
+          <div class="service-icon">🚨</div>
+          <h3 data-translate="Protocolo de Emergencias">Protocolo de Emergencias</h3>
+          <p data-translate="Planes de acción y procedimientos oficiales ante situaciones de emergencia escolar.">
+            Planes de acción y procedimientos oficiales ante situaciones de emergencia escolar.
+          </p>
+          <a href="protocolo-emergencias.html" class="btn btn-secondary btn-small" data-translate="Ver protocolo">
+            Ver protocolo
+          </a>
+        </article>
+
+        <!-- Contactos de Emergencia -->
+        <article class="card service-card">
+          <div class="service-icon">📞</div>
+          <h3 data-translate="Contactos de Emergencia">Contactos de Emergencia</h3>
+          <p data-translate="Números de seguridad, enfermería y personal clave ante cualquier emergencia.">
+            Números de seguridad, enfermería y personal clave ante cualquier emergencia.
+          </p>
+          <button onclick="showContactosPopup()" class="btn btn-secondary btn-small" style="cursor:pointer;" data-translate="Ver contactos">
+            Ver contactos
+          </button>
+        </article>
+
+        <!-- Reportar Incidente / Antibullying -->
+        <article class="card service-card">
+          <div class="service-icon">📣</div>
+          <h3 data-translate="Reportar Incidente">Reportar Incidente</h3>
+          <p data-translate="Sistema confidencial para reportar situaciones de riesgo, acoso o incidentes en la escuela.">
+            Sistema confidencial para reportar situaciones de riesgo, acoso o incidentes en la escuela.
+          </p>
+          <a href="reportar-incidente.html" class="btn btn-secondary btn-small" data-translate="Reportar ahora">
+            Reportar ahora
+          </a>
+        </article>
+
+        <!-- Bienestar Estudiantil -->
+        <article class="card service-card">
+          <div class="service-icon">💚</div>
+          <h3 data-translate="Bienestar Estudiantil">Bienestar Estudiantil</h3>
+          <p data-translate="Recursos de apoyo emocional, salud mental y seguridad para los estudiantes.">
+            Recursos de apoyo emocional, salud mental y seguridad para los estudiantes.
+          </p>
+          <a href="https://pcbsystempr-cyber.github.io/Unidad-de-ApoyoSocioEmocional/" class="btn btn-secondary btn-small"
+            target="_blank" rel="noopener" data-translate="Ver recursos">
+            Ver recursos
+          </a>
+        </article>
+      </div>
+    </div>
+  </section>
+
   <!-- CALENDARIO ESCOLAR -->
   <section id="calendario-escolar" class="section section-alt">
     <div class="container">
@@ -1174,12 +1387,12 @@
       <i class="fas fa-times"></i>
     </button>
     <div class="promo-header">
-      <span class="promo-title">📢 ¡Novedades!</span>
+      <span class="promo-title" data-translate="📢 ¡Novedades!">📢 ¡Novedades!</span>
     </div>
     <div class="promo-content">
-      <p class="promo-preview">¡Ya comenzó la matrícula para el nuevo curso escolar! No te quedes sin tu espacio.</p>
+      <p class="promo-preview" data-translate="¡Ya comenzó la matrícula para el nuevo curso escolar! No te quedes sin tu espacio.">¡Ya comenzó la matrícula para el nuevo curso escolar! No te quedes sin tu espacio.</p>
       <p class="promo-click-hint" style="font-size: 0.85rem; color: #38BDF8; margin-top: 10px; text-align: center;">
-        <i class="fas fa-expand"></i> Haz clic para ver más
+        <i class="fas fa-expand"></i> <span data-translate="Haz clic para ver más">Haz clic para ver más</span>
       </p>
     </div>
   </div>
@@ -1191,17 +1404,16 @@
         <i class="fas fa-times"></i>
       </button>
       <div class="promo-expanded-header">
-        <h2 class="promo-expanded-title">📢 ¡Novedades!</h2>
+        <h2 class="promo-expanded-title" data-translate="📢 ¡Novedades!">📢 ¡Novedades!</h2>
       </div>
       <div class="promo-expanded-body">
-        <p class="promo-expanded-message">¡Ya comenzó la matrícula para el nuevo curso escolar! No te quedes sin tu
-          espacio.</p>
+        <p class="promo-expanded-message" data-translate="¡Ya comenzó la matrícula para el nuevo curso escolar! No te quedes sin tu espacio.">¡Ya comenzó la matrícula para el nuevo curso escolar! No te quedes sin tu espacio.</p>
         <img
           src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
           alt="Estudiantes" class="promo-expanded-img">
         <div class="promo-expanded-actions">
           <a href="promociones.html" class="btn btn-primary" style="width: 100%; text-align: center; margin-top: 20px;">
-            <i class="fas fa-gift"></i> Ver Promociones
+            <i class="fas fa-gift"></i> <span data-translate="Ver Promociones">Ver Promociones</span>
           </a>
         </div>
       </div>

@@ -183,6 +183,7 @@
       }
     }
   </style>
+  <script src="translations.js"></script>
 </head>
 
 <body>
@@ -442,41 +443,229 @@
     </div>
   </div>
 
-  <script src="js/services-manager.js"></script>
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const input = document.getElementById('userInput');
-      const btn = document.getElementById('sendBtn');
-      const messages = document.getElementById('chatMessages');
+  // ============================================================
+  //  CONFIGURACIÓN — URL del Cloudflare Worker (proxy seguro)
+  //  La API Key de Gemini vive SOLO en el Worker, nunca aquí.
+  //  Instrucciones: ver gemini-proxy.js
+  // ============================================================
+  var PROXY_URL = 'https://pcb-gemini-proxy.rvazquez-isspr.workers.dev';  // ← reemplaza con tu URL después de desplegar
 
-      function addMessage(text, sender) {
-        const div = document.createElement('div');
-        div.className = `message ${sender}`;
-        div.innerHTML = text;
-        messages.appendChild(div);
-        messages.scrollTop = messages.scrollHeight;
-      }
+  // ============================================================
+  //  SYSTEM PROMPT — Contexto completo de la escuela PCB
+  //  Copia aquí las instrucciones de tu proyecto en AI Studio
+  // ============================================================
+  var SYSTEM_PROMPT = `
+Eres el Asistente Virtual oficial de la Escuela Superior Vocacional Pablo Colón Berdecia (PCB),
+ubicada en Barranquitas, Puerto Rico. Tu nombre es "Asistente PCB".
 
-      function handleUserMessage() {
-        const text = input.value.trim();
-        if (!text) return;
+PERSONALIDAD:
+- Amable, profesional y conciso. Respondes en español (o inglés si te preguntan en inglés).
+- Das respuestas cortas y directas. No escribas párrafos largos innecesarios.
+- Usas emojis moderadamente para ser amigable.
+- Si no sabes algo específico, dices que lo consulten con la dirección escolar.
 
-        addMessage(text, 'user');
-        input.value = '';
+INFORMACIÓN DE LA ESCUELA:
+- Nombre completo: Escuela Superior Vocacional Pablo Colón Berdecia
+- Abreviatura: PCB
+- Ubicación: Barranquitas, Puerto Rico
+- Nivel: Superior (grados 9 al 12)
+- Tipo: Vocacional — combina preparación académica con programas técnicos
 
-        // Simular "pensando"
-        setTimeout(() => {
-          const response = window.serviceManager.getAIResponse(text);
-          addMessage(response, 'bot');
-        }, 600);
-      }
+HORARIO ESCOLAR:
+- Estudiantes: 7:30 AM – 2:30 PM
+- Maestros llegan antes de las 7:15 AM
+- Almuerzo: aproximadamente 11:00 AM – 12:00 PM (varía por grado)
 
-      btn.addEventListener('click', handleUserMessage);
-      input.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') handleUserMessage();
+SERVICIOS DISPONIBLES (con enlace en el sistema):
+- 📚 Biblioteca: reserva de espacios, computadoras y préstamo de libros
+- 🍽️ Comedor: menú semanal, normas, conteo de almuerzo
+- 🧠 Orientación / Apoyo Socioemocional: consejería estudiantil
+- 🏥 Enfermería: atención de salud básica en el plantel
+- 🛡️ Seguridad: control de acceso, protocolo de emergencias
+- 📝 Matrícula Online: proceso de matrícula escolar
+- 📄 Solicitud de Documentos: certificados, transcripciones, etc.
+- 🔧 Servicios Técnicos: mantenimiento de equipos
+- 🖨️ Impresión para Maestros: copias y materiales
+- 💻 Computec: habilidades tecnológicas
+- 📢 DECACoop: mercadeo y cooperativa escolar
+- 🎓 Power DE: portal estudiantil del DEPR (informacionestudiantil.dde.pr)
+- 👨‍👩‍👧 Portal de Padres: calificaciones, asistencia, comunicados
+- 📣 Reportar Incidente: sistema confidencial antibullying
+- 🚨 Protocolo de Emergencias: evacuación, lockdown, terremoto, etc.
+
+PROGRAMAS VOCACIONALES:
+- Cosmetología, Enfermería, Artes Culinarias, Computec, DECACoop
+- Elaboración de Productos Agrícolas (P.A.), Electiva Ocupacional
+
+PERSONAL CLAVE:
+- Dirección Escolar: (787) 857-2020
+- Enfermería: (787) 857-2021
+- Guardia de Seguridad: (787) 857-2022
+- Emergencias: 9-1-1
+- Policía local: (787) 857-5050
+
+REGLAS IMPORTANTES:
+- Solo respondes preguntas relacionadas con la escuela, sus servicios, programas y comunidad.
+- Si alguien pregunta sobre algo fuera del ámbito escolar, educadamente redirige la conversación.
+- No inventas información. Si no la tienes, dices "Consulta con la dirección escolar al (787) 857-2020".
+- Para emergencias activas, siempre dices primero: "Llama al 9-1-1 de inmediato".
+`;
+
+  // ============================================================
+  //  HISTORIAL DE CONVERSACIÓN (multi-turno)
+  // ============================================================
+  var conversationHistory = [];
+
+  // El modelo y la API Key se gestionan en el proxy (gemini-proxy.js).
+
+  // ============================================================
+  //  LLAMADA AL PROXY (Cloudflare Worker) → Gemini
+  // ============================================================
+  async function callGemini(userMessage) {
+    if (!PROXY_URL || PROXY_URL.includes('TU-WORKER')) {
+      return '⚠️ El asistente aún no está configurado. El administrador debe desplegar el proxy y actualizar PROXY_URL en este archivo.';
+    }
+
+    // ── Llamar al proxy ──────────────────────────────────────────
+    var response;
+    try {
+      response = await fetch(PROXY_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          message: userMessage,
+          history: conversationHistory,   // historial sin el mensaje actual
+          systemPrompt: SYSTEM_PROMPT
+        })
       });
+    } catch (e) {
+      console.error('Error de red al llamar al proxy:', e);
+      return '❌ No se pudo conectar con el asistente. Verifica tu conexión o que el proxy esté activo.';
+    }
+
+    // ── Leer respuesta (el proxy siempre devuelve JSON) ──────────
+    var data;
+    try {
+      data = await response.json();
+    } catch (e) {
+      console.error('Respuesta no es JSON válido:', e);
+      return '❌ Respuesta inesperada del servidor (' + response.status + ').';
+    }
+
+    // ── Manejar errores HTTP ─────────────────────────────────────
+    if (!response.ok) {
+      // El proxy normaliza todos los errores a { error: "string" }
+      var errMsg = (data && data.error) ? data.error : 'Error ' + response.status;
+      console.error('Proxy error:', response.status, errMsg);
+      if (response.status === 429) return '⏳ Límite de solicitudes alcanzado. Espera unos segundos e intenta de nuevo.';
+      if (response.status === 503) return '❌ El servicio de IA no está disponible en este momento.';
+      return '❌ ' + errMsg;
+    }
+
+    // ── Manejar error de contenido (ej: filtros de seguridad) ────
+    if (data.error) {
+      console.warn('Error de contenido desde el proxy:', data.error);
+      return '⚠️ ' + data.error;
+    }
+
+    // ── Éxito: el proxy devuelve { reply: "texto" } ──────────────
+    var botReply = (data.reply && data.reply.trim())
+      ? data.reply
+      : 'No pude generar una respuesta. Intenta de nuevo.';
+
+    conversationHistory.push({ role: 'user',  parts: [{ text: userMessage }] });
+    conversationHistory.push({ role: 'model', parts: [{ text: botReply }] });
+    if (conversationHistory.length > 20) conversationHistory = conversationHistory.slice(-20);
+
+    return botReply;
+  }
+
+  // ============================================================
+  //  LÓGICA DEL CHAT
+  // ============================================================
+  document.addEventListener('DOMContentLoaded', function() {
+    var input    = document.getElementById('userInput');
+    var btn      = document.getElementById('sendBtn');
+    var messages = document.getElementById('chatMessages');
+    var isSending = false;
+
+    function addMessage(text, sender) {
+      var div = document.createElement('div');
+      div.className = 'message ' + sender;
+      // Convertir saltos de línea y negrita básica de Markdown
+      div.innerHTML = text
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\*(.*?)\*/g, '<em>$1</em>')
+        .replace(/\n/g, '<br>');
+      messages.appendChild(div);
+      messages.scrollTop = messages.scrollHeight;
+      return div;
+    }
+
+    function showTyping() {
+      var div = document.createElement('div');
+      div.className = 'message bot';
+      div.id = 'typingIndicator';
+      div.innerHTML = '<span style="display:inline-flex;gap:4px;align-items:center;">' +
+        '<span style="width:8px;height:8px;background:#667eea;border-radius:50%;animation:typingDot 1.2s infinite 0s;display:inline-block;"></span>' +
+        '<span style="width:8px;height:8px;background:#667eea;border-radius:50%;animation:typingDot 1.2s infinite 0.2s;display:inline-block;"></span>' +
+        '<span style="width:8px;height:8px;background:#667eea;border-radius:50%;animation:typingDot 1.2s infinite 0.4s;display:inline-block;"></span>' +
+        '</span>';
+      messages.appendChild(div);
+      messages.scrollTop = messages.scrollHeight;
+    }
+
+    function hideTyping() {
+      var el = document.getElementById('typingIndicator');
+      if (el) el.remove();
+    }
+
+    async function handleUserMessage() {
+      if (isSending) return;
+      var text = input.value.trim();
+      if (!text) return;
+
+      isSending = true;
+      btn.disabled = true;
+      btn.style.opacity = '0.5';
+      input.value = '';
+
+      addMessage(text, 'user');
+      showTyping();
+
+      try {
+        var reply = await callGemini(text);
+        hideTyping();
+        addMessage(reply, 'bot');
+      } catch(e) {
+        hideTyping();
+        addMessage('❌ No se pudo conectar. Verifica tu conexión a internet.', 'bot');
+        console.error(e);
+        // Revertir el último mensaje del usuario del historial si falló
+        if (conversationHistory.length && conversationHistory[conversationHistory.length-1].role === 'user') {
+          conversationHistory.pop();
+        }
+      }
+
+      isSending = false;
+      btn.disabled = false;
+      btn.style.opacity = '1';
+      input.focus();
+    }
+
+    btn.addEventListener('click', handleUserMessage);
+    input.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') handleUserMessage();
     });
+  });
   </script>
+  <style>
+    @keyframes typingDot {
+      0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+      30%           { transform: translateY(-6px); opacity: 1; }
+    }
+  </style>
 </body>
 
 </html>

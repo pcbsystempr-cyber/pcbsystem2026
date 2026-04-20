@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="es" id="htmlRoot">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Protocolo de Emergencias – Escuela Superior Vocacional Pablo Colón Berdecia</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="dark-mode-fix-v2.css?v=2">
+  <link rel="stylesheet" href="dropdown-fix.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <script src="translations.js"></script>
+  <style>
+    .pe-wrapper { max-width: 900px; margin: 0 auto; padding: 2rem 1rem 4rem; }
+    .pe-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.5rem; margin-bottom: 2.5rem; }
+    .pe-card { background: white; border-radius: 18px; box-shadow: 0 6px 28px rgba(0,0,0,0.09); overflow: hidden; transition: transform 0.25s, box-shadow 0.25s; }
+    .pe-card:hover { transform: translateY(-4px); box-shadow: 0 12px 36px rgba(0,0,0,0.14); }
+    .pe-card-head { padding: 1.5rem 1.5rem 1rem; }
+    .pe-badge { display: inline-flex; align-items: center; gap: 0.4rem; border-radius: 50px; padding: 0.28rem 0.75rem; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.04em; margin-bottom: 0.75rem; }
+    .pe-badge-red    { background: #fef2f2; color: #991b1b; }
+    .pe-badge-orange { background: #fff7ed; color: #9a3412; }
+    .pe-badge-yellow { background: #fefce8; color: #854d0e; }
+    .pe-badge-blue   { background: #eff6ff; color: #1e40af; }
+    .pe-badge-purple { background: #faf5ff; color: #6b21a8; }
+    .pe-badge-green  { background: #f0fdf4; color: #14532d; }
+    .pe-card-icon { font-size: 2.8rem; display: block; margin-bottom: 0.6rem; }
+    .pe-card h3 { font-size: 1.25rem; color: #1e293b; margin: 0 0 0.4rem; }
+    .pe-card p  { color: #64748b; font-size: 0.88rem; margin: 0; line-height: 1.5; }
+    .pe-steps { background: #f8fafc; border-top: 1.5px solid #e2e8f0; padding: 1.1rem 1.5rem; }
+    .pe-steps h4 { font-size: 0.78rem; font-weight: 700; color: #475569; text-transform: uppercase; letter-spacing: 0.05em; margin: 0 0 0.65rem; }
+    .pe-step { display: flex; align-items: flex-start; gap: 0.6rem; margin-bottom: 0.5rem; font-size: 0.87rem; color: #374151; }
+    .pe-step-num { background: #1e293b; color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 0.72rem; font-weight: 800; flex-shrink: 0; margin-top: 1px; }
+    .pe-alert-box { background: linear-gradient(135deg, #7f1d1d, #991b1b); border-radius: 18px; padding: 2rem; color: white; text-align: center; margin-bottom: 2rem; }
+    .pe-alert-box h2 { font-size: 1.4rem; margin: 0.5rem 0 0.4rem; }
+    .pe-alert-box p  { color: rgba(255,255,255,0.82); font-size: 0.93rem; margin: 0 0 1.25rem; }
+    .pe-emergency-num { display: inline-flex; align-items: center; gap: 0.6rem; background: rgba(255,255,255,0.15); border: 2px solid rgba(255,255,255,0.4); border-radius: 50px; padding: 0.65rem 1.5rem; text-decoration: none; color: white; font-size: 1.3rem; font-weight: 800; letter-spacing: 2px; }
+    .pe-rules { background: white; border-radius: 18px; box-shadow: 0 6px 28px rgba(0,0,0,0.09); padding: 2rem; margin-bottom: 2rem; }
+    .pe-rules h2 { color: #1e293b; font-size: 1.3rem; margin: 0 0 1rem; }
+    .pe-rules ul { padding-left: 1.4rem; }
+    .pe-rules li { color: #475569; font-size: 0.92rem; margin-bottom: 0.5rem; line-height: 1.5; }
+    body.dark-mode .pe-card       { background: #1e293b; }
+    body.dark-mode .pe-card h3    { color: #e5e7eb; }
+    body.dark-mode .pe-card p     { color: #94a3b8; }
+    body.dark-mode .pe-steps      { background: #0f172a; border-color: #334155; }
+    body.dark-mode .pe-steps h4   { color: #94a3b8; }
+    body.dark-mode .pe-step       { color: #cbd5e1; }
+    body.dark-mode .pe-step-num   { background: #475569; }
+    body.dark-mode .pe-rules      { background: #1e293b; }
+    body.dark-mode .pe-rules h2   { color: #e5e7eb; }
+    body.dark-mode .pe-rules li   { color: #94a3b8; }
+    body.dark-mode .pe-badge-red    { background: #450a0a; color: #fca5a5; }
+    body.dark-mode .pe-badge-orange { background: #431407; color: #fdba74; }
+    body.dark-mode .pe-badge-yellow { background: #422006; color: #fde68a; }
+    body.dark-mode .pe-badge-blue   { background: #1e3a5f; color: #93c5fd; }
+    body.dark-mode .pe-badge-purple { background: #2e1065; color: #d8b4fe; }
+    body.dark-mode .pe-badge-green  { background: #064e3b; color: #6ee7b7; }
+    @media(max-width:560px){ .pe-grid{grid-template-columns:1fr;} }
+  </style>
+</head>
+<body>
+  <script>(function(){var t=localStorage.getItem('theme');if(t==='dark')document.body.classList.add('dark-mode');})();</script>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <div class="logo-area">
+        <img src="LOGO6.png" alt="Logo" class="logo-image">
+        <div class="logo-text">
+          <span class="logo-title">Escuela Superior Vocacional</span>
+          <span class="logo-subtitle">Pablo Colón Berdecia</span>
+        </div>
+      </div>
+      <button class="hamburger-menu" id="hamburgerBtn" aria-label="Menú"><span></span><span></span><span></span></button>
+      <nav class="main-nav">
+        <ul>
+          <li><a href="index.html">Inicio</a></li>
+          <li><a href="index.html#seguridad-escolar">Seguridad</a></li>
+          <li><a href="reportar-incidente.html">Reportar Incidente</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <div class="sidebar-menu" id="sidebarMenu">
+    <div class="sidebar-header"><h3>Menú</h3><button class="sidebar-close" id="closeSidebar">&times;</button></div>
+    <div class="sidebar-content">
+      <a href="index.html" class="sidebar-item sidebar-link"><span class="sidebar-icon">🏠</span><span class="sidebar-text">Inicio</span><span class="sidebar-arrow">›</span></a>
+      <a href="seguridad.html" class="sidebar-item sidebar-link"><span class="sidebar-icon">🛡️</span><span class="sidebar-text">Seguridad / Control Acceso</span><span class="sidebar-arrow">›</span></a>
+      <a href="reportar-incidente.html" class="sidebar-item sidebar-link"><span class="sidebar-icon">📣</span><span class="sidebar-text">Reportar Incidente</span><span class="sidebar-arrow">›</span></a>
+      <div style="border-top:1px solid rgba(255,255,255,0.1);margin:1rem 0;"></div>
+      <div class="sidebar-item" id="themeToggle"><span class="sidebar-icon">🎨</span><span class="sidebar-text">Cambiar Tema</span><span class="sidebar-arrow">›</span></div>
+      <div class="theme-options" id="themeOptions" style="display:none;">
+        <button class="theme-option" id="selectLightMode">☀️ Modo Claro</button>
+        <button class="theme-option" id="selectDarkMode">🌙 Modo Oscuro</button>
+      </div>
+    </div>
+  </div>
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+  <script>
+    (function(){
+      var hBtn=document.getElementById('hamburgerBtn'),sm=document.getElementById('sidebarMenu'),
+          so=document.getElementById('sidebarOverlay'),cs=document.getElementById('closeSidebar'),
+          tt=document.getElementById('themeToggle'),to=document.getElementById('themeOptions'),
+          sl=document.getElementById('selectLightMode'),sd=document.getElementById('selectDarkMode');
+      function open(){sm.classList.add('active');so.classList.add('active');}
+      function close(){sm.classList.remove('active');so.classList.remove('active');if(to)to.style.display='none';}
+      if(hBtn)hBtn.addEventListener('click',open);
+      if(cs)cs.addEventListener('click',close);
+      if(so)so.addEventListener('click',close);
+      if(tt)tt.addEventListener('click',function(){to.style.display=to.style.display==='block'?'none':'block';});
+      if(sl)sl.addEventListener('click',function(){document.body.classList.remove('dark-mode');localStorage.setItem('theme','light');close();});
+      if(sd)sd.addEventListener('click',function(){document.body.classList.add('dark-mode');localStorage.setItem('theme','dark');close();});
+    })();
+  </script>
+
+  <!-- HERO -->
+  <section class="hero" style="min-height:300px;padding:3.5rem 0;">
+    <div class="container">
+      <div class="hero-content-centered">
+        <h1>🚨 Protocolo de Emergencias</h1>
+        <p>Procedimientos oficiales ante situaciones de emergencia. Conoce los pasos a seguir para proteger la vida de todos.</p>
+        <div class="hero-tags">
+          <span>🔥 Incendio</span><span>🌎 Terremoto</span><span>🌀 Huracán</span><span>🔒 Lockdown</span><span>💊 Médica</span><span>💣 Amenaza</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTENIDO -->
+  <section class="section" style="padding-top:2rem;">
+    <div class="pe-wrapper">
+
+      <!-- Número de emergencia destacado -->
+      <div class="pe-alert-box">
+        <div style="font-size:3rem;">🆘</div>
+        <h2>En caso de emergencia inmediata</h2>
+        <p>Si hay peligro inminente para la vida, llama de inmediato</p>
+        <a href="tel:911" class="pe-emergency-num">9 - 1 - 1</a>
+      </div>
+
+      <!-- Cards de protocolo -->
+      <div class="pe-grid">
+        <!-- Evacuación / Incendio -->
+        <div class="pe-card">
+          <div class="pe-card-head">
+            <span class="pe-badge pe-badge-red">🔴 CRÍTICO</span>
+            <span class="pe-card-icon">🔥</span>
+            <h3>Incendio / Evacuación</h3>
+            <p>Procedimiento de evacuación ante alarma de incendio u otra emergencia que requiera desalojar el edificio.</p>
+          </div>
+          <div class="pe-steps">
+            <h4>Pasos a seguir</h4>
+            <div class="pe-step"><div class="pe-step-num">1</div><span>Activa la alarma de incendio de inmediato.</span></div>
+            <div class="pe-step"><div class="pe-step-num">2</div><span>Sal del salón en fila ordenada, sin correr.</span></div>
+            <div class="pe-step"><div class="pe-step-num">3</div><span>Usa las salidas de emergencia — nunca el elevador.</span></div>
+            <div class="pe-step"><div class="pe-step-num">4</div><span>Reúnete en el punto de encuentro asignado.</span></div>
+            <div class="pe-step"><div class="pe-step-num">5</div><span>Pasa lista y espera instrucciones del director.</span></div>
+          </div>
+        </div>
+
+        <!-- Terremoto -->
+        <div class="pe-card">
+          <div class="pe-card-head">
+            <span class="pe-badge pe-badge-orange">🟠 CRÍTICO</span>
+            <span class="pe-card-icon">🌎</span>
+            <h3>Terremoto</h3>
+            <p>Acciones para protegerse durante y después de un sismo dentro del plantel escolar.</p>
+          </div>
+          <div class="pe-steps">
+            <h4>Pasos a seguir</h4>
+            <div class="pe-step"><div class="pe-step-num">1</div><span><strong>Agáchate, cúbrete y sujétate</strong> bajo un escritorio resistente.</span></div>
+            <div class="pe-step"><div class="pe-step-num">2</div><span>Aléjate de ventanas, estantes y objetos que puedan caer.</span></div>
+            <div class="pe-step"><div class="pe-step-num">3</div><span>Permanece dentro hasta que el movimiento cese.</span></div>
+            <div class="pe-step"><div class="pe-step-num">4</div><span>Evacúa con calma si el edificio está dañado.</span></div>
+            <div class="pe-step"><div class="pe-step-num">5</div><span>Aléjate de la costa (alerta de tsunami).</span></div>
+          </div>
+        </div>
+
+        <!-- Huracán -->
+        <div class="pe-card">
+          <div class="pe-card-head">
+            <span class="pe-badge pe-badge-blue">🔵 ALERTA</span>
+            <span class="pe-card-icon">🌀</span>
+            <h3>Huracán / Tormenta</h3>
+            <p>Preparación y acción ante alertas de huracán o tormenta tropical que afecten las operaciones escolares.</p>
+          </div>
+          <div class="pe-steps">
+            <h4>Pasos a seguir</h4>
+            <div class="pe-step"><div class="pe-step-num">1</div><span>Sigue las instrucciones del DEPR sobre cierre de escuelas.</span></div>
+            <div class="pe-step"><div class="pe-step-num">2</div><span>Ubica el salón de refugio asignado (zona interior).</span></div>
+            <div class="pe-step"><div class="pe-step-num">3</div><span>Aléjate de ventanas y puertas de cristal.</span></div>
+            <div class="pe-step"><div class="pe-step-num">4</div><span>Mantén calma y escucha al personal autorizado.</span></div>
+          </div>
+        </div>
+
+        <!-- Emergencia Médica -->
+        <div class="pe-card">
+          <div class="pe-card-head">
+            <span class="pe-badge pe-badge-green">🟢 RESPUESTA</span>
+            <span class="pe-card-icon">🚑</span>
+            <h3>Emergencia Médica</h3>
+            <p>Respuesta ante un estudiante o personal con señales de emergencia de salud dentro de la escuela.</p>
+          </div>
+          <div class="pe-steps">
+            <h4>Pasos a seguir</h4>
+            <div class="pe-step"><div class="pe-step-num">1</div><span>Llama a la enfermería o dirección de inmediato.</span></div>
+            <div class="pe-step"><div class="pe-step-num">2</div><span>No muevas al estudiante a menos que sea necesario.</span></div>
+            <div class="pe-step"><div class="pe-step-num">3</div><span>Llama al 9-1-1 si la situación es grave.</span></div>
+            <div class="pe-step"><div class="pe-step-num">4</div><span>Mantén el área despejada hasta que llegue ayuda.</span></div>
+          </div>
+        </div>
+
+        <!-- Lockdown -->
+        <div class="pe-card">
+          <div class="pe-card-head">
+            <span class="pe-badge pe-badge-red">🔴 CRÍTICO</span>
+            <span class="pe-card-icon">🔒</span>
+            <h3>Lockdown / Intruso</h3>
+            <p>Procedimiento de confinamiento ante una amenaza de seguridad o presencia de persona no autorizada.</p>
+          </div>
+          <div class="pe-steps">
+            <h4>Pasos a seguir</h4>
+            <div class="pe-step"><div class="pe-step-num">1</div><span>Cierra y traba la puerta del salón inmediatamente.</span></div>
+            <div class="pe-step"><div class="pe-step-num">2</div><span>Apaga las luces y cúbrete lejos de ventanas.</span></div>
+            <div class="pe-step"><div class="pe-step-num">3</div><span>Permanece en silencio — no abras la puerta.</span></div>
+            <div class="pe-step"><div class="pe-step-num">4</div><span>Llama al 9-1-1 solo si es seguro hacerlo.</span></div>
+            <div class="pe-step"><div class="pe-step-num">5</div><span>Espera la señal de "todo despejado" del director.</span></div>
+          </div>
+        </div>
+
+        <!-- Amenaza de Bomba -->
+        <div class="pe-card">
+          <div class="pe-card-head">
+            <span class="pe-badge pe-badge-yellow">🟡 ALERTA</span>
+            <span class="pe-card-icon">💣</span>
+            <h3>Amenaza de Bomba</h3>
+            <p>Acciones ante una amenaza verbal, escrita o anónima de explosivo dentro del plantel.</p>
+          </div>
+          <div class="pe-steps">
+            <h4>Pasos a seguir</h4>
+            <div class="pe-step"><div class="pe-step-num">1</div><span>No cuelgues si recibes la llamada — anota todos los detalles.</span></div>
+            <div class="pe-step"><div class="pe-step-num">2</div><span>Notifica de inmediato al director y a la Policía (9-1-1).</span></div>
+            <div class="pe-step"><div class="pe-step-num">3</div><span>No toques objetos sospechosos.</span></div>
+            <div class="pe-step"><div class="pe-step-num">4</div><span>Evacúa el edificio según indicaciones oficiales.</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Reglas generales -->
+      <div class="pe-rules">
+        <h2>📋 Reglas Generales ante toda Emergencia</h2>
+        <ul>
+          <li><strong>Mantén la calma</strong> — el pánico dificulta la respuesta y puede causar más daño.</li>
+          <li><strong>Sigue las instrucciones</strong> del maestro, director o personal de seguridad designado.</li>
+          <li><strong>No uses el teléfono celular</strong> durante la emergencia, salvo para llamar al 9-1-1.</li>
+          <li><strong>No regreses</strong> al edificio hasta recibir autorización oficial.</li>
+          <li><strong>Conoce tu punto de encuentro</strong> — cada salón tiene uno asignado en el patio.</li>
+          <li><strong>Reporta</strong> cualquier situación sospechosa antes de que se convierta en emergencia.</li>
+        </ul>
+      </div>
+
+      <!-- Acciones rápidas -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+        <a href="reportar-incidente.html" class="btn btn-primary" style="text-align:center;">📣 Reportar Incidente</a>
+        <a href="seguridad.html" class="btn btn-secondary" style="text-align:center;">🛡️ Control de Acceso</a>
+      </div>
+
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>&copy; <script>document.write(new Date().getFullYear());</script>
+        Escuela Superior Vocacional Pablo Colón Berdecia. Todos los derechos reservados.</p>
+    </div>
+  </footer>
+  <script src="script.js"></script>
+</body>
+</html>

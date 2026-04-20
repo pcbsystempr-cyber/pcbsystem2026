@@ -19,65 +19,261 @@
     // Proteger página de admin con JWT
     (async function () {
       const isAuth = await AuthJWT.isAuthenticated();
-      if (!isAuth) {
-        window.location.href = 'login.html';
+      if (!isAuth) { window.location.href = 'login.html'; }
+    })();
+    // Aplicar tema guardado inmediatamente para evitar flash
+    (function() {
+      if (localStorage.getItem('adminTheme') === 'dark') {
+        document.body.classList.add('admin-dark');
       }
     })();
   </script>
 
-  <div class="admin-container">
-    <!-- Sidebar -->
+  <div class="admin-layout">
+    <!-- ══ SIDEBAR ══ -->
     <aside class="admin-sidebar">
-      <div class="admin-logo">
+      <div class="sidebar-brand">
         <img src="LOGO6.png" alt="Logo PCB">
-        <h2>Panel Admin</h2>
+        <div class="sidebar-brand-text">
+          <h2>Panel Admin</h2>
+          <p>PCB System 2026</p>
+        </div>
       </div>
-      <nav class="admin-nav">
-        <button class="nav-btn active" data-section="comedor">
-          🍽️ Comedor
-        </button>
-        <button class="nav-btn" data-section="promociones">
-          📢 Promociones
-        </button>
-        <button class="nav-btn" data-section="avisos">
-          📋 Avisos
-        </button>
-        <button class="nav-btn" data-section="bot">
-          🔔 Bot de Avisos
-        </button>
-        <button class="nav-btn" data-section="novedades">
-          📢 Novedades
-        </button>
+
+      <nav class="sidebar-nav">
+        <div class="nav-group">
+          <div class="nav-group-label">Gestión de Contenido</div>
+          <button class="nav-btn active" data-section="comedor">
+            <span class="nav-icon">🍽️</span> Comedor
+          </button>
+          <button class="nav-btn" data-section="promociones">
+            <span class="nav-icon">📢</span> Promociones
+          </button>
+          <button class="nav-btn" data-section="avisos">
+            <span class="nav-icon">📋</span> Avisos
+          </button>
+        </div>
+        <div class="nav-group">
+          <div class="nav-group-label">Portal de Padres</div>
+          <button class="nav-btn" data-section="talleres">
+            <span class="nav-icon">🎓</span> Talleres para Padres
+          </button>
+          <button class="nav-btn" data-section="certificaciones">
+            <span class="nav-icon">🏆</span> Certificaciones Online
+          </button>
+        </div>
+        <div class="nav-group">
+          <div class="nav-group-label">Comunicaciones</div>
+          <button class="nav-btn" data-section="bot">
+            <span class="nav-icon">🔔</span> Bot de Avisos
+          </button>
+          <button class="nav-btn" data-section="novedades">
+            <span class="nav-icon">📣</span> Novedades
+          </button>
+        </div>
       </nav>
-      <div class="admin-footer">
-        <a href="index.html" class="btn-back">← Volver al sitio</a>
-        <button onclick="AuthJWT.logout()" class="btn-back"
-          style="margin-top: 0.5rem; background: rgba(231, 76, 60, 0.2); border: none; cursor: pointer; width: 100%;">
-          🚪 Cerrar Sesión
+
+      <div class="sidebar-footer">
+        <button class="theme-toggle-btn" id="adminThemeToggle">
+          <span id="themeLabel">☀️ Modo Claro</span>
+          <span style="opacity:0.5;">⇄</span>
         </button>
+        <a href="index.html" class="btn-sidebar-action">← Volver al Sitio</a>
+        <button onclick="AuthJWT.logout()" class="btn-sidebar-action danger">🚪 Cerrar Sesión</button>
       </div>
     </aside>
 
-    <!-- Main Content -->
+    <!-- ══ MAIN ══ -->
     <main class="admin-main">
-      <header class="admin-header">
-        <h1 id="sectionTitle">Gestión de Comedor</h1>
-        <div class="admin-actions">
-          <button class="btn-secondary" id="btnExportData" title="Exportar datos a JSON">
-            💾 Exportar Datos
-          </button>
-          <button class="btn-primary" id="btnEditMenu" style="display: none;">
-            📝 Editar Menú
-          </button>
-          <button class="btn-primary" id="btnAddImage">
-            ➕ Añadir Imagen
-          </button>
+      <header class="admin-topbar">
+        <div class="topbar-left">
+          <h1 id="sectionTitle">Gestión de Comedor</h1>
+          <p id="sectionSubtitle" style="font-size:0.8rem;color:var(--muted);margin-top:2px;">Administra las imágenes y menú del comedor escolar</p>
+        </div>
+        <div class="topbar-actions">
+          <button class="btn btn-secondary" id="btnExportData" title="Exportar datos a JSON">💾 Exportar</button>
+          <button class="btn btn-primary" id="btnEditMenu" style="display:none;">📝 Editar Menú</button>
+          <button class="btn btn-primary" id="btnAddImage">➕ Añadir Imagen</button>
         </div>
       </header>
 
-      <!-- Content Area -->
+      <!-- ══ Content Area ══ -->
       <div class="admin-content">
-        <!-- Menu Editor (only for comedor section) -->
+
+        <!-- Stats Row -->
+        <div class="stats-row">
+          <div class="stat-card">
+            <div class="stat-icon purple">🖼️</div>
+            <div class="stat-info"><h3 id="statPromos">0</h3><p>Promociones</p></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon green">📋</div>
+            <div class="stat-info"><h3 id="statAvisos">0</h3><p>Avisos</p></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon orange">🎓</div>
+            <div class="stat-info"><h3 id="statTalleres">0</h3><p>Talleres</p></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon blue">🏆</div>
+            <div class="stat-info"><h3 id="statCerts">0</h3><p>Certificaciones</p></div>
+          </div>
+        </div>
+
+        <!-- ══ TALLERES PARA PADRES ══ -->
+        <div id="talleresSection" style="display:none;">
+          <div class="content-card">
+            <h3>🎓 Agregar / Editar Taller para Padres</h3>
+            <form id="tallerForm">
+              <input type="hidden" id="tallerEditId">
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Nombre del Taller *</label>
+                  <input type="text" id="tallerNombre" class="form-control" placeholder="Ej: Educación Financiera para Familias" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Instructor / Facilitador</label>
+                  <input type="text" id="tallerInstructor" class="form-control" placeholder="Ej: Prof. Ana García">
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Descripción</label>
+                <textarea id="tallerDescripcion" class="form-control" rows="3" placeholder="Describe el contenido y objetivos del taller..."></textarea>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Categoría</label>
+                  <select id="tallerCategoria" class="form-control">
+                    <option value="tecnologia">💻 Tecnología</option>
+                    <option value="finanzas">💰 Finanzas</option>
+                    <option value="salud">🏥 Salud y Bienestar</option>
+                    <option value="educacion">📚 Educación</option>
+                    <option value="empleo">💼 Empleo y Carrera</option>
+                    <option value="arte">🎨 Arte y Creatividad</option>
+                    <option value="otro">📌 Otro</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Modalidad</label>
+                  <select id="tallerModalidad" class="form-control">
+                    <option value="virtual">🖥️ Virtual</option>
+                    <option value="presencial">🏫 Presencial</option>
+                    <option value="hibrido">🔀 Híbrido</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Fecha</label>
+                  <input type="date" id="tallerFecha" class="form-control">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Duración</label>
+                  <input type="text" id="tallerDuracion" class="form-control" placeholder="Ej: 2 horas">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Cupos Disponibles</label>
+                  <input type="number" id="tallerCupos" class="form-control" placeholder="Ej: 30" min="1">
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">URL de Imagen (opcional)</label>
+                  <input type="url" id="tallerImagen" class="form-control" placeholder="https://...">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Enlace de Registro / Info</label>
+                  <input type="url" id="tallerEnlace" class="form-control" placeholder="https://...">
+                </div>
+              </div>
+              <div class="form-actions">
+                <button type="submit" class="btn btn-primary">💾 Guardar Taller</button>
+                <button type="button" class="btn btn-secondary" id="btnCancelTaller">Cancelar</button>
+              </div>
+            </form>
+          </div>
+
+          <div class="content-card">
+            <h3>📋 Talleres Publicados</h3>
+            <div class="items-list" id="talleresList">
+              <div class="empty-state"><div class="empty-icon">🎓</div><h3>No hay talleres</h3><p>Agrega el primer taller usando el formulario de arriba</p></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══ CERTIFICACIONES ONLINE ══ -->
+        <div id="certificacionesSection" style="display:none;">
+          <div class="content-card">
+            <h3>🏆 Agregar / Editar Certificación Online</h3>
+            <form id="certForm">
+              <input type="hidden" id="certEditId">
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Nombre de la Certificación *</label>
+                  <input type="text" id="certNombre" class="form-control" placeholder="Ej: Google IT Support Professional" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Proveedor / Plataforma</label>
+                  <input type="text" id="certProveedor" class="form-control" placeholder="Ej: Coursera, edX, Google...">
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Descripción</label>
+                <textarea id="certDescripcion" class="form-control" rows="3" placeholder="Describe la certificación y sus beneficios..."></textarea>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Duración Estimada</label>
+                  <input type="text" id="certDuracion" class="form-control" placeholder="Ej: 6 meses, 40 horas">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Nivel</label>
+                  <select id="certNivel" class="form-control">
+                    <option value="principiante">🟢 Principiante</option>
+                    <option value="intermedio">🟡 Intermedio</option>
+                    <option value="avanzado">🔴 Avanzado</option>
+                    <option value="todos">🔵 Todos los niveles</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Formato</label>
+                  <select id="certFormato" class="form-control">
+                    <option value="enlinea">🌐 En línea</option>
+                    <option value="grabado">🎥 Grabado</option>
+                    <option value="hibrido">🔀 Híbrido</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Precio</label>
+                  <input type="text" id="certPrecio" class="form-control" placeholder="Ej: Gratis, $49, Beca disponible">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Enlace de Acceso *</label>
+                  <input type="url" id="certEnlace" class="form-control" placeholder="https://..." required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">URL de Imagen (opcional)</label>
+                  <input type="url" id="certImagen" class="form-control" placeholder="https://...">
+                </div>
+              </div>
+              <div class="form-actions">
+                <button type="submit" class="btn btn-primary">💾 Guardar Certificación</button>
+                <button type="button" class="btn btn-secondary" id="btnCancelCert">Cancelar</button>
+              </div>
+            </form>
+          </div>
+
+          <div class="content-card">
+            <h3>📋 Certificaciones Publicadas</h3>
+            <div class="items-list" id="certsList">
+              <div class="empty-state"><div class="empty-icon">🏆</div><h3>No hay certificaciones</h3><p>Agrega la primera certificación usando el formulario de arriba</p></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══ MENU EDITOR (solo comedor) ══ -->
         <div class="menu-editor-section" id="menuEditorSection" style="display: none;">
           <div class="upload-card">
             <h3>📝 Editar Menú del Día</h3>
@@ -181,48 +377,39 @@
 
         <!-- Gestión de Novedades (solo visible en sección Novedades) -->
         <div id="novedadesSection" style="display:none;">
-          <div class="upload-card">
-            <h3>📢 Gestión de Novedades (Popup)</h3>
-            <p style="color:#7f8c8d; margin-bottom:1.5rem;">La noticia más reciente aparecerá automáticamente en el popup de la página principal.</p>
-
-            <form id="newsForm" style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:20px; align-items:flex-end;">
-              <div style="flex:1; min-width:200px;">
+          <div class="content-card">
+            <h3>📣 Gestión de Novedades (Popup)</h3>
+            <p style="color:var(--muted); margin-bottom:1.25rem; font-size:0.88rem;">La noticia más reciente aparecerá automáticamente en el popup de la página principal.</p>
+            <form id="newsForm" style="display:flex; gap:0.75rem; flex-wrap:wrap; margin-bottom:1.25rem; align-items:flex-end;">
+              <div style="flex:1; min-width:180px;">
                 <label class="form-label">Título</label>
-                <input type="text" id="newsTitle" placeholder="Ej: ¡Matrícula Abierta!"
-                  style="width:100%; padding:8px; border:1px solid #ddd; border-radius:6px; margin-top:4px;" required>
+                <input type="text" id="newsTitle" class="form-control" placeholder="Ej: ¡Matrícula Abierta!" required>
               </div>
-              <div style="flex:2; min-width:300px;">
+              <div style="flex:2; min-width:260px;">
                 <label class="form-label">Mensaje</label>
-                <input type="text" id="newsMessage" placeholder="Detalles de la noticia..."
-                  style="width:100%; padding:8px; border:1px solid #ddd; border-radius:6px; margin-top:4px;" required>
+                <input type="text" id="newsMessage" class="form-control" placeholder="Detalles de la noticia..." required>
               </div>
-              <div style="flex:1; min-width:200px;">
+              <div style="flex:1; min-width:180px;">
                 <label class="form-label">URL Imagen (Opcional)</label>
-                <input type="text" id="newsImage" placeholder="https://..."
-                  style="width:100%; padding:8px; border:1px solid #ddd; border-radius:6px; margin-top:4px;">
+                <input type="text" id="newsImage" class="form-control" placeholder="https://...">
               </div>
-              <button type="submit" class="btn-primary">📤 Publicar</button>
+              <button type="submit" class="btn btn-primary">📤 Publicar</button>
             </form>
-
-            <ul id="newsList" style="list-style:none; padding:0;">
-              <!-- Noticias se renderizan con JS -->
-            </ul>
+            <ul id="newsList" style="list-style:none; padding:0;"></ul>
           </div>
         </div>
 
         <!-- Recomendaciones del Comedor (solo visible en sección Comedor) -->
-        <div id="recomendacionesAdminSection" style="display:none; margin-bottom: 2rem;">
-          <div style="background:white; border-radius:12px; padding:1.5rem; box-shadow:0 2px 10px rgba(0,0,0,0.06); border-left: 4px solid #667eea;">
-            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:1.2rem;">
+        <div id="recomendacionesAdminSection" style="display:none; margin-bottom:1.5rem;">
+          <div class="content-card" style="border-left:4px solid var(--accent);">
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:1.1rem;">
               <div>
-                <h3 style="margin:0; color:#2c3e50; font-size:1.2rem;">💬 Recomendaciones de Estudiantes</h3>
-                <p style="margin:0.3rem 0 0; color:#7f8c8d; font-size:0.88rem;">Gestiona las recomendaciones enviadas desde el comedor</p>
+                <h3 style="margin:0;">💬 Recomendaciones de Estudiantes</h3>
+                <p style="margin:0.25rem 0 0; color:var(--muted); font-size:0.82rem;">Gestiona las recomendaciones enviadas desde el comedor</p>
               </div>
-              <span id="recCount" style="background:#667eea; color:white; padding:0.3rem 0.8rem; border-radius:20px; font-size:0.85rem; font-weight:600;">0</span>
+              <span id="recCount" style="background:var(--accent);color:white;padding:0.25rem 0.75rem;border-radius:20px;font-size:0.82rem;font-weight:700;">0</span>
             </div>
-            <div id="recomendacionesAdminList">
-              <!-- Cards se renderizan con JS -->
-            </div>
+            <div id="recomendacionesAdminList"></div>
           </div>
         </div>
 
@@ -237,9 +424,9 @@
           <h3>No hay imágenes</h3>
           <p>Añade tu primera imagen usando el botón de arriba</p>
         </div>
-      </div>
+      </div><!-- /admin-content -->
     </main>
-  </div>
+  </div><!-- /admin-layout -->
 
   <!-- Delete Confirmation Modal -->
   <div class="modal" id="deleteModal">
@@ -258,24 +445,12 @@
   <div class="modal" id="editNewsModal">
     <div class="modal-content">
       <h3>✏️ Editar Noticia</h3>
-      <div class="form-group" style="margin-top:1rem;">
-        <label for="editNewsTitle">Título:</label>
-        <input type="text" id="editNewsTitle" placeholder="Título de la noticia..."
-          style="width:100%; padding:0.6rem 0.8rem; border:1px solid #ddd; border-radius:6px; font-size:0.95rem; margin-top:0.3rem;">
-      </div>
-      <div class="form-group" style="margin-top:1rem;">
-        <label for="editNewsMessage">Mensaje:</label>
-        <textarea id="editNewsMessage" rows="3" placeholder="Detalles de la noticia..."
-          style="width:100%; padding:0.6rem 0.8rem; border:1px solid #ddd; border-radius:6px; font-size:0.95rem; margin-top:0.3rem; resize:vertical; font-family:inherit;"></textarea>
-      </div>
-      <div class="form-group" style="margin-top:1rem;">
-        <label for="editNewsImageUrl">URL de Imagen (opcional):</label>
-        <input type="text" id="editNewsImageUrl" placeholder="https://..."
-          style="width:100%; padding:0.6rem 0.8rem; border:1px solid #ddd; border-radius:6px; font-size:0.95rem; margin-top:0.3rem;">
-      </div>
-      <div class="modal-actions" style="margin-top:1.5rem;">
-        <button class="btn-primary" id="btnSaveNewsEdit">💾 Guardar Cambios</button>
-        <button class="btn-secondary" id="btnCancelNewsEdit">Cancelar</button>
+      <div class="form-group"><label class="form-label">Título</label><input type="text" id="editNewsTitle" class="form-control" placeholder="Título de la noticia..."></div>
+      <div class="form-group"><label class="form-label">Mensaje</label><textarea id="editNewsMessage" class="form-control" rows="3" placeholder="Detalles de la noticia..." style="resize:vertical;"></textarea></div>
+      <div class="form-group"><label class="form-label">URL de Imagen (opcional)</label><input type="text" id="editNewsImageUrl" class="form-control" placeholder="https://..."></div>
+      <div class="modal-actions">
+        <button class="btn btn-primary" id="btnSaveNewsEdit">💾 Guardar Cambios</button>
+        <button class="btn btn-secondary" id="btnCancelNewsEdit">Cancelar</button>
       </div>
     </div>
   </div>
@@ -284,29 +459,17 @@
   <div class="modal" id="editGalleryItemModal">
     <div class="modal-content">
       <h3>✏️ Editar Imagen</h3>
-      <div class="form-group" style="margin-top:1rem;">
-        <label for="editGalleryTitle">Título:</label>
-        <input type="text" id="editGalleryTitle" placeholder="Título..."
-          style="width:100%; padding:0.6rem 0.8rem; border:1px solid #ddd; border-radius:6px; font-size:0.95rem; margin-top:0.3rem;">
+      <div class="form-group"><label class="form-label">Título</label><input type="text" id="editGalleryTitle" class="form-control" placeholder="Título..."></div>
+      <div class="form-group"><label class="form-label">Descripción</label><textarea id="editGalleryDesc" class="form-control" rows="3" placeholder="Descripción..." style="resize:vertical;"></textarea></div>
+      <div class="form-group"><label class="form-label">Imagen actual</label><div id="editGalleryImgPreview" style="margin-top:0.5rem;text-align:center;"></div></div>
+      <div class="form-group">
+        <label class="form-label">Reemplazar imagen (opcional)</label>
+        <input type="file" id="editGalleryImgFile" accept="image/jpeg,image/png,image/webp" style="display:block;margin-top:0.4rem;font-size:0.88rem;color:var(--muted);">
+        <small style="color:var(--muted);font-size:0.78rem;">Deja vacío para conservar la imagen actual.</small>
       </div>
-      <div class="form-group" style="margin-top:1rem;">
-        <label for="editGalleryDesc">Descripción:</label>
-        <textarea id="editGalleryDesc" rows="3" placeholder="Descripción..."
-          style="width:100%; padding:0.6rem 0.8rem; border:1px solid #ddd; border-radius:6px; font-size:0.95rem; margin-top:0.3rem; resize:vertical; font-family:inherit;"></textarea>
-      </div>
-      <div class="form-group" style="margin-top:1rem;">
-        <label>Imagen actual:</label>
-        <div id="editGalleryImgPreview" style="margin-top:0.5rem; text-align:center;"></div>
-      </div>
-      <div class="form-group" style="margin-top:1rem;">
-        <label for="editGalleryImgFile">Reemplazar imagen (opcional):</label>
-        <input type="file" id="editGalleryImgFile" accept="image/jpeg,image/png,image/webp"
-          style="display:block; margin-top:0.4rem; font-size:0.9rem;">
-        <small style="color:#95a5a6;">Deja vacío para conservar la imagen actual.</small>
-      </div>
-      <div class="modal-actions" style="margin-top:1.5rem;">
-        <button class="btn-primary" id="btnSaveGalleryEdit">💾 Guardar Cambios</button>
-        <button class="btn-secondary" id="btnCancelGalleryEdit">Cancelar</button>
+      <div class="modal-actions">
+        <button class="btn btn-primary" id="btnSaveGalleryEdit">💾 Guardar Cambios</button>
+        <button class="btn btn-secondary" id="btnCancelGalleryEdit">Cancelar</button>
       </div>
     </div>
   </div>
@@ -315,36 +478,17 @@
   <div class="modal" id="editBotItemModal">
     <div class="modal-content">
       <h3>✏️ Editar Aviso / Promoción</h3>
-
-      <div class="form-group" style="margin-top:1rem;">
-        <label for="editBotTitle">Título:</label>
-        <input type="text" id="editBotTitle" placeholder="Título del aviso..."
-          style="width:100%; padding:0.6rem 0.8rem; border:1px solid #ddd; border-radius:6px; font-size:0.95rem; margin-top:0.3rem;">
+      <div class="form-group"><label class="form-label">Título</label><input type="text" id="editBotTitle" class="form-control" placeholder="Título del aviso..."></div>
+      <div class="form-group"><label class="form-label">Descripción</label><textarea id="editBotDesc" class="form-control" rows="3" placeholder="Descripción del aviso..." style="resize:vertical;"></textarea></div>
+      <div class="form-group"><label class="form-label">Imagen actual</label><div id="editBotImgPreview" style="margin-top:0.5rem;text-align:center;"></div></div>
+      <div class="form-group">
+        <label class="form-label">Reemplazar imagen (opcional)</label>
+        <input type="file" id="editBotImgFile" accept="image/jpeg,image/png,image/webp" style="display:block;margin-top:0.4rem;font-size:0.88rem;color:var(--muted);">
+        <small style="color:var(--muted);font-size:0.78rem;">Deja vacío para conservar la imagen actual.</small>
       </div>
-
-      <div class="form-group" style="margin-top:1rem;">
-        <label for="editBotDesc">Descripción:</label>
-        <textarea id="editBotDesc" rows="3" placeholder="Descripción del aviso..."
-          style="width:100%; padding:0.6rem 0.8rem; border:1px solid #ddd; border-radius:6px; font-size:0.95rem; margin-top:0.3rem; resize:vertical; font-family:inherit;"></textarea>
-      </div>
-
-      <div class="form-group" style="margin-top:1rem;">
-        <label>Imagen actual:</label>
-        <div id="editBotImgPreview" style="margin-top:0.5rem; text-align:center;">
-          <!-- preview rendered with JS -->
-        </div>
-      </div>
-
-      <div class="form-group" style="margin-top:1rem;">
-        <label for="editBotImgFile">Reemplazar imagen (opcional):</label>
-        <input type="file" id="editBotImgFile" accept="image/jpeg,image/png,image/webp"
-          style="display:block; margin-top:0.4rem; font-size:0.9rem;">
-        <small style="color:#95a5a6;">Deja vacío para conservar la imagen actual.</small>
-      </div>
-
-      <div class="modal-actions" style="margin-top:1.5rem;">
-        <button class="btn-primary" id="btnSaveBotItemEdit">💾 Guardar Cambios</button>
-        <button class="btn-secondary" id="btnCancelBotItemEdit">Cancelar</button>
+      <div class="modal-actions">
+        <button class="btn btn-primary" id="btnSaveBotItemEdit">💾 Guardar Cambios</button>
+        <button class="btn btn-secondary" id="btnCancelBotItemEdit">Cancelar</button>
       </div>
     </div>
   </div>
@@ -353,18 +497,11 @@
   <div class="modal" id="editRecModal">
     <div class="modal-content">
       <h3>✏️ Editar Recomendación</h3>
-      <div class="form-group" style="margin-top:1rem;">
-        <label for="editRecNombre">Nombre del Estudiante:</label>
-        <input type="text" id="editRecNombre" placeholder="Nombre..." style="width:100%; padding:0.6rem 0.8rem; border:1px solid #ddd; border-radius:6px; font-size:0.95rem; margin-top:0.3rem;">
-      </div>
-      <div class="form-group" style="margin-top:1rem;">
-        <label for="editRecTexto">Recomendación:</label>
-        <textarea id="editRecTexto" rows="4" placeholder="Texto de la recomendación..."
-          style="width:100%; padding:0.6rem 0.8rem; border:1px solid #ddd; border-radius:6px; font-size:0.95rem; margin-top:0.3rem; resize:vertical; font-family:inherit;"></textarea>
-      </div>
-      <div class="modal-actions" style="margin-top:1.5rem;">
-        <button class="btn-primary" id="btnSaveRecEdit">💾 Guardar Cambios</button>
-        <button class="btn-secondary" id="btnCancelRecEdit">Cancelar</button>
+      <div class="form-group"><label class="form-label">Nombre del Estudiante</label><input type="text" id="editRecNombre" class="form-control" placeholder="Nombre..."></div>
+      <div class="form-group"><label class="form-label">Recomendación</label><textarea id="editRecTexto" class="form-control" rows="4" placeholder="Texto de la recomendación..." style="resize:vertical;"></textarea></div>
+      <div class="modal-actions">
+        <button class="btn btn-primary" id="btnSaveRecEdit">💾 Guardar Cambios</button>
+        <button class="btn btn-secondary" id="btnCancelRecEdit">Cancelar</button>
       </div>
     </div>
   </div>
