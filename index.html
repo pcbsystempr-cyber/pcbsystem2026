@@ -139,13 +139,13 @@
         btnDark.onclick = setDarkMode;
       }
 
-      // Redirigir a animacion.html DESPUÉS de configurar los eventos
-      if (!sessionStorage.getItem("pcb_intro_seen")) {
-        sessionStorage.setItem("pcb_intro_seen", "true");
-        setTimeout(function() {
-          window.location.href = "animacion.html";
-        }, 100);
-      }
+      // Animación de intro deshabilitada — index.html carga directamente
+      // if (!sessionStorage.getItem("pcb_intro_seen")) {
+      //   sessionStorage.setItem("pcb_intro_seen", "true");
+      //   setTimeout(function() {
+      //     window.location.href = "animacion.html";
+      //   }, 100);
+      // }
 
       // Usar DOMContentLoaded para el hamburger menu
       document.addEventListener('DOMContentLoaded', function() {
