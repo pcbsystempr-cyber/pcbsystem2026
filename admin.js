@@ -921,109 +921,123 @@
     }
   }
 
-  // ── Gestión de Novedades ────────────────────────────────────────────────
+  // ── Gestión de Novedades (Supabase) ────────────────────────────────────
 
-  function renderNovedades() {
+  async function renderNovedades() {
     const newsList = document.getElementById('newsList');
     const newsForm = document.getElementById('newsForm');
     if (!newsList || !newsForm) return;
 
-    function renderNews() {
-      if (!window.serviceManager) {
-        newsList.innerHTML = '<li style="color:#e74c3c; padding:10px;">⚠️ Error: services-manager no disponible.</li>';
-        return;
-      }
-      const allNews = window.serviceManager.getAllNews();
-      if (allNews.length === 0) {
-        newsList.innerHTML = '<li style="color:#95a5a6; padding:10px;">No hay noticias activas.</li>';
-        return;
-      }
-      const sorted = [...allNews].sort((a, b) => new Date(b.date) - new Date(a.date));
-      newsList.innerHTML = sorted.map((news, i) => `
-        <li style="padding:15px; border-bottom:1px solid #eee; display:flex; justify-content:space-between; align-items:center; background:${i === 0 ? '#f0f9ff' : 'transparent'};">
-          <div style="display:flex; align-items:center; gap:15px;">
-            ${news.imageUrl
-              ? `<img src="${news.imageUrl}" style="width:50px; height:50px; object-fit:cover; border-radius:6px;">`
-              : `<div style="width:50px; height:50px; background:#eee; border-radius:6px; display:flex; align-items:center; justify-content:center;">📷</div>`}
-            <div>
-              <strong style="color:#2c3e50;">${news.title}</strong>
-              ${i === 0 ? '<span style="background:#2ecc71; color:white; padding:2px 6px; border-radius:4px; font-size:0.7rem; margin-left:5px;">ACTIVA</span>' : ''}
-              <p style="margin:0; color:#7f8c8d; font-size:0.9rem;">${news.message}</p>
-              <small style="color:#95a5a6;">${new Date(news.date).toLocaleDateString()} ${new Date(news.date).toLocaleTimeString()}</small>
+    async function renderNews() {
+      newsList.innerHTML = '<li style="color:#95a5a6; padding:10px;">⏳ Cargando novedades...</li>';
+      try {
+        const allNews = await window.novedadesDB.getAll();
+        if (!allNews || allNews.length === 0) {
+          newsList.innerHTML = '<li style="color:#95a5a6; padding:10px;">No hay noticias activas.</li>';
+          return;
+        }
+        newsList.innerHTML = allNews.map((news, i) => `
+          <li style="padding:15px; border-bottom:1px solid #eee; display:flex; justify-content:space-between; align-items:center; background:${i === 0 ? '#f0f9ff' : 'transparent'};">
+            <div style="display:flex; align-items:center; gap:15px;">
+              ${news.image_url
+                ? `<img src="${news.image_url}" style="width:50px; height:50px; object-fit:cover; border-radius:6px;">`
+                : `<div style="width:50px; height:50px; background:#eee; border-radius:6px; display:flex; align-items:center; justify-content:center;">📷</div>`}
+              <div>
+                <strong style="color:#2c3e50;">${news.title}</strong>
+                ${i === 0 ? '<span style="background:#2ecc71; color:white; padding:2px 6px; border-radius:4px; font-size:0.7rem; margin-left:5px;">ACTIVA</span>' : ''}
+                <p style="margin:0; color:#7f8c8d; font-size:0.9rem;">${news.message}</p>
+                <small style="color:#95a5a6;">${new Date(news.created_at).toLocaleDateString()} ${new Date(news.created_at).toLocaleTimeString()}</small>
+              </div>
             </div>
-          </div>
-          <div style="display:flex; gap:0.4rem;">
-            <button onclick="adminApp.editNews('${news.id}')"
-              style="background:#f0f4ff; color:#667eea; border:none; padding:6px 12px; border-radius:6px; cursor:pointer; font-size:1rem;"
-              onmouseover="this.style.background='#667eea';this.style.color='white'"
-              onmouseout="this.style.background='#f0f4ff';this.style.color='#667eea'">✏️</button>
-            <button onclick="adminApp.deleteNews('${news.id}')"
-              style="background:#fff0f0; color:#e74c3c; border:none; padding:6px 12px; border-radius:6px; cursor:pointer; font-size:1rem;"
-              onmouseover="this.style.background='#e74c3c';this.style.color='white'"
-              onmouseout="this.style.background='#fff0f0';this.style.color='#e74c3c'">🗑️</button>
-          </div>
-        </li>
-      `).join('');
+            <div style="display:flex; gap:0.4rem;">
+              <button onclick="adminApp.editNews('${news.id}')"
+                style="background:#f0f4ff; color:#667eea; border:none; padding:6px 12px; border-radius:6px; cursor:pointer; font-size:1rem;"
+                onmouseover="this.style.background='#667eea';this.style.color='white'"
+                onmouseout="this.style.background='#f0f4ff';this.style.color='#667eea'">✏️</button>
+              <button onclick="adminApp.deleteNews('${news.id}')"
+                style="background:#fff0f0; color:#e74c3c; border:none; padding:6px 12px; border-radius:6px; cursor:pointer; font-size:1rem;"
+                onmouseover="this.style.background='#e74c3c';this.style.color='white'"
+                onmouseout="this.style.background='#fff0f0';this.style.color='#e74c3c'">🗑️</button>
+            </div>
+          </li>
+        `).join('');
+      } catch (err) {
+        newsList.innerHTML = '<li style="color:#e74c3c; padding:10px;">⚠️ Error al cargar novedades. Verifica la conexión.</li>';
+        console.error('novedadesDB.getAll:', err);
+      }
     }
 
     // Bind submit only once
     if (!newsForm._bound) {
       newsForm._bound = true;
-      newsForm.addEventListener('submit', (e) => {
+      newsForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-        if (!window.serviceManager) return;
-        const title = document.getElementById('newsTitle').value;
-        const message = document.getElementById('newsMessage').value;
-        const imageUrl = document.getElementById('newsImage').value;
-        window.serviceManager.addNews({ title, message, imageUrl });
-        newsForm.reset();
-        renderNews();
-        alert('✅ Noticia publicada. Aparecerá en el popup de la página principal.');
+        const title    = document.getElementById('newsTitle').value.trim();
+        const message  = document.getElementById('newsMessage').value.trim();
+        const imageUrl = document.getElementById('newsImage').value.trim();
+        if (!title || !message) { alert('⚠️ Título y mensaje son obligatorios.'); return; }
+        try {
+          await window.novedadesDB.add({ title, message, imageUrl });
+          newsForm.reset();
+          await renderNews();
+          alert('✅ Novedad publicada. Ya aparece en el popup para todos los visitantes.');
+        } catch (err) {
+          alert('❌ Error al publicar: ' + err.message);
+        }
       });
     }
 
-    renderNews();
+    await renderNews();
   }
 
-  function editNews(id) {
-    if (!window.serviceManager) return;
-    const all = window.serviceManager.getAllNews();
-    const news = all.find(n => n.id === id);
-    if (!news) return;
-    newsToEditId = id;
-    editNewsTitle.value = news.title || '';
-    editNewsMessage.value = news.message || '';
-    editNewsImageUrl.value = news.imageUrl || '';
-    editNewsModal.classList.add('active');
+  async function editNews(id) {
+    try {
+      const all  = await window.novedadesDB.getAll();
+      const news = all.find(n => n.id === id);
+      if (!news) return;
+      newsToEditId = id;
+      editNewsTitle.value    = news.title     || '';
+      editNewsMessage.value  = news.message   || '';
+      editNewsImageUrl.value = news.image_url || '';
+      editNewsModal.classList.add('active');
+    } catch (err) {
+      alert('❌ Error al cargar novedad: ' + err.message);
+    }
   }
 
   function closeNewsModal() {
     editNewsModal.classList.remove('active');
     newsToEditId = null;
-    editNewsTitle.value = '';
-    editNewsMessage.value = '';
+    editNewsTitle.value    = '';
+    editNewsMessage.value  = '';
     editNewsImageUrl.value = '';
   }
 
-  function saveNewsEdit() {
-    if (!newsToEditId || !window.serviceManager) return;
-    const title = editNewsTitle.value.trim();
+  async function saveNewsEdit() {
+    if (!newsToEditId) return;
+    const title   = editNewsTitle.value.trim();
     const message = editNewsMessage.value.trim();
     if (!title || !message) { alert('⚠️ El título y el mensaje son obligatorios.'); return; }
-    window.serviceManager.updateNews(newsToEditId, {
-      title,
-      message,
-      imageUrl: editNewsImageUrl.value.trim()
-    });
-    closeNewsModal();
-    renderNovedades();
+    try {
+      await window.novedadesDB.update(newsToEditId, {
+        title,
+        message,
+        imageUrl: editNewsImageUrl.value.trim()
+      });
+      closeNewsModal();
+      await renderNovedades();
+    } catch (err) {
+      alert('❌ Error al guardar: ' + err.message);
+    }
   }
 
-  function deleteNews(id) {
-    if (!window.serviceManager) return;
-    if (confirm('¿Seguro que deseas eliminar esta noticia?')) {
-      window.serviceManager.deleteNews(id);
-      renderNovedades();
+  async function deleteNews(id) {
+    if (!confirm('¿Seguro que deseas eliminar esta novedad?')) return;
+    try {
+      await window.novedadesDB.remove(id);
+      await renderNovedades();
+    } catch (err) {
+      alert('❌ Error al eliminar: ' + err.message);
     }
   }
 
