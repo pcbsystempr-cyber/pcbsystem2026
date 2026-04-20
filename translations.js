@@ -353,6 +353,23 @@ const translations = {
     '¡Mantente pendiente! 🎉': '¡Mantente pendiente! 🎉',
     '¡Entendido!': '¡Entendido!',
 
+    // quienes-somos.html
+    '👋 Bienvenidos': '👋 Bienvenidos',
+    'Les damos la más cordial bienvenida a nuestra Escuela Pablo Colón Berdecia del Distrito Escolar de Barranquitas. Nuestra misión es ser colaboradores efectivos en el proceso educativo que se desarrolla en nuestra escuela para garantizarles a todos nuestros estudiantes una educación de excelencia que le permita desarrollar al máximo sus capacidades intelectuales y los valores morales y sociales que necesitan para disfrutar de una mejor calidad de vida.': 'Les damos la más cordial bienvenida a nuestra Escuela Pablo Colón Berdecia del Distrito Escolar de Barranquitas. Nuestra misión es ser colaboradores efectivos en el proceso educativo que se desarrolla en nuestra escuela para garantizarles a todos nuestros estudiantes una educación de excelencia que le permita desarrollar al máximo sus capacidades intelectuales y los valores morales y sociales que necesitan para disfrutar de una mejor calidad de vida.',
+    '"Nuestra escuela se compromete a formar ciudadanos responsables y capaces de contribuir positivamente a la sociedad."': '"Nuestra escuela se compromete a formar ciudadanos responsables y capaces de contribuir positivamente a la sociedad."',
+    'Director Escolar': 'Director Escolar',
+    '📚 Nuestra Historia': '📚 Nuestra Historia',
+    'historia-pcb': 'historia-pcb',
+    '🎯 Misión': '🎯 Misión',
+    'mision-pcb': 'mision-pcb',
+    '🌟 Visión': '🌟 Visión',
+    'vision-pcb': 'vision-pcb',
+    '🏛️ Departamento de Educación de Puerto Rico': '🏛️ Departamento de Educación de Puerto Rico',
+    '🌟 Visión del Departamento': '🌟 Visión del Departamento',
+    'vision-depr': 'vision-depr',
+    '🎯 Misión del Departamento': '🎯 Misión del Departamento',
+    'mision-depr': 'mision-depr',
+
     // index.html — La Escuela
     'Conoce más sobre nosotros': 'Conoce más sobre nosotros',
     'Ver página de Matrícula': 'Ver página de Matrícula',
@@ -950,6 +967,23 @@ const translations = {
     '¡Mantente pendiente! 🎉': 'Stay tuned! 🎉',
     '¡Entendido!': 'Got it!',
 
+    // quienes-somos.html
+    '👋 Bienvenidos': '👋 Welcome',
+    'Les damos la más cordial bienvenida a nuestra Escuela Pablo Colón Berdecia del Distrito Escolar de Barranquitas. Nuestra misión es ser colaboradores efectivos en el proceso educativo que se desarrolla en nuestra escuela para garantizarles a todos nuestros estudiantes una educación de excelencia que le permita desarrollar al máximo sus capacidades intelectuales y los valores morales y sociales que necesitan para disfrutar de una mejor calidad de vida.': 'We warmly welcome you to our Pablo Colón Berdecia School of the Barranquitas School District. Our mission is to be effective collaborators in the educational process at our school, guaranteeing all our students an excellent education that allows them to fully develop their intellectual capacities and the moral and social values they need to enjoy a better quality of life.',
+    '"Nuestra escuela se compromete a formar ciudadanos responsables y capaces de contribuir positivamente a la sociedad."': '"Our school is committed to educating responsible citizens capable of contributing positively to society."',
+    'Director Escolar': 'School Principal',
+    '📚 Nuestra Historia': '📚 Our History',
+    'historia-pcb': 'Pablo Colón Berdecia was a great teacher and prolific poet. He was born in May 1910 in the Helechal neighborhood of Barranquitas. He completed his early education at the local elementary school and later finished his primary education in the 8-4 system at the town school. To complete high school, Don Pablo recounts facing many hardships — there was no high school in town at the time. One evening he gathered with others interested in continuing their education to organize a high school, drawing from graduates of previous years and those just finishing primary school. Among this group were people who later became distinguished figures of the town. The first high school, as Don Pablo describes, began shakily like a child taking its first steps, but over time rose to enviable maturity. It began in 1926 and, after being recognized by the Department of Public Instruction, graduated its first class in June 1930, with Don Pablo among the graduates. He passed away in 1979. This is part of the life and legacy of this distinguished Barranquitas native, who was posthumously honored by naming this great Vocational School after him. Data compiled by Mr. Raúl Marrero Ortiz. To learn more, visit the school library.',
+    '🎯 Misión': '🎯 Mission',
+    'mision-pcb': 'To promote the integral development of students through diverse learning experiences so they can successfully face challenges and contribute to the well-being of society.',
+    '🌟 Visión': '🌟 Vision',
+    'vision-pcb': 'Our school aspires to foster in students the mastery of academic skills integrated with occupational ones, and to contribute to the development of the following essential competencies: the student as a learner, effective communicator, entrepreneur, ethical person, and active community member; so they can face life as responsible citizens capable of making decisions for their own benefit and that of society.',
+    '🏛️ Departamento de Educación de Puerto Rico': '🏛️ Puerto Rico Department of Education',
+    '🌟 Visión del Departamento': '🌟 Department Vision',
+    'vision-depr': 'The Puerto Rican school must be an effective instrument for building a just and democratic society, cultivating ethics, solidarity, and social consciousness. It must be a dynamic unit of social change, capable of explicitly developing the attitudes, skills, and knowledge that prepare students competently and creatively to face the challenges of the modern world. Education must respond to the varied needs and talents of students, diversifying offerings with creative learning and evaluation alternatives, during both regular and extended hours. We recognize the importance of developing knowledge and academic competencies in harmony with the emotional and social development of the student.',
+    '🎯 Misión del Departamento': '🎯 Department Mission',
+    'mision-depr': 'To guarantee a free and non-sectarian education that develops the attitudes, skills, and knowledge of all students, preparing them for successful performance in a globalized labor market and to face modern world challenges competently and creatively; as independent, lifelong learners, respectful of the law and the natural environment, and capable of contributing to the common good.',
+
     // index.html — La Escuela
     'Conoce más sobre nosotros': 'Learn more about us',
     'Ver página de Matrícula': 'View Enrollment Page',
@@ -1202,13 +1236,22 @@ function translatePage(lang) {
   if (!translations[lang]) return;
   var dict = translations[lang];
 
-  // Método 1: data-translate — la CLAVE siempre es el texto español original
-  // Al restaurar español, se usa la clave directamente (no el diccionario)
+  // Método 1: data-translate
+  // Si la clave es el texto español completo → se restaura desde la clave.
+  // Si la clave es un ID corto (ej: 'historia-pcb') → se guarda el original
+  // en data-original antes de traducir y se restaura desde ahí.
   document.querySelectorAll('[data-translate]').forEach(function(el) {
     var key = el.getAttribute('data-translate');
+    if (!key) return; // clave vacía: ignorar
     if (lang === 'es') {
-      el.textContent = key; // Restaurar desde la clave (siempre español)
+      // Restaurar: si hay texto original guardado úsalo, si no usa la clave
+      var original = el.getAttribute('data-original');
+      el.textContent = original || key;
     } else if (dict[key]) {
+      // Guardar original antes de la primera traducción
+      if (!el.hasAttribute('data-original')) {
+        el.setAttribute('data-original', el.textContent.trim());
+      }
       el.textContent = dict[key];
     }
   });
