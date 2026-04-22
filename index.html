@@ -1383,6 +1383,165 @@
     <i class="fas fa-robot"></i>
   </a>
 
+  <!-- ── Estilos del modal de anuncios (dark-mode ready) ── -->
+  <style>
+    /* Botón flotante */
+    #btnPublicarAnuncio {
+      position: fixed; bottom: 24px; left: 24px; z-index: 9000;
+      background: var(--gradient-1);
+      color: #fff; border: none; border-radius: 50px;
+      padding: 0.7rem 1.2rem; font-size: 0.9rem; font-weight: 700;
+      cursor: pointer; display: flex; align-items: center; gap: 0.5rem;
+      box-shadow: 0 4px 18px rgba(102,126,234,.45);
+      transition: transform .2s, box-shadow .2s;
+    }
+    #btnPublicarAnuncio:hover { transform: scale(1.06); }
+
+    /* Overlay */
+    #modalAnuncio {
+      display: none; position: fixed; inset: 0; z-index: 9100;
+      background: rgba(0,0,0,.6);
+      align-items: center; justify-content: center; padding: 1rem;
+    }
+
+    /* Contenedor del modal */
+    .ma-box {
+      background: var(--bg-alt);
+      border: 1px solid var(--border-soft);
+      border-radius: 20px; width: 100%; max-width: 520px;
+      box-shadow: 0 20px 60px rgba(0,0,0,.45);
+      overflow: hidden; max-height: 90vh; overflow-y: auto;
+    }
+
+    /* Header con gradiente (igual en ambos modos) */
+    .ma-header {
+      background: var(--gradient-1);
+      padding: 1.25rem 1.5rem;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .ma-header h3 { margin: 0; color: #fff; font-size: 1.1rem; }
+    .ma-header p  { margin: 0; color: rgba(255,255,255,.8); font-size: 0.82rem; }
+    .ma-close {
+      background: rgba(255,255,255,.15); border: none; color: #fff;
+      border-radius: 50%; width: 32px; height: 32px;
+      font-size: 1.1rem; cursor: pointer; flex-shrink: 0;
+      transition: background .2s;
+    }
+    .ma-close:hover { background: rgba(255,255,255,.3); }
+
+    /* Cuerpo del formulario */
+    .ma-body {
+      padding: 1.4rem 1.5rem;
+      display: flex; flex-direction: column; gap: 0.9rem;
+    }
+    .ma-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+    @media (max-width: 480px) { .ma-grid { grid-template-columns: 1fr; } }
+
+    /* Etiquetas */
+    .ma-label {
+      font-size: 0.82rem; font-weight: 600; display: block;
+      margin-bottom: 0.3rem;
+      color: var(--text-soft);
+    }
+
+    /* Inputs, selects, textareas — heredan el dark mode global de styles.css */
+    .ma-input {
+      width: 100%; padding: 0.6rem 0.75rem;
+      border: 1.5px solid var(--border-soft);
+      border-radius: 10px; font-size: 0.9rem;
+      background: var(--bg); color: var(--text-main);
+      box-sizing: border-box; transition: border-color .2s;
+      font-family: inherit;
+    }
+    .ma-input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(56,189,248,.15);
+    }
+
+    /* Mensaje de resultado */
+    #anuncioMsg {
+      display: none; padding: 0.7rem; border-radius: 10px;
+      font-size: 0.88rem; text-align: center;
+    }
+    #anuncioMsg.ok  { background: #d4edda; color: #155724; }
+    #anuncioMsg.err { background: #f8d7da; color: #721c24; }
+    body.dark-mode #anuncioMsg.ok  { background: rgba(34,197,94,.15);  color: #4ade80; border: 1px solid rgba(34,197,94,.3); }
+    body.dark-mode #anuncioMsg.err { background: rgba(239,68,68,.15);  color: #f87171; border: 1px solid rgba(239,68,68,.3); }
+
+    /* Botón enviar */
+    .ma-submit {
+      background: var(--gradient-1); color: #fff; border: none;
+      border-radius: 12px; padding: 0.85rem; font-size: 0.95rem;
+      font-weight: 700; cursor: pointer; width: 100%;
+      transition: opacity .2s, transform .2s;
+    }
+    .ma-submit:hover   { opacity: .9; transform: translateY(-1px); }
+    .ma-submit:disabled { opacity: .6; cursor: not-allowed; transform: none; }
+  </style>
+
+  <!-- ── Botón flotante: Publicar anuncio comunitario ── -->
+  <button id="btnPublicarAnuncio" onclick="abrirModalAnuncio()">
+    📌 <span data-translate="Publicar Anuncio">Publicar Anuncio</span>
+  </button>
+
+  <!-- ── Modal de publicación pública ── -->
+  <div id="modalAnuncio">
+    <div class="ma-box">
+      <div class="ma-header">
+        <div>
+          <h3>📌 Publicar en PCB Community</h3>
+          <p>Tu anuncio será visible tras aprobación del admin.</p>
+        </div>
+        <button class="ma-close" onclick="cerrarModalAnuncio()">✕</button>
+      </div>
+      <form id="formAnuncioPublico" class="ma-body">
+        <div class="ma-grid">
+          <div>
+            <label class="ma-label">Categoría *</label>
+            <select id="anuncioCategoria" class="ma-input" required>
+              <option value="avisos">📢 Aviso</option>
+              <option value="objetos_perdidos">🔍 Objeto Perdido</option>
+              <option value="actividades">🎉 Actividad</option>
+              <option value="recaudaciones">💰 Recaudación</option>
+              <option value="promociones">🏷️ Promoción</option>
+            </select>
+          </div>
+          <div>
+            <label class="ma-label">Caduca el (opcional)</label>
+            <input type="date" id="anuncioCaducidad" class="ma-input">
+          </div>
+        </div>
+        <div>
+          <label class="ma-label">Título *</label>
+          <input type="text" id="anuncioTitulo" class="ma-input" required maxlength="80"
+            placeholder="Ej: Se perdió mochila azul en la cafetería">
+        </div>
+        <div>
+          <label class="ma-label">Mensaje *</label>
+          <textarea id="anuncioMensaje" class="ma-input" required rows="3" maxlength="400"
+            placeholder="Describe el detalle de tu anuncio..."></textarea>
+        </div>
+        <div class="ma-grid">
+          <div>
+            <label class="ma-label">Tu nombre (opcional)</label>
+            <input type="text" id="anuncioAutor" class="ma-input" maxlength="60" placeholder="Anónimo">
+          </div>
+          <div>
+            <label class="ma-label">Contacto (opcional)</label>
+            <input type="text" id="anuncioContacto" class="ma-input" maxlength="80" placeholder="Email o teléfono">
+          </div>
+        </div>
+        <div>
+          <label class="ma-label">URL Imagen (opcional)</label>
+          <input type="url" id="anuncioImagen" class="ma-input" placeholder="https://...">
+        </div>
+        <div id="anuncioMsg"></div>
+        <button type="submit" id="btnEnviarAnuncio" class="ma-submit">📤 Enviar Anuncio</button>
+      </form>
+    </div>
+  </div>
+
   <!-- Popup de Promociones (Pequeño) -->
   <div id="promoPopup" class="promo-popup" onclick="expandPromo()">
     <button class="promo-close-btn" onclick="event.stopPropagation(); closePromo()" title="Cerrar">
@@ -1843,6 +2002,7 @@
 
   <script src="js/services-manager.js"></script>
   <script src="js/novedades-db.js"></script>
+  <script src="js/anuncios-db.js"></script>
   <script src="script.js"></script>
   <script src="image-popup.js"></script>
   <!-- Notification Bot removed as requested -->
@@ -1894,33 +2054,81 @@
       }
     });
 
-    // Show promo after 3 seconds — lee la novedad activa desde Supabase
+    // ── Modal de anuncio público ──
+    window.abrirModalAnuncio = function() {
+      const m = document.getElementById('modalAnuncio');
+      m.style.display = 'flex';
+      document.getElementById('anuncioMsg').style.display = 'none';
+    };
+    window.cerrarModalAnuncio = function() {
+      document.getElementById('modalAnuncio').style.display = 'none';
+    };
+    document.getElementById('modalAnuncio').addEventListener('click', function(e) {
+      if (e.target === this) cerrarModalAnuncio();
+    });
+    document.getElementById('formAnuncioPublico').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const btn = document.getElementById('btnEnviarAnuncio');
+      const msg = document.getElementById('anuncioMsg');
+      btn.disabled = true; btn.textContent = '⏳ Enviando...';
+      try {
+        await window.anunciosDB.add({
+          titulo:         document.getElementById('anuncioTitulo').value.trim(),
+          mensaje:        document.getElementById('anuncioMensaje').value.trim(),
+          categoria:      document.getElementById('anuncioCategoria').value,
+          imagenUrl:      document.getElementById('anuncioImagen').value.trim(),
+          nombreAutor:    document.getElementById('anuncioAutor').value.trim(),
+          contacto:       document.getElementById('anuncioContacto').value.trim(),
+          fechaCaducidad: document.getElementById('anuncioCaducidad').value || null
+        });
+        msg.className = 'ok'; msg.style.display = 'block';
+        msg.textContent = '✅ ¡Anuncio enviado! Aparecerá en el popup tras la aprobación del administrador.';
+        this.reset();
+        setTimeout(cerrarModalAnuncio, 3500);
+      } catch(err) {
+        msg.className = 'err'; msg.style.display = 'block';
+        msg.textContent = '❌ Error al enviar: ' + err.message;
+      }
+      btn.disabled = false; btn.textContent = '📤 Enviar Anuncio';
+    });
+
+    // Show promo after 3 seconds — combina novedades admin + anuncios comunidad
     setTimeout(async () => {
-      const popup        = document.getElementById('promoPopup');
+      const popup         = document.getElementById('promoPopup');
       const expandedPopup = document.getElementById('promoPopupExpanded');
 
       try {
-        const latestNews = window.novedadesDB ? await window.novedadesDB.getLatest() : null;
+        // Obtener la fuente más reciente activa (novedad admin ó anuncio comunidad)
+        const [novedad, anuncios] = await Promise.all([
+          window.novedadesDB  ? window.novedadesDB.getLatest()   : Promise.resolve(null),
+          window.anunciosDB   ? window.anunciosDB.getActive()     : Promise.resolve([])
+        ]);
 
-        if (latestNews) {
-          // Actualizar popup pequeño
-          popup.querySelector('.promo-title').textContent   = latestNews.title;
-          popup.querySelector('.promo-preview').textContent = latestNews.message;
+        // Elegir el más reciente entre ambas fuentes
+        const latestAnuncio = anuncios && anuncios.length ? anuncios[0] : null;
+        let item = null;
+        if (novedad && latestAnuncio) {
+          item = new Date(novedad.created_at) >= new Date(latestAnuncio.created_at) ? novedad : latestAnuncio;
+        } else {
+          item = novedad || latestAnuncio;
+        }
 
-          // Actualizar popup expandido
-          expandedPopup.querySelector('.promo-expanded-title').textContent   = latestNews.title;
-          expandedPopup.querySelector('.promo-expanded-message').textContent = latestNews.message;
+        if (item) {
+          const title   = item.title   || item.titulo;
+          const message = item.message || item.mensaje;
+          const imgUrl  = item.image_url || item.imagen_url;
+
+          popup.querySelector('.promo-title').textContent   = title;
+          popup.querySelector('.promo-preview').textContent = message;
+          expandedPopup.querySelector('.promo-expanded-title').textContent   = title;
+          expandedPopup.querySelector('.promo-expanded-message').textContent = message;
 
           const expandedImg = expandedPopup.querySelector('.promo-expanded-img');
-          if (latestNews.image_url) {
-            expandedImg.src          = latestNews.image_url;
-            expandedImg.style.display = 'block';
-          } else {
-            expandedImg.style.display = 'none';
-          }
+          if (imgUrl) { expandedImg.src = imgUrl; expandedImg.style.display = 'block'; }
+          else { expandedImg.style.display = 'none'; }
         }
       } catch (e) {
-        console.warn('No se pudo cargar la novedad desde Supabase:', e);
+        console.warn('No se pudo cargar novedad:', e);
       }
 
       popup.classList.add('active');
