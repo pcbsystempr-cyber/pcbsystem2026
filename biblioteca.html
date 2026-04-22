@@ -632,6 +632,74 @@
 
     /* Tarjetas de espacio — añadir indicador de selección activo */
     .space-card.active-space { outline: 3px solid white; transform: translateY(-10px); }
+
+    /* ===== POPUP DE INFORMACIÓN DE ESPACIO ===== */
+    #spaceInfoModal {
+      display: none; position: fixed; inset: 0; z-index: 9999;
+      background: rgba(0,0,0,.65);
+      align-items: center; justify-content: center; padding: 1rem;
+    }
+    #spaceInfoModal.open { display: flex; }
+    .si-box {
+      background: var(--bg-alt, #fff);
+      border: 1px solid var(--border-soft, #e2e8f0);
+      border-radius: 22px; width: 100%; max-width: 500px;
+      box-shadow: 0 24px 64px rgba(0,0,0,.35);
+      overflow: hidden; max-height: 90vh; overflow-y: auto;
+    }
+    .si-header {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      padding: 1.5rem; text-align: center; position: relative;
+    }
+    .si-header .si-icon { font-size: 3.5rem; display: block; margin-bottom: 0.5rem; }
+    .si-header h2 { margin: 0; color: #fff; font-size: 1.4rem; }
+    .si-close {
+      position: absolute; top: 1rem; right: 1rem;
+      background: rgba(255,255,255,.2); border: none; color: #fff;
+      width: 34px; height: 34px; border-radius: 50%; font-size: 1.2rem;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      transition: background .2s;
+    }
+    .si-close:hover { background: rgba(255,255,255,.35); }
+    .si-body { padding: 1.5rem; }
+    .si-desc {
+      font-size: 0.98rem; color: var(--text-soft, #64748b);
+      margin-bottom: 1.25rem; line-height: 1.6; text-align: center;
+    }
+    .si-stats {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem;
+      margin-bottom: 1.25rem;
+    }
+    .si-stat {
+      background: var(--bg, #f8fafc);
+      border: 1px solid var(--border-soft, #e2e8f0);
+      border-radius: 12px; padding: 0.85rem 0.5rem; text-align: center;
+    }
+    .si-stat .si-stat-icon { font-size: 1.5rem; display: block; margin-bottom: 0.25rem; }
+    .si-stat .si-stat-val  { font-size: 1.1rem; font-weight: 800; color: var(--primary, #667eea); display: block; }
+    .si-stat .si-stat-lbl  { font-size: 0.75rem; color: var(--text-soft, #64748b); }
+    .si-features { margin-bottom: 1.5rem; }
+    .si-features h4 {
+      font-size: 0.85rem; font-weight: 800; text-transform: uppercase;
+      letter-spacing: 0.04em; color: var(--text-soft, #64748b);
+      margin-bottom: 0.6rem;
+    }
+    .si-feature-list { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    .si-feature-tag {
+      background: rgba(102,126,234,.1); color: #667eea;
+      border: 1px solid rgba(102,126,234,.25);
+      border-radius: 20px; padding: 0.25rem 0.75rem;
+      font-size: 0.82rem; font-weight: 600;
+    }
+    body.dark-mode .si-feature-tag { background: rgba(56,189,248,.12); color: #38bdf8; border-color: rgba(56,189,248,.25); }
+    .si-reserve-btn {
+      width: 100%; padding: 1rem;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: #fff; border: none; border-radius: 12px;
+      font-size: 1.05rem; font-weight: 700; cursor: pointer;
+      transition: opacity .2s, transform .15s;
+    }
+    .si-reserve-btn:hover { opacity: .9; transform: translateY(-1px); }
   </style>
 </head>
 
@@ -776,28 +844,28 @@
     <div class="container">
       <div class="hero-layout">
         <div class="hero-text">
-          <h1>📚 Biblioteca Digital</h1>
-          <p>Tu centro de conocimiento y recursos educativos. Accede a nuestro catálogo en línea, reserva espacios de estudio y descubre recursos académicos de calidad.</p>
+          <h1 data-translate="📚 Biblioteca Digital">📚 Biblioteca Digital</h1>
+          <p data-translate="bib-hero-sub">Tu centro de conocimiento y recursos educativos. Accede a nuestro catálogo en línea, reserva espacios de estudio y descubre recursos académicos de calidad.</p>
           <div class="hero-actions">
-            <a href="#reserva" class="btn btn-primary">Reservar Espacio</a>
-            <a href="#recursos" class="btn btn-secondary">Ver Recursos</a>
+            <a href="#reserva" class="btn btn-primary" data-translate="Reservar Espacio">Reservar Espacio</a>
+            <a href="#recursos" class="btn btn-secondary" data-translate="Ver Recursos">Ver Recursos</a>
           </div>
           <div class="hero-tags">
-            <span>📖 Catálogo Digital</span>
-            <span>💻 Reservas Online</span>
-            <span>🎓 Apoyo Académico</span>
-            <span>🌐 Recursos Globales</span>
+            <span data-translate="📖 Catálogo Digital">📖 Catálogo Digital</span>
+            <span data-translate="💻 Reservas Online">💻 Reservas Online</span>
+            <span data-translate="🎓 Apoyo Académico">🎓 Apoyo Académico</span>
+            <span data-translate="🌐 Recursos Globales">🌐 Recursos Globales</span>
           </div>
         </div>
 
         <div class="hero-card">
-          <h2>🕐 Horario de Atención</h2>
+          <h2 data-translate="🕐 Horario de Atención">🕐 Horario de Atención</h2>
           <ul>
-            <li><strong>Lunes - Viernes:</strong> 8:00 AM - 2:00 PM</li>
-            <li><strong>Servicios:</strong> Préstamo de libros</li>
-            <li><strong>Computadoras:</strong> 8 estaciones disponibles</li>
-            <li><strong>Salas de estudio:</strong> Reserva anticipada</li>
-            <li><strong>Apoyo académico:</strong> Tareas y Proyectos</li>
+            <li><strong data-translate="Lunes - Viernes:">Lunes - Viernes:</strong> 8:00 AM - 2:00 PM</li>
+            <li><strong data-translate="Servicios:">Servicios:</strong> <span data-translate="Préstamo de libros">Préstamo de libros</span></li>
+            <li><strong data-translate="Computadoras:">Computadoras:</strong> <span data-translate="8 estaciones disponibles">8 estaciones disponibles</span></li>
+            <li><strong data-translate="Salas de estudio:">Salas de estudio:</strong> <span data-translate="Reserva anticipada">Reserva anticipada</span></li>
+            <li><strong data-translate="Apoyo académico:">Apoyo académico:</strong> <span data-translate="Tareas y Proyectos">Tareas y Proyectos</span></li>
           </ul>
         </div>
       </div>
@@ -810,41 +878,34 @@
     <section class="space-reservation-section">
       <div class="container">
         <div class="section-header" style="text-align: center; color: white;">
-          <h2 style="font-size: 2.5rem; margin-bottom: 0.5rem;">📖 Reserva de Espacios</h2>
-          <p style="font-size: 1.2rem; color: #1e293b; opacity: 1;">Reserva salas, computadoras y equipos</p>
+          <h2 style="font-size: 2.5rem; margin-bottom: 0.5rem;" data-translate="📖 Reserva de Espacios">📖 Reserva de Espacios</h2>
+          <p style="font-size: 1.2rem; color: #1e293b; opacity: 1;" data-translate="Reserva salas, computadoras y equipos">Reserva salas, computadoras y equipos</p>
           <a href="biblioteca-dashboard.html" class="btn-dashboard-link">
             <span class="dash-icon">🔑</span>
-            Dashboard Bibliotecaria
+            <span data-translate="Dashboard Bibliotecaria">Dashboard Bibliotecaria</span>
           </a>
         </div>
 
         <div class="reservation-grid">
-          <div class="space-card" id="scard-lectura" onclick="goToForm('Sala de Lectura')">
+          <div class="space-card" id="scard-lectura" onclick="showSpaceInfo('Sala de Lectura')">
             <div class="space-icon">📖</div>
-            <h3>Sala de Lectura</h3>
-            <p>Espacio tranquilo para estudio individual</p>
-            <span class="badge" style="background:#10b981;color:white;padding:0.25rem 0.75rem;border-radius:20px;">Disponible</span>
+            <h3 data-translate="Sala de Lectura">Sala de Lectura</h3>
+            <p data-translate="Espacio tranquilo para estudio individual">Espacio tranquilo para estudio individual</p>
+            <span class="badge" style="background:#10b981;color:white;padding:0.25rem 0.75rem;border-radius:20px;" data-translate="Disponible">Disponible</span>
           </div>
 
-          <div class="space-card" id="scard-computadoras" onclick="goToForm('Computadoras')">
+          <div class="space-card" id="scard-computadoras" onclick="showSpaceInfo('Computadoras')">
             <div class="space-icon">💻</div>
-            <h3>Computadoras</h3>
-            <p>Estaciones de trabajo con internet</p>
-            <span class="badge" style="background:#10b981;color:white;padding:0.25rem 0.75rem;border-radius:20px;">8 disponibles</span>
+            <h3 data-translate="Computadoras">Computadoras</h3>
+            <p data-translate="Estaciones de trabajo con internet">Estaciones de trabajo con internet</p>
+            <span class="badge" style="background:#10b981;color:white;padding:0.25rem 0.75rem;border-radius:20px;" data-translate="8 disponibles">8 disponibles</span>
           </div>
 
-          <div class="space-card" id="scard-proyector" onclick="goToForm('Proyector')">
-            <div class="space-icon">📽️</div>
-            <h3>Proyector</h3>
-            <p>Para presentaciones y trabajos grupales</p>
-            <span class="badge" style="background:#f59e0b;color:white;padding:0.25rem 0.75rem;border-radius:20px;">Reservar</span>
-          </div>
-
-          <div class="space-card" id="scard-presentaciones" onclick="goToForm('Sala de Presentaciones')">
+          <div class="space-card" id="scard-presentaciones" onclick="showSpaceInfo('Sala de Presentaciones')">
             <div class="space-icon">🎤</div>
-            <h3>Sala de Presentaciones</h3>
-            <p>Espacio para exposiciones y eventos</p>
-            <span class="badge" style="background:#10b981;color:white;padding:0.25rem 0.75rem;border-radius:20px;">Disponible</span>
+            <h3 data-translate="Sala de Presentaciones">Sala de Presentaciones</h3>
+            <p data-translate="Espacio para exposiciones y eventos">Espacio para exposiciones y eventos</p>
+            <span class="badge" style="background:#10b981;color:white;padding:0.25rem 0.75rem;border-radius:20px;" data-translate="Disponible">Disponible</span>
           </div>
         </div>
 
@@ -871,10 +932,10 @@
 
           <!-- Leyenda con cuadros de color -->
           <div class="cal-legend">
-            <span><span class="leg-dot act"></span>Actividad de biblioteca</span>
-            <span><span class="leg-dot apr"></span>Reserva aprobada</span>
-            <span><span class="leg-dot pend"></span>Reserva pendiente</span>
-            <span><span class="leg-dot mix"></span>Múltiples eventos</span>
+            <span><span class="leg-dot act"></span><span data-translate="Actividad de biblioteca">Actividad de biblioteca</span></span>
+            <span><span class="leg-dot apr"></span><span data-translate="Reserva aprobada">Reserva aprobada</span></span>
+            <span><span class="leg-dot pend"></span><span data-translate="Reserva pendiente">Reserva pendiente</span></span>
+            <span><span class="leg-dot mix"></span><span data-translate="Múltiples eventos">Múltiples eventos</span></span>
           </div>
         </div>
       </div>
@@ -884,8 +945,8 @@
     <section id="reserva" class="res-form-section">
       <div class="container">
         <div style="text-align:center;color:white;margin-bottom:2rem;">
-          <h2 style="font-size:2.2rem;margin-bottom:0.4rem;">📋 Formulario de Reservación</h2>
-          <p style="font-size:1.1rem;opacity:0.88;">Completa el formulario — la bibliotecaria revisará y aprobará tu solicitud</p>
+          <h2 style="font-size:2.2rem;margin-bottom:0.4rem;" data-translate="📋 Formulario de Reservación">📋 Formulario de Reservación</h2>
+          <p style="font-size:1.1rem;opacity:0.88;" data-translate="Completa el formulario">Completa el formulario — la bibliotecaria revisará y aprobará tu solicitud</p>
         </div>
 
         <div class="res-form-card">
@@ -893,82 +954,85 @@
           <!-- ESTADO: FORMULARIO -->
           <div id="embeddedFormDiv">
 
-            <p class="res-form-step-title">Paso 1 — Selecciona el espacio que deseas reservar</p>
+            <p class="res-form-step-title" data-translate="Paso 1">Paso 1 — Selecciona el espacio que deseas reservar</p>
             <div class="space-selector-grid">
               <div class="spc-card" data-space="Sala de Lectura" onclick="selectSpace('Sala de Lectura')">
                 <div class="spc-icon">📖</div>
-                <div class="spc-name">Sala de Lectura</div>
+                <div class="spc-name" data-translate="Sala de Lectura">Sala de Lectura</div>
               </div>
               <div class="spc-card" data-space="Computadoras" onclick="selectSpace('Computadoras')">
                 <div class="spc-icon">💻</div>
-                <div class="spc-name">Computadoras</div>
-              </div>
-              <div class="spc-card" data-space="Proyector" onclick="selectSpace('Proyector')">
-                <div class="spc-icon">📽️</div>
-                <div class="spc-name">Proyector</div>
+                <div class="spc-name" data-translate="Computadoras">Computadoras</div>
               </div>
               <div class="spc-card" data-space="Sala de Presentaciones" onclick="selectSpace('Sala de Presentaciones')">
                 <div class="spc-icon">🎤</div>
-                <div class="spc-name">Sala de Presentaciones</div>
+                <div class="spc-name" data-translate="Sala de Presentaciones">Sala de Presentaciones</div>
               </div>
             </div>
-            <p id="spaceError" style="color:#ef4444;font-size:0.85rem;display:none;margin-bottom:0.75rem;">⚠️ Por favor selecciona un espacio antes de continuar.</p>
+            <p id="spaceError" style="color:#ef4444;font-size:0.85rem;display:none;margin-bottom:0.75rem;" data-translate="⚠️ Por favor selecciona un espacio">⚠️ Por favor selecciona un espacio antes de continuar.</p>
 
-            <p class="res-form-step-title" style="margin-top:1.5rem;">Paso 2 — Completa tus datos</p>
+            <p class="res-form-step-title" style="margin-top:1.5rem;" data-translate="Paso 2">Paso 2 — Completa tus datos</p>
             <form id="reservationForm" novalidate>
               <input type="hidden" id="selectedSpaceInput">
               <div class="res-form-grid">
                 <div class="form-group full">
-                  <label>Nombre Completo *</label>
+                  <label data-translate="Nombre Completo *">Nombre Completo *</label>
                   <input type="text" id="resNombre" required placeholder="Tu nombre completo">
                 </div>
                 <div class="form-group">
-                  <label>Correo Electrónico *</label>
+                  <label data-translate="Correo Electrónico *">Correo Electrónico *</label>
                   <input type="email" id="resEmail" required placeholder="correo@ejemplo.com">
                 </div>
                 <div class="form-group">
-                  <label>Teléfono</label>
+                  <label data-translate="Teléfono">Teléfono</label>
                   <input type="tel" id="resTelefono" placeholder="(787) 000-0000">
                 </div>
                 <div class="form-group">
-                  <label>Fecha *</label>
+                  <label data-translate="Fecha *">Fecha *</label>
                   <input type="date" id="resDate" required>
                 </div>
                 <div class="form-group">
-                  <label>Número de Participantes</label>
+                  <label data-translate="Número de Participantes">Número de Participantes</label>
                   <input type="number" id="resParticipantes" min="1" max="50" placeholder="1">
                 </div>
                 <div class="form-group">
-                  <label>Hora de Inicio *</label>
+                  <label data-translate="Hora de Inicio *">Hora de Inicio *</label>
                   <input type="time" id="resHoraInicio" required>
                 </div>
                 <div class="form-group">
-                  <label>Hora de Fin *</label>
+                  <label data-translate="Hora de Fin *">Hora de Fin *</label>
                   <input type="time" id="resHoraFin" required>
                 </div>
                 <div class="form-group full">
-                  <label>Propósito de la Reserva *</label>
+                  <label data-translate="Propósito de la Reserva *">Propósito de la Reserva *</label>
                   <textarea id="resProposito" rows="3" required placeholder="Describe brevemente para qué necesitas el espacio..."></textarea>
                 </div>
               </div>
-              <p style="font-size:0.83rem;color:#94a3b8;margin-top:1rem;">⏳ Tu solicitud quedará <strong>pendiente</strong> hasta que la bibliotecaria la revise y apruebe.</p>
-              <button type="submit" class="res-submit-btn">📋 Enviar Solicitud de Reserva</button>
+              <p style="font-size:0.83rem;color:#94a3b8;margin-top:1rem;" data-translate="bib-pending-note">⏳ Tu solicitud quedará pendiente hasta que la bibliotecaria la revise y apruebe.</p>
+              <button type="submit" class="res-submit-btn" data-translate="📋 Enviar Solicitud de Reserva">📋 Enviar Solicitud de Reserva</button>
             </form>
           </div>
 
           <!-- ESTADO: ÉXITO -->
           <div id="embeddedSuccessDiv" style="display:none;text-align:center;padding:2.5rem 1rem;">
             <div style="font-size:4rem;margin-bottom:1rem;">✅</div>
-            <h2 style="color:#10b981;margin-bottom:0.5rem;">¡Solicitud Enviada!</h2>
-            <p style="color:#64748b;margin-bottom:1.5rem;">Tu reserva está <strong>pendiente de aprobación</strong> por la bibliotecaria.</p>
+            <h2 style="color:#10b981;margin-bottom:0.5rem;" data-translate="¡Solicitud Enviada!">¡Solicitud Enviada!</h2>
+            <p style="color:#64748b;margin-bottom:1.5rem;" data-translate="bib-success-sub">Tu reserva está <strong>pendiente de aprobación</strong> por la bibliotecaria.</p>
             <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:14px;padding:1.25rem;margin-bottom:1.5rem;display:inline-block;min-width:240px;">
-              <p style="margin:0 0 4px;color:#166534;font-size:0.88rem;font-weight:600;">Número de Solicitud</p>
+              <p style="margin:0 0 4px;color:#166534;font-size:0.88rem;font-weight:600;" data-translate="Número de Solicitud">Número de Solicitud</p>
               <p id="reservationTicketId" style="margin:0;font-size:1.5rem;font-family:monospace;font-weight:800;color:#166534;letter-spacing:2px;"></p>
+              <button id="btnCopyTicket" onclick="copyTicketId()"
+                style="margin-top:0.75rem;background:linear-gradient(135deg,#10b981,#059669);color:white;border:none;
+                       border-radius:8px;padding:0.45rem 1.1rem;font-size:0.85rem;font-weight:700;cursor:pointer;
+                       display:inline-flex;align-items:center;gap:0.4rem;transition:opacity .2s;" data-translate="📋 Copiar código">
+                📋 Copiar código
+              </button>
+              <span id="copyTicketMsg" style="display:none;font-size:0.8rem;color:#10b981;margin-left:0.5rem;font-weight:600;" data-translate="✅ ¡Copiado!">✅ ¡Copiado!</span>
             </div>
-            <p style="font-size:0.85rem;color:#94a3b8;margin-bottom:1.75rem;">
+            <p style="font-size:0.85rem;color:#94a3b8;margin-bottom:1.75rem;" data-translate="bib-save-ticket">
               Guarda tu número de solicitud. Podrás ver el estado en el calendario de la biblioteca una vez aprobada.
             </p>
-            <button onclick="resetReservationForm()" class="res-submit-btn" style="max-width:280px;margin-top:0;">
+            <button onclick="resetReservationForm()" class="res-submit-btn" style="max-width:280px;margin-top:0;" data-translate="🔄 Hacer Otra Reserva">
               🔄 Hacer Otra Reserva
             </button>
           </div>
@@ -981,18 +1045,18 @@
     <section id="verificar" class="verify-section">
       <div class="container">
         <div style="text-align:center;color:white;margin-bottom:2rem;">
-          <h2 style="font-size:2.2rem;margin-bottom:0.4rem;">🔍 Verificar Estatus de Solicitud</h2>
-          <p style="font-size:1.05rem;opacity:0.88;">Consulta el estado de tu reserva usando tu número de solicitud, nombre o fecha</p>
+          <h2 style="font-size:2.2rem;margin-bottom:0.4rem;" data-translate="🔍 Verificar Estatus de Solicitud">🔍 Verificar Estatus de Solicitud</h2>
+          <p style="font-size:1.05rem;opacity:0.88;" data-translate="bib-verify-sub">Consulta el estado de tu reserva usando tu número de solicitud, nombre o fecha</p>
         </div>
 
         <div class="verify-card">
 
           <!-- Tipo de búsqueda -->
-          <p style="font-size:0.87rem;font-weight:700;color:#64748b;margin-bottom:0.75rem;text-transform:uppercase;letter-spacing:0.04em;">Buscar por:</p>
+          <p style="font-size:0.87rem;font-weight:700;color:#64748b;margin-bottom:0.75rem;text-transform:uppercase;letter-spacing:0.04em;" data-translate="Buscar por:">Buscar por:</p>
           <div class="search-type-pills">
-            <button class="stype-pill active" id="stype-id"     onclick="setSearchType('id',this)">🎫 Número de Solicitud</button>
-            <button class="stype-pill"        id="stype-nombre" onclick="setSearchType('nombre',this)">👤 Nombre</button>
-            <button class="stype-pill"        id="stype-fecha"  onclick="setSearchType('fecha',this)">📅 Fecha</button>
+            <button class="stype-pill active" id="stype-id"     onclick="setSearchType('id',this)" data-translate="🎫 Número de Solicitud">🎫 Número de Solicitud</button>
+            <button class="stype-pill"        id="stype-nombre" onclick="setSearchType('nombre',this)" data-translate="👤 Nombre">👤 Nombre</button>
+            <button class="stype-pill"        id="stype-fecha"  onclick="setSearchType('fecha',this)" data-translate="📅 Fecha">📅 Fecha</button>
           </div>
 
           <!-- Input de búsqueda -->
@@ -1000,9 +1064,9 @@
             <input type="text" id="statusSearchInput" class="search-main-input"
                    placeholder="Ej: RES-1234567890" maxlength="80"
                    onkeydown="if(event.key==='Enter') doStatusSearch()">
-            <button class="search-btn" onclick="doStatusSearch()">🔍 Buscar</button>
+            <button class="search-btn" onclick="doStatusSearch()" data-translate="🔍 Buscar">🔍 Buscar</button>
           </div>
-          <p id="statusSearchHint" style="font-size:0.82rem;color:#94a3b8;margin-top:0.5rem;">
+          <p id="statusSearchHint" style="font-size:0.82rem;color:#94a3b8;margin-top:0.5rem;" data-translate="bib-search-hint">
             Ingresa el número de solicitud que recibiste al completar el formulario.
           </p>
 
@@ -1016,49 +1080,71 @@
     <!-- RECURSOS EDUCATIVOS -->
     <section id="recursos" style="margin: 3rem 0;">
       <div class="section-header" style="text-align: center;">
-        <h2 style="font-size: 2.5rem; margin-bottom: 0.5rem;">📘 Recursos Educativos</h2>
-        <p style="font-size: 1.2rem; color: #64748b;">Acceso a bibliotecas digitales y bases de datos</p>
+        <h2 style="font-size: 2.5rem; margin-bottom: 0.5rem;" data-translate="📘 Recursos Educativos">📘 Recursos Educativos</h2>
+        <p style="font-size: 1.2rem; color: #64748b;" data-translate="Acceso a bibliotecas digitales y bases de datos">Acceso a bibliotecas digitales y bases de datos</p>
       </div>
 
       <div class="resources-grid">
         <a href="https://www.gutenberg.org/" target="_blank" class="resource-link-card">
           <i class="fas fa-book"></i>
           <h4>Project Gutenberg</h4>
-          <p style="font-size: 0.9rem; color: #64748b;">70,000+ libros gratis</p>
+          <p style="font-size: 0.9rem; color: #64748b;" data-translate="70,000+ libros gratis">70,000+ libros gratis</p>
         </a>
 
         <a href="https://openlibrary.org/" target="_blank" class="resource-link-card">
           <i class="fas fa-book-open"></i>
           <h4>Open Library</h4>
-          <p style="font-size: 0.9rem; color: #64748b;">Millones de libros digitales</p>
+          <p style="font-size: 0.9rem; color: #64748b;" data-translate="Millones de libros digitales">Millones de libros digitales</p>
         </a>
 
         <a href="https://www.khanacademy.org/" target="_blank" class="resource-link-card">
           <i class="fas fa-graduation-cap"></i>
           <h4>Khan Academy</h4>
-          <p style="font-size: 0.9rem; color: #64748b;">Cursos gratuitos</p>
+          <p style="font-size: 0.9rem; color: #64748b;" data-translate="Cursos gratuitos">Cursos gratuitos</p>
         </a>
 
         <a href="https://scholar.google.com/" target="_blank" class="resource-link-card">
           <i class="fas fa-search"></i>
           <h4>Google Scholar</h4>
-          <p style="font-size: 0.9rem; color: #64748b;">Artículos académicos</p>
+          <p style="font-size: 0.9rem; color: #64748b;" data-translate="Artículos académicos">Artículos académicos</p>
         </a>
 
         <a href="https://www.coursera.org/" target="_blank" class="resource-link-card">
           <i class="fas fa-laptop"></i>
           <h4>Coursera</h4>
-          <p style="font-size: 0.9rem; color: #64748b;">Cursos universitarios</p>
+          <p style="font-size: 0.9rem; color: #64748b;" data-translate="Cursos universitarios">Cursos universitarios</p>
         </a>
 
         <a href="https://www.ted.com/" target="_blank" class="resource-link-card">
           <i class="fas fa-video"></i>
           <h4>TED Talks</h4>
-          <p style="font-size: 0.9rem; color: #64748b;">Charlas inspiradoras</p>
+          <p style="font-size: 0.9rem; color: #64748b;" data-translate="Charlas inspiradoras">Charlas inspiradoras</p>
         </a>
       </div>
     </section>
 
+  </div>
+
+  <!-- ══ Modal de información de espacio ══ -->
+  <div id="spaceInfoModal">
+    <div class="si-box">
+      <div class="si-header">
+        <button class="si-close" onclick="closeSpaceInfo()">✕</button>
+        <span id="siIcon" class="si-icon"></span>
+        <h2 id="siName"></h2>
+      </div>
+      <div class="si-body">
+        <p id="siDesc" class="si-desc"></p>
+        <div class="si-stats" id="siStats"></div>
+        <div class="si-features" id="siFeaturesWrap">
+          <h4>🔧 Equipamiento</h4>
+          <div class="si-feature-list" id="siFeatures"></div>
+        </div>
+        <button class="si-reserve-btn" onclick="reserveFromInfo()">
+          📋 Reservar este espacio
+        </button>
+      </div>
+    </div>
   </div>
 
   <script src="script.js"></script>
