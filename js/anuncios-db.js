@@ -96,5 +96,15 @@
     if (!r.ok) throw new Error('remove: ' + r.status);
   }
 
-  window.anunciosDB = { getAll, getPending, getActive, add, approve, reject, remove };
+  /** Editar campos de un anuncio */
+  async function update(id, fields) {
+    const r = await fetch(BASE + '?id=eq.' + id, {
+      method: 'PATCH',
+      headers: H,
+      body: JSON.stringify(fields)
+    });
+    if (!r.ok) throw new Error('update: ' + r.status);
+  }
+
+  window.anunciosDB = { getAll, getPending, getActive, add, approve, reject, remove, update };
 })();
