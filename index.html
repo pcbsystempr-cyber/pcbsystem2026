@@ -1511,6 +1511,37 @@
     .ma-submit:hover   { opacity: .9; transform: translateY(-1px); }
     .ma-submit:disabled { opacity: .6; cursor: not-allowed; transform: none; }
 
+    /* ── Zona de imagen ── */
+    .ma-dropzone {
+      border: 2px dashed var(--border-soft);
+      border-radius: 12px; padding: 1.1rem 1rem;
+      text-align: center; cursor: pointer;
+      transition: border-color .2s, background .2s;
+      background: var(--bg);
+    }
+    .ma-dropzone:hover, .ma-dropzone.drag-over {
+      border-color: var(--primary);
+      background: rgba(56,189,248,.06);
+    }
+    .ma-dz-icon { font-size: 1.7rem; line-height: 1; }
+    .ma-dz-text { font-size: 0.85rem; font-weight: 600; color: var(--text-soft); margin-top: 0.2rem; }
+    .ma-dz-sub  { font-size: 0.75rem; color: var(--text-soft); opacity: .7; }
+    /* Preview imagen seleccionada */
+    .ma-img-preview-wrap {
+      display: none; position: relative;
+      border-radius: 12px; overflow: hidden;
+      border: 2px solid var(--border-soft);
+    }
+    .ma-img-preview { width: 100%; max-height: 190px; object-fit: cover; display: block; }
+    .ma-img-remove {
+      position: absolute; top: 0.5rem; right: 0.5rem;
+      background: rgba(0,0,0,.6); color: #fff; border: none;
+      border-radius: 50%; width: 28px; height: 28px; font-size: .95rem;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      transition: background .2s;
+    }
+    .ma-img-remove:hover { background: rgba(239,68,68,.88); }
+
     /* ===== MOBILE HEADER CONTROLS ===== */
     /* El hamburger es position:fixed right:1.5rem top:1.5rem (z-index:10002).
        Los controles van fijos a su izquierda para que aparezcan al lado. */
@@ -1621,8 +1652,24 @@
           </div>
         </div>
         <div>
-          <label class="ma-label">URL Imagen (opcional)</label>
-          <input type="url" id="anuncioImagen" class="ma-input" placeholder="https://...">
+          <label class="ma-label">📷 Imagen (opcional)</label>
+          <!-- Dropzone / selector de galería -->
+          <div class="ma-dropzone" id="anuncioDropzone"
+               onclick="document.getElementById('anuncioImagenFile').click()"
+               ondragover="event.preventDefault();this.classList.add('drag-over')"
+               ondragleave="this.classList.remove('drag-over')"
+               ondrop="handleDropAnuncio(event)">
+            <div class="ma-dz-icon">🖼️</div>
+            <div class="ma-dz-text">Toca aquí para seleccionar una imagen</div>
+            <div class="ma-dz-sub">JPG, PNG o WEBP · máx. 5 MB</div>
+            <input type="file" id="anuncioImagenFile" accept="image/*"
+                   style="display:none" onchange="previewAnuncioImage(this)">
+          </div>
+          <!-- Vista previa -->
+          <div class="ma-img-preview-wrap" id="anuncioImagenPreview">
+            <img class="ma-img-preview" id="anuncioImagenPreviewImg" alt="Vista previa">
+            <button type="button" class="ma-img-remove" onclick="clearAnuncioImage()" title="Quitar imagen">✕</button>
+          </div>
         </div>
         <div id="anuncioMsg"></div>
         <button type="submit" id="btnEnviarAnuncio" class="ma-submit">📤 Enviar Anuncio</button>
@@ -2142,11 +2189,67 @@
       }
     });
 
+    // ── Imagen del anuncio ──
+    var _anuncioImgBase64 = null;
+
+    function compressAnuncioImg(file) {
+      return new Promise(function(resolve) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+          var img = new Image();
+          img.onload = function() {
+            var maxW = 900, maxH = 700, w = img.width, h = img.height;
+            if (w > maxW) { h = Math.round(h * maxW / w); w = maxW; }
+            if (h > maxH) { w = Math.round(w * maxH / h); h = maxH; }
+            var c = document.createElement('canvas');
+            c.width = w; c.height = h;
+            c.getContext('2d').drawImage(img, 0, 0, w, h);
+            resolve(c.toDataURL('image/jpeg', 0.75));
+          };
+          img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    window.previewAnuncioImage = async function(input) {
+      var file = input.files[0];
+      if (!file) return;
+      if (file.size > 5 * 1024 * 1024) {
+        alert('La imagen supera 5 MB. Elige una más pequeña.');
+        input.value = ''; return;
+      }
+      _anuncioImgBase64 = await compressAnuncioImg(file);
+      document.getElementById('anuncioImagenPreviewImg').src = _anuncioImgBase64;
+      document.getElementById('anuncioImagenPreview').style.display = 'block';
+      document.getElementById('anuncioDropzone').style.display = 'none';
+    };
+
+    window.clearAnuncioImage = function() {
+      _anuncioImgBase64 = null;
+      var inp = document.getElementById('anuncioImagenFile');
+      if (inp) inp.value = '';
+      document.getElementById('anuncioImagenPreview').style.display = 'none';
+      document.getElementById('anuncioDropzone').style.display = 'block';
+    };
+
+    window.handleDropAnuncio = function(e) {
+      e.preventDefault();
+      document.getElementById('anuncioDropzone').classList.remove('drag-over');
+      var file = e.dataTransfer.files[0];
+      if (!file || !file.type.startsWith('image/')) return;
+      var dt = new DataTransfer(); dt.items.add(file);
+      var input = document.getElementById('anuncioImagenFile');
+      input.files = dt.files;
+      previewAnuncioImage(input);
+    };
+
     // ── Modal de anuncio público ──
     window.abrirModalAnuncio = function() {
       const m = document.getElementById('modalAnuncio');
       m.style.display = 'flex';
       document.getElementById('anuncioMsg').style.display = 'none';
+      clearAnuncioImage();
     };
     window.cerrarModalAnuncio = function() {
       document.getElementById('modalAnuncio').style.display = 'none';
@@ -2164,7 +2267,7 @@
           titulo:         document.getElementById('anuncioTitulo').value.trim(),
           mensaje:        document.getElementById('anuncioMensaje').value.trim(),
           categoria:      document.getElementById('anuncioCategoria').value,
-          imagenUrl:      document.getElementById('anuncioImagen').value.trim(),
+          imagenUrl:      _anuncioImgBase64 || null,
           nombreAutor:    document.getElementById('anuncioAutor').value.trim(),
           contacto:       document.getElementById('anuncioContacto').value.trim(),
           fechaCaducidad: document.getElementById('anuncioCaducidad').value || null
@@ -2172,6 +2275,7 @@
         msg.className = 'ok'; msg.style.display = 'block';
         msg.textContent = '✅ ¡Anuncio enviado! Aparecerá en el popup tras la aprobación del administrador.';
         this.reset();
+        clearAnuncioImage();
         setTimeout(cerrarModalAnuncio, 3500);
       } catch(err) {
         msg.className = 'err'; msg.style.display = 'block';
