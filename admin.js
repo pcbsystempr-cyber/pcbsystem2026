@@ -38,6 +38,11 @@
       title: 'Certificaciones Online',
       folder: null,
       page: 'certificaciones-padres.html'
+    },
+    anuncios_comunidad: {
+      title: 'Anuncios de la Comunidad',
+      folder: null,
+      page: null
     }
   };
 
@@ -75,6 +80,7 @@
   const btnCancelDelete = document.getElementById('btnCancelDelete');
   const botConfigSection = document.getElementById('botConfigSection');
   const novedadesSection = document.getElementById('novedadesSection');
+  const anunciosComunidadSection = document.getElementById('anunciosComunidadSection');
   const botItemsList = document.getElementById('botItemsList');
   const btnSaveBotConfig = document.getElementById('btnSaveBotConfig');
 
@@ -342,7 +348,8 @@
       bot: 'Selecciona qué avisos muestra el bot flotante del sitio',
       novedades: 'La novedad más reciente aparecerá en el popup del portal',
       talleres: 'Crea y edita talleres para padres — visibles en talleres-padres.html',
-      certificaciones: 'Crea y edita certificaciones online — visibles en certificaciones-padres.html'
+      certificaciones: 'Crea y edita certificaciones online — visibles en certificaciones-padres.html',
+      anuncios_comunidad: 'Aprueba, rechaza o elimina los anuncios enviados por la comunidad'
     };
     const subtitleEl = document.getElementById('sectionSubtitle');
     if (subtitleEl) subtitleEl.textContent = subtitles[section] || '';
@@ -360,6 +367,7 @@
     botConfigSection.style.display = 'none';
     recomendacionesAdminSection.style.display = 'none';
     novedadesSection.style.display = 'none';
+    if (anunciosComunidadSection) anunciosComunidadSection.style.display = 'none';
     if (talleresSection) talleresSection.style.display = 'none';
     if (certificacionesSection) certificacionesSection.style.display = 'none';
     galleryGrid.style.display = 'none';
@@ -371,6 +379,9 @@
     } else if (section === 'novedades') {
       novedadesSection.style.display = 'block';
       renderNovedades();
+    } else if (section === 'anuncios_comunidad') {
+      if (anunciosComunidadSection) anunciosComunidadSection.style.display = 'block';
+      renderAnunciosComunidad();
     } else if (section === 'talleres') {
       if (talleresSection) talleresSection.style.display = 'block';
       renderTalleres();
@@ -1327,7 +1338,11 @@
     editTaller,
     deleteTaller,
     editCert,
-    deleteCert
+    deleteCert,
+    aprobarAnuncio,
+    rechazarAnuncio,
+    eliminarAnuncio,
+    reloadAnuncios
   };
 
   // ── Talleres form submit ──
@@ -1397,6 +1412,96 @@
         document.getElementById('certEditId').value = '';
       });
     }
+
+    // ── Anuncios Comunidad ────────────────────────────────────────────────
+
+  async function renderAnunciosComunidad(filtro) {
+    const lista = document.getElementById('anunciosList');
+    const badge = document.getElementById('badgePendientes');
+    if (!lista) return;
+
+    const filtroSel = filtro || document.getElementById('filtroAnuncio')?.value || '';
+    lista.innerHTML = '<p style="padding:1rem;color:var(--muted);">⏳ Cargando anuncios...</p>';
+
+    try {
+      let todos = await window.anunciosDB.getAll();
+
+      // Badge de pendientes
+      const pendientes = todos.filter(a => !a.aprobado && !a.rechazado).length;
+      if (badge) { badge.textContent = pendientes; badge.style.display = pendientes > 0 ? 'inline' : 'none'; }
+
+      // Filtro
+      if (filtroSel === 'pendiente') {
+        todos = todos.filter(a => !a.aprobado && !a.rechazado);
+      } else if (filtroSel) {
+        todos = todos.filter(a => a.categoria === filtroSel);
+      }
+
+      if (!todos.length) {
+        lista.innerHTML = '<p style="padding:1rem;color:var(--muted);">No hay anuncios con este filtro.</p>';
+        return;
+      }
+
+      const CAT_LABEL = { objetos_perdidos:'🔍 Objetos Perdidos', actividades:'🎉 Actividades', recaudaciones:'💰 Recaudaciones', avisos:'📢 Avisos', promociones:'🏷️ Promociones', aviso:'📢 Aviso' };
+      const hoy = new Date().toISOString().slice(0, 10);
+
+      lista.innerHTML = todos.map(a => {
+        const caducado  = a.fecha_caducidad && a.fecha_caducidad < hoy;
+        const estado    = a.rechazado ? '❌ Rechazado' : a.aprobado ? (caducado ? '⌛ Caducado' : '✅ Aprobado') : '⏳ Pendiente';
+        const colorBg   = a.rechazado ? '#fff0f0' : a.aprobado ? (caducado ? '#f5f5f5' : '#f0fff4') : '#fffbea';
+        const colorBdr  = a.rechazado ? '#e74c3c' : a.aprobado ? (caducado ? '#aaa' : '#27ae60') : '#f39c12';
+        return `
+        <div style="border-left:4px solid ${colorBdr};background:${colorBg};border-radius:10px;padding:1rem 1.1rem;margin-bottom:0.85rem;">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.5rem;">
+            <div style="flex:1;min-width:0;">
+              <div style="display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap;margin-bottom:0.3rem;">
+                <span style="font-weight:700;font-size:1rem;">${a.titulo}</span>
+                <span style="background:#e9ecef;padding:2px 8px;border-radius:99px;font-size:0.75rem;">${CAT_LABEL[a.categoria] || a.categoria}</span>
+                <span style="font-size:0.78rem;color:#666;">${estado}</span>
+              </div>
+              <p style="margin:0 0 0.4rem;color:#444;font-size:0.92rem;">${a.mensaje}</p>
+              <div style="font-size:0.78rem;color:#888;display:flex;gap:1rem;flex-wrap:wrap;">
+                <span>👤 ${a.nombre_autor || 'Anónimo'}</span>
+                ${a.contacto ? `<span>📞 ${a.contacto}</span>` : ''}
+                <span>📅 ${new Date(a.created_at).toLocaleDateString()}</span>
+                ${a.fecha_caducidad ? `<span>⏰ Caduca: ${a.fecha_caducidad}</span>` : ''}
+              </div>
+            </div>
+            <div style="display:flex;gap:0.4rem;flex-shrink:0;flex-wrap:wrap;">
+              ${!a.aprobado && !a.rechazado ? `<button onclick="adminApp.aprobarAnuncio('${a.id}')" style="background:#27ae60;color:#fff;border:none;padding:5px 12px;border-radius:7px;cursor:pointer;font-size:0.85rem;">✅ Aprobar</button>` : ''}
+              ${!a.rechazado ? `<button onclick="adminApp.rechazarAnuncio('${a.id}')" style="background:#e67e22;color:#fff;border:none;padding:5px 12px;border-radius:7px;cursor:pointer;font-size:0.85rem;">❌ Rechazar</button>` : ''}
+              <button onclick="adminApp.eliminarAnuncio('${a.id}')" style="background:#e74c3c;color:#fff;border:none;padding:5px 12px;border-radius:7px;cursor:pointer;font-size:0.85rem;">🗑️</button>
+            </div>
+          </div>
+          ${a.imagen_url ? `<img src="${a.imagen_url}" style="margin-top:0.6rem;max-height:100px;border-radius:8px;object-fit:cover;" onerror="this.style.display='none'">` : ''}
+        </div>`;
+      }).join('');
+
+      // Filtro select
+      const sel = document.getElementById('filtroAnuncio');
+      if (sel && !sel._bound) {
+        sel._bound = true;
+        sel.addEventListener('change', () => renderAnunciosComunidad(sel.value));
+      }
+    } catch (err) {
+      lista.innerHTML = `<p style="color:#e74c3c;padding:1rem;">⚠️ Error al cargar: ${err.message}</p>`;
+    }
+  }
+
+  async function aprobarAnuncio(id) {
+    try { await window.anunciosDB.approve(id); renderAnunciosComunidad(); }
+    catch(e) { alert('❌ Error: ' + e.message); }
+  }
+  async function rechazarAnuncio(id) {
+    try { await window.anunciosDB.reject(id); renderAnunciosComunidad(); }
+    catch(e) { alert('❌ Error: ' + e.message); }
+  }
+  async function eliminarAnuncio(id) {
+    if (!confirm('¿Eliminar este anuncio permanentemente?')) return;
+    try { await window.anunciosDB.remove(id); renderAnunciosComunidad(); }
+    catch(e) { alert('❌ Error: ' + e.message); }
+  }
+  function reloadAnuncios() { renderAnunciosComunidad(); }
 
     // ── Theme Toggle ──
     const themeBtn = document.getElementById('adminThemeToggle');

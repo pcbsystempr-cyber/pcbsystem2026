@@ -10,6 +10,7 @@
   <link rel="stylesheet" href="image-popup.css">
   <script src="js/services-manager.js"></script>
   <script src="js/novedades-db.js"></script>
+  <script src="js/anuncios-db.js"></script>
   <script src="js/crypto-utils.js"></script>
   <script src="js/jwt-simple.js"></script>
   <script src="js/auth-jwt.js"></script>
@@ -70,6 +71,10 @@
           </button>
           <button class="nav-btn" data-section="novedades">
             <span class="nav-icon">📣</span> Novedades
+          </button>
+          <button class="nav-btn" data-section="anuncios_comunidad">
+            <span class="nav-icon">📌</span> Anuncios Comunidad
+            <span id="badgePendientes" style="display:none;background:#e74c3c;color:#fff;border-radius:99px;padding:1px 7px;font-size:0.72rem;margin-left:6px;font-weight:700;">0</span>
           </button>
         </div>
       </nav>
@@ -397,6 +402,31 @@
               <button type="submit" class="btn btn-primary">📤 Publicar</button>
             </form>
             <ul id="newsList" style="list-style:none; padding:0;"></ul>
+          </div>
+        </div>
+
+        <!-- ══ Anuncios Comunidad (solo visible en sección anuncios_comunidad) ══ -->
+        <div id="anunciosComunidadSection" style="display:none;">
+          <div class="content-card">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;flex-wrap:wrap;gap:0.75rem;">
+              <div>
+                <h3 style="margin:0;">📌 Anuncios de la Comunidad</h3>
+                <p style="margin:0.25rem 0 0;color:var(--muted);font-size:0.82rem;">Aprueba o rechaza los anuncios enviados por visitantes. Solo los aprobados y no caducados aparecen en el popup.</p>
+              </div>
+              <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+                <select id="filtroAnuncio" class="form-control" style="min-width:160px;padding:0.45rem 0.75rem;">
+                  <option value="">Todas las categorías</option>
+                  <option value="pendiente">⏳ Pendientes</option>
+                  <option value="objetos_perdidos">🔍 Objetos Perdidos</option>
+                  <option value="actividades">🎉 Actividades</option>
+                  <option value="recaudaciones">💰 Recaudaciones</option>
+                  <option value="avisos">📢 Avisos</option>
+                  <option value="promociones">🏷️ Promociones</option>
+                </select>
+                <button class="btn btn-secondary" onclick="adminApp.reloadAnuncios()">🔄 Actualizar</button>
+              </div>
+            </div>
+            <div id="anunciosList"></div>
           </div>
         </div>
 
