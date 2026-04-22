@@ -482,6 +482,7 @@ const translations = {
     'Vida Estudiantil': 'Vida Estudiantil',
     'Normas': 'Normas',
     'Dashboard Admin': 'Dashboard Admin',
+    'Publicar Anuncio': 'Publicar Anuncio',
 
     // Padres portal
     '👨‍👩‍👧 Portal de Padres': '👨‍👩‍👧 Portal de Padres',
@@ -1100,6 +1101,7 @@ const translations = {
     'Vida Estudiantil': 'Student Life',
     'Normas': 'Rules',
     'Dashboard Admin': 'Admin Dashboard',
+    'Publicar Anuncio': 'Post Announcement',
 
     // Padres portal
     '👨‍👩‍👧 Portal de Padres': '👨‍👩‍👧 Parents Portal',
