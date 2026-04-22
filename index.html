@@ -164,8 +164,9 @@
         const htmlRoot = document.getElementById('htmlRoot');
         if (htmlRoot) htmlRoot.setAttribute('lang', next);
         if (typeof translatePage === 'function') translatePage(next);
+        // Muestra la bandera del idioma AL QUE puedes cambiar (el opuesto)
         const btn = document.getElementById('mhcLangBtn');
-        if (btn) btn.textContent = next === 'en' ? '🇺🇸' : '🌐';
+        if (btn) btn.textContent = next === 'en' ? '🇵🇷' : '🇺🇸';
       };
 
       // Usar DOMContentLoaded para el hamburger menu
@@ -176,7 +177,8 @@
         if (themeBtn) themeBtn.textContent = isDark ? '🌙' : '☀️';
         const savedLang = localStorage.getItem('language') || 'es';
         const langBtn = document.getElementById('mhcLangBtn');
-        if (langBtn) langBtn.textContent = savedLang === 'en' ? '🇺🇸' : '🌐';
+        // Muestra la bandera del idioma AL QUE puedes cambiar
+        if (langBtn) langBtn.textContent = savedLang === 'en' ? '🇵🇷' : '🇺🇸';
         // Código del hamburger menu
         (function() {
           const hamburgerBtn = document.getElementById('hamburgerBtn');
@@ -1543,53 +1545,47 @@
     .ma-img-remove:hover { background: rgba(239,68,68,.88); }
 
     /* ===== MOBILE HEADER CONTROLS ===== */
-    /* El hamburger es position:fixed right:1.5rem top:1.5rem (z-index:10002).
-       Los controles van fijos a su izquierda para que aparezcan al lado. */
+    /* El hamburger: position fixed, right:1.5rem top:1.5rem ancho~45px.
+       Pegamos los controles justo a su izquierda con un gap de 4px. */
     .mobile-header-controls {
-      display: none; /* ocultos por defecto */
+      display: none;
     }
     @media (max-width: 900px) {
       .mobile-header-controls {
         display: flex;
         position: fixed;
-        /* right: 1.5rem(ham) + 45px(ancho ham) + 8px gap = ~5.3rem */
-        right: 5.3rem;
-        top: 1.5rem;
+        right: calc(1.5rem + 45px + 6px); /* pega al hamburger */
+        top: 1.62rem;
         align-items: center;
-        gap: 0.4rem;
-        z-index: 10001; /* justo debajo del hamburger */
+        gap: 0.3rem;
+        z-index: 10001;
       }
     }
-    /* El hamburger tiene right:1rem top:1.2rem en <=780px */
     @media (max-width: 780px) {
       .mobile-header-controls {
-        right: 4.8rem;
-        top: 1.2rem;
+        right: calc(1rem + 45px + 6px); /* hamburger cambia a right:1rem */
+        top: 1.32rem;
       }
     }
     .mhc-btn {
-      width: 36px; height: 36px;
+      width: 30px; height: 30px;
       border-radius: 50%;
-      border: 1.5px solid rgba(255,255,255,0.28);
+      border: 1.5px solid rgba(255,255,255,0.3);
       background: rgba(255,255,255,0.15);
       backdrop-filter: blur(8px);
       -webkit-backdrop-filter: blur(8px);
       color: white;
-      font-size: 1rem;
+      font-size: 0.9rem;
       line-height: 1;
       display: flex; align-items: center; justify-content: center;
       cursor: pointer;
-      transition: background 0.2s, border-color 0.2s, transform 0.18s;
+      transition: background 0.2s, transform 0.18s;
       flex-shrink: 0;
       padding: 0;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
     }
-    .mhc-btn:hover {
-      background: rgba(255,255,255,0.3);
-      border-color: rgba(255,255,255,0.6);
-      transform: scale(1.12);
-    }
-    .mhc-btn:active { transform: scale(0.94); }
+    .mhc-btn:hover  { background: rgba(255,255,255,0.3); transform: scale(1.12); }
+    .mhc-btn:active { transform: scale(0.92); }
 
     /* Destacar el ítem Publicar Anuncio del sidebar */
     .sidebar-publish-item {
@@ -1680,7 +1676,7 @@
   <!-- Popup de Promociones (Pequeño) -->
   <div id="promoPopup" class="promo-popup" onclick="expandPromo()">
     <button class="promo-close-btn" onclick="event.stopPropagation(); closePromo()" title="Cerrar">
-      <i class="fas fa-times"></i>
+      ✕
     </button>
     <div class="promo-header">
       <span class="promo-title" data-translate="📢 ¡Novedades!">📢 ¡Novedades!</span>
@@ -1717,30 +1713,32 @@
   </div>
 
   <style>
-    /* Estilos mejorados para el botón de cerrar del popup */
+    /* Botón cerrar popup novedades */
     .promo-close-btn {
       position: absolute;
-      top: 10px;
-      right: 10px;
-      background: rgba(231, 76, 60, 0.1);
-      border: none;
-      width: 30px;
-      height: 30px;
+      top: 8px;
+      right: 8px;
+      background: rgba(239, 68, 68, 0.15);
+      border: 1.5px solid rgba(239, 68, 68, 0.4);
+      width: 26px;
+      height: 26px;
       border-radius: 50%;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: all 0.3s ease;
+      transition: all 0.25s ease;
       z-index: 10;
       color: #e74c3c;
-      font-size: 16px;
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1;
     }
-
     .promo-close-btn:hover {
       background: #e74c3c;
+      border-color: #e74c3c;
       color: white;
-      transform: rotate(90deg);
+      transform: rotate(90deg) scale(1.1);
     }
 
     .promo-popup {
