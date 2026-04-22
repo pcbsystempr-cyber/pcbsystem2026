@@ -470,21 +470,21 @@ body {
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border-bottom: 1px solid rgba(0, 0, 0, 0.04);
-  position: sticky;
-  position: -webkit-sticky;
-  top: 0;
+  position: fixed !important;
+  top: 0 !important;
+  left: 0;
+  right: 0;
   z-index: 1000;
   box-shadow: 0 2px 20px rgba(0, 0, 0, 0.05);
-  transition: all 0.3s ease;
+  transition: box-shadow 0.3s ease, background 0.3s ease;
 }
 
-/* Desktop: Header siempre visible */
-@media (min-width: 781px) {
-  .site-header {
-    position: sticky !important;
-    position: -webkit-sticky !important;
-    top: 0 !important;
-  }
+/* Compensar la altura del header fijo para que el contenido no quede tapado */
+body {
+  padding-top: 106px; /* min-height header-inner 90px + padding vertical ~16px */
+}
+@media (max-width: 780px) {
+  body { padding-top: 91px; } /* min-height 75px + padding ~16px */
 }
 
 .site-header.scrolled {
@@ -1748,7 +1748,7 @@ body.dark-mode .event-content p {
   border: none;
   cursor: pointer;
   padding: 10px;
-  z-index: 99999;
+  z-index: 10002;
   transition: all 0.3s ease;
   position: fixed;
   right: 1.5rem;
@@ -1777,7 +1777,7 @@ body.dark-mode .event-content p {
   background: var(--bg-alt);
   box-shadow: -2px 0 20px rgba(0, 0, 0, 0.2);
   transition: right 0.3s ease;
-  z-index: 100000;
+  z-index: 10001;
   overflow-y: auto;
 }
 
@@ -1979,7 +1979,7 @@ body.dark-mode .theme-options a.theme-option:hover {
   opacity: 0;
   visibility: hidden;
   transition: all 0.3s ease;
-  z-index: 99999;
+  z-index: 10000;
 }
 
 .sidebar-overlay.active {
