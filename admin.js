@@ -1413,7 +1413,27 @@
       });
     }
 
-    // ── Anuncios Comunidad ────────────────────────────────────────────────
+    // ── Theme Toggle ──
+    const themeBtn = document.getElementById('adminThemeToggle');
+    const themeLabel = document.getElementById('themeLabel');
+    function applyTheme(isDark) {
+      document.body.classList.toggle('admin-dark', isDark);
+      localStorage.setItem('adminTheme', isDark ? 'dark' : 'light');
+      if (themeLabel) themeLabel.textContent = isDark ? '☀️ Modo Claro' : '🌙 Modo Oscuro';
+    }
+    // Set initial label
+    const isDark = localStorage.getItem('adminTheme') === 'dark';
+    if (themeLabel) themeLabel.textContent = isDark ? '☀️ Modo Claro' : '🌙 Modo Oscuro';
+    if (themeBtn) {
+      themeBtn.addEventListener('click', function() {
+        applyTheme(!document.body.classList.contains('admin-dark'));
+      });
+    }
+  });
+
+  // ══════════════════════════════════════════════
+  //  ANUNCIOS COMUNIDAD (IIFE scope — accessible from switchSection & window.adminApp)
+  // ══════════════════════════════════════════════
 
   async function renderAnunciosComunidad(filtro) {
     const lista = document.getElementById('anunciosList');
@@ -1502,24 +1522,6 @@
     catch(e) { alert('❌ Error: ' + e.message); }
   }
   function reloadAnuncios() { renderAnunciosComunidad(); }
-
-    // ── Theme Toggle ──
-    const themeBtn = document.getElementById('adminThemeToggle');
-    const themeLabel = document.getElementById('themeLabel');
-    function applyTheme(isDark) {
-      document.body.classList.toggle('admin-dark', isDark);
-      localStorage.setItem('adminTheme', isDark ? 'dark' : 'light');
-      if (themeLabel) themeLabel.textContent = isDark ? '☀️ Modo Claro' : '🌙 Modo Oscuro';
-    }
-    // Set initial label
-    const isDark = localStorage.getItem('adminTheme') === 'dark';
-    if (themeLabel) themeLabel.textContent = isDark ? '☀️ Modo Claro' : '🌙 Modo Oscuro';
-    if (themeBtn) {
-      themeBtn.addEventListener('click', function() {
-        applyTheme(!document.body.classList.contains('admin-dark'));
-      });
-    }
-  });
 
   // Start the app
   init();
