@@ -405,6 +405,65 @@
           </div>
         </div>
 
+        <!-- ══ Modal Editar Anuncio ══ -->
+        <div id="modalEditarAnuncio" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:9999;align-items:center;justify-content:center;padding:1rem;">
+          <div style="background:var(--card-bg,#fff);border-radius:14px;width:100%;max-width:520px;box-shadow:0 8px 40px rgba(0,0,0,0.22);overflow:hidden;">
+            <div style="background:linear-gradient(135deg,#6366f1,#8b5cf6);padding:1rem 1.25rem;display:flex;align-items:center;justify-content:space-between;">
+              <span style="color:#fff;font-weight:700;font-size:1.05rem;">✏️ Editar Anuncio</span>
+              <button onclick="adminApp.cerrarModalEdicion()" style="background:rgba(255,255,255,0.2);border:none;color:#fff;width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:1.1rem;line-height:1;">✕</button>
+            </div>
+            <div style="padding:1.25rem;display:flex;flex-direction:column;gap:0.85rem;">
+              <input type="hidden" id="editAnuncioId">
+              <div>
+                <label style="font-size:0.82rem;font-weight:600;color:var(--muted);">Título</label>
+                <input id="editTitulo" type="text" class="form-control" style="margin-top:0.25rem;width:100%;" placeholder="Título del anuncio">
+              </div>
+              <div>
+                <label style="font-size:0.82rem;font-weight:600;color:var(--muted);">Mensaje</label>
+                <textarea id="editMensaje" class="form-control" rows="3" style="margin-top:0.25rem;width:100%;resize:vertical;" placeholder="Descripción del anuncio"></textarea>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;">
+                <div>
+                  <label style="font-size:0.82rem;font-weight:600;color:var(--muted);">Categoría</label>
+                  <select id="editCategoria" class="form-control" style="margin-top:0.25rem;width:100%;">
+                    <option value="aviso">📢 Aviso</option>
+                    <option value="avisos">📢 Avisos</option>
+                    <option value="objetos_perdidos">🔍 Objetos Perdidos</option>
+                    <option value="actividades">🎉 Actividades</option>
+                    <option value="recaudaciones">💰 Recaudaciones</option>
+                    <option value="promociones">🏷️ Promociones</option>
+                  </select>
+                </div>
+                <div>
+                  <label style="font-size:0.82rem;font-weight:600;color:var(--muted);">Caduca</label>
+                  <input id="editCaducidad" type="date" class="form-control" style="margin-top:0.25rem;width:100%;">
+                </div>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;">
+                <div>
+                  <label style="font-size:0.82rem;font-weight:600;color:var(--muted);">Autor</label>
+                  <input id="editAutor" type="text" class="form-control" style="margin-top:0.25rem;width:100%;" placeholder="Nombre del autor">
+                </div>
+                <div>
+                  <label style="font-size:0.82rem;font-weight:600;color:var(--muted);">Contacto</label>
+                  <input id="editContacto" type="text" class="form-control" style="margin-top:0.25rem;width:100%;" placeholder="Tel / email">
+                </div>
+              </div>
+              <div id="editImagenPreviewWrap" style="display:none;margin-top:0.25rem;">
+                <label style="font-size:0.82rem;font-weight:600;color:var(--muted);">Imagen actual</label>
+                <div style="display:flex;align-items:center;gap:0.75rem;margin-top:0.25rem;">
+                  <img id="editImagenPreview" src="" style="max-height:70px;border-radius:8px;object-fit:cover;" onerror="this.parentElement.parentElement.style.display='none'">
+                  <button onclick="adminApp.quitarImagenEdicion()" style="background:#e74c3c;color:#fff;border:none;padding:4px 10px;border-radius:7px;cursor:pointer;font-size:0.8rem;">🗑️ Quitar</button>
+                </div>
+              </div>
+              <div style="display:flex;justify-content:flex-end;gap:0.6rem;margin-top:0.5rem;">
+                <button onclick="adminApp.cerrarModalEdicion()" class="btn btn-secondary" style="padding:0.5rem 1.1rem;">Cancelar</button>
+                <button onclick="adminApp.guardarEdicionAnuncio()" class="btn btn-primary" style="padding:0.5rem 1.1rem;background:linear-gradient(135deg,#6366f1,#8b5cf6);border:none;">💾 Guardar</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <!-- ══ Anuncios Comunidad (solo visible en sección anuncios_comunidad) ══ -->
         <div id="anunciosComunidadSection" style="display:none;">
           <div class="content-card">

@@ -1342,7 +1342,11 @@
     aprobarAnuncio,
     rechazarAnuncio,
     eliminarAnuncio,
-    reloadAnuncios
+    reloadAnuncios,
+    editarAnuncio,
+    cerrarModalEdicion,
+    quitarImagenEdicion,
+    guardarEdicionAnuncio
   };
 
   // ── Talleres form submit ──
@@ -1490,6 +1494,7 @@
             <div style="display:flex;gap:0.4rem;flex-shrink:0;flex-wrap:wrap;">
               ${!a.aprobado && !a.rechazado ? `<button onclick="adminApp.aprobarAnuncio('${a.id}')" style="background:#27ae60;color:#fff;border:none;padding:5px 12px;border-radius:7px;cursor:pointer;font-size:0.85rem;">✅ Aprobar</button>` : ''}
               ${!a.rechazado ? `<button onclick="adminApp.rechazarAnuncio('${a.id}')" style="background:#e67e22;color:#fff;border:none;padding:5px 12px;border-radius:7px;cursor:pointer;font-size:0.85rem;">❌ Rechazar</button>` : ''}
+              <button onclick="adminApp.editarAnuncio('${a.id}')" style="background:#6366f1;color:#fff;border:none;padding:5px 12px;border-radius:7px;cursor:pointer;font-size:0.85rem;">✏️</button>
               <button onclick="adminApp.eliminarAnuncio('${a.id}')" style="background:#e74c3c;color:#fff;border:none;padding:5px 12px;border-radius:7px;cursor:pointer;font-size:0.85rem;">🗑️</button>
             </div>
           </div>
@@ -1522,6 +1527,68 @@
     catch(e) { alert('❌ Error: ' + e.message); }
   }
   function reloadAnuncios() { renderAnunciosComunidad(); }
+
+  // Cache del anuncio que se está editando
+  let _anuncioEditando = null;
+
+  async function editarAnuncio(id) {
+    try {
+      const todos = await window.anunciosDB.getAll();
+      const a = todos.find(x => x.id === id);
+      if (!a) return alert('No se encontró el anuncio.');
+      _anuncioEditando = a;
+
+      document.getElementById('editAnuncioId').value  = a.id;
+      document.getElementById('editTitulo').value      = a.titulo || '';
+      document.getElementById('editMensaje').value     = a.mensaje || '';
+      document.getElementById('editCategoria').value   = a.categoria || 'aviso';
+      document.getElementById('editCaducidad').value   = a.fecha_caducidad || '';
+      document.getElementById('editAutor').value       = a.nombre_autor || '';
+      document.getElementById('editContacto').value    = a.contacto || '';
+
+      const prevWrap = document.getElementById('editImagenPreviewWrap');
+      const prevImg  = document.getElementById('editImagenPreview');
+      if (a.imagen_url) {
+        prevImg.src = a.imagen_url;
+        prevWrap.style.display = 'block';
+      } else {
+        prevWrap.style.display = 'none';
+      }
+
+      const modal = document.getElementById('modalEditarAnuncio');
+      modal.style.display = 'flex';
+    } catch(e) { alert('❌ Error al cargar: ' + e.message); }
+  }
+
+  function cerrarModalEdicion() {
+    document.getElementById('modalEditarAnuncio').style.display = 'none';
+    _anuncioEditando = null;
+  }
+
+  function quitarImagenEdicion() {
+    if (_anuncioEditando) _anuncioEditando._quitarImagen = true;
+    document.getElementById('editImagenPreviewWrap').style.display = 'none';
+  }
+
+  async function guardarEdicionAnuncio() {
+    const id = document.getElementById('editAnuncioId').value;
+    if (!id) return;
+    const fields = {
+      titulo:          document.getElementById('editTitulo').value.trim(),
+      mensaje:         document.getElementById('editMensaje').value.trim(),
+      categoria:       document.getElementById('editCategoria').value,
+      fecha_caducidad: document.getElementById('editCaducidad').value || null,
+      nombre_autor:    document.getElementById('editAutor').value.trim() || 'Anónimo',
+      contacto:        document.getElementById('editContacto').value.trim() || null,
+    };
+    if (_anuncioEditando?._quitarImagen) fields.imagen_url = null;
+    if (!fields.titulo || !fields.mensaje) return alert('El título y el mensaje son obligatorios.');
+    try {
+      await window.anunciosDB.update(id, fields);
+      cerrarModalEdicion();
+      renderAnunciosComunidad();
+    } catch(e) { alert('❌ Error al guardar: ' + e.message); }
+  }
 
   // Start the app
   init();
