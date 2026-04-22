@@ -1236,6 +1236,91 @@ const translations = {
     'Buscar': 'Search',
     'Ver más': 'See more',
     'Descargar': 'Download',
+
+    // biblioteca.html – Hero
+    '📚 Biblioteca Digital': '📚 Digital Library',
+    'bib-hero-sub': 'Your center for knowledge and educational resources. Access our online catalog, reserve study spaces and discover quality academic resources.',
+    'Reservar Espacio': 'Reserve Space',
+    'Ver Recursos': 'View Resources',
+    '📖 Catálogo Digital': '📖 Digital Catalog',
+    '💻 Reservas Online': '💻 Online Reservations',
+    '🎓 Apoyo Académico': '🎓 Academic Support',
+    '🌐 Recursos Globales': '🌐 Global Resources',
+    '🕐 Horario de Atención': '🕐 Service Hours',
+    'Lunes - Viernes:': 'Monday - Friday:',
+    'Servicios:': 'Services:',
+    'Préstamo de libros': 'Book lending',
+    'Computadoras:': 'Computers:',
+    '8 estaciones disponibles': '8 stations available',
+    'Salas de estudio:': 'Study rooms:',
+    'Reserva anticipada': 'Advanced reservation',
+    'Apoyo académico:': 'Academic support:',
+    'Tareas y Proyectos': 'Homework and Projects',
+
+    // biblioteca.html – Sección Reserva de Espacios
+    '📖 Reserva de Espacios': '📖 Space Reservations',
+    'Reserva salas, computadoras y equipos': 'Reserve rooms, computers and equipment',
+    'Dashboard Bibliotecaria': 'Librarian Dashboard',
+    'Sala de Lectura': 'Reading Room',
+    'Espacio tranquilo para estudio individual': 'Quiet space for individual study',
+    'Disponible': 'Available',
+    'Computadoras': 'Computers',
+    'Estaciones de trabajo con internet': 'Workstations with internet',
+    '8 disponibles': '8 available',
+    'Sala de Presentaciones': 'Presentation Room',
+    'Espacio para exposiciones y eventos': 'Space for presentations and events',
+
+    // biblioteca.html – Leyenda del calendario
+    'Actividad de biblioteca': 'Library activity',
+    'Reserva aprobada': 'Approved reservation',
+    'Reserva pendiente': 'Pending reservation',
+    'Múltiples eventos': 'Multiple events',
+
+    // biblioteca.html – Formulario
+    '📋 Formulario de Reservación': '📋 Reservation Form',
+    'Completa el formulario': 'Complete the form — the librarian will review and approve your request',
+    'Paso 1': 'Step 1 — Select the space you want to reserve',
+    'Paso 2': 'Step 2 — Complete your information',
+    '⚠️ Por favor selecciona un espacio': '⚠️ Please select a space before continuing.',
+    'Nombre Completo *': 'Full Name *',
+    'Correo Electrónico *': 'Email Address *',
+    'Teléfono': 'Phone',
+    'Fecha *': 'Date *',
+    'Número de Participantes': 'Number of Participants',
+    'Hora de Inicio *': 'Start Time *',
+    'Hora de Fin *': 'End Time *',
+    'Propósito de la Reserva *': 'Purpose of Reservation *',
+    'bib-pending-note': '⏳ Your request will remain pending until the librarian reviews and approves it.',
+    '📋 Enviar Solicitud de Reserva': '📋 Submit Reservation Request',
+
+    // biblioteca.html – Pantalla de éxito
+    '¡Solicitud Enviada!': 'Request Submitted!',
+    'bib-success-sub': 'Your reservation is pending approval by the librarian.',
+    'Número de Solicitud': 'Request Number',
+    '📋 Copiar código': '📋 Copy code',
+    '✅ ¡Copiado!': '✅ Copied!',
+    'bib-save-ticket': 'Save your request number. You can check the status on the library calendar once approved.',
+    '🔄 Hacer Otra Reserva': '🔄 Make Another Reservation',
+
+    // biblioteca.html – Verificar Estatus
+    '🔍 Verificar Estatus de Solicitud': '🔍 Check Request Status',
+    'bib-verify-sub': 'Check the status of your reservation using your request number, name or date',
+    'Buscar por:': 'Search by:',
+    '🎫 Número de Solicitud': '🎫 Request Number',
+    '👤 Nombre': '👤 Name',
+    '📅 Fecha': '📅 Date',
+    '🔍 Buscar': '🔍 Search',
+    'bib-search-hint': 'Enter the request number you received when completing the form.',
+
+    // biblioteca.html – Recursos Educativos
+    '📘 Recursos Educativos': '📘 Educational Resources',
+    'Acceso a bibliotecas digitales y bases de datos': 'Access to digital libraries and databases',
+    '70,000+ libros gratis': '70,000+ free books',
+    'Millones de libros digitales': 'Millions of digital books',
+    'Cursos gratuitos': 'Free courses',
+    'Artículos académicos': 'Academic articles',
+    'Cursos universitarios': 'University courses',
+    'Charlas inspiradoras': 'Inspiring talks',
   }
 };
 
