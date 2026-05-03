@@ -4,6 +4,11 @@
 
   // Configuration
   const SECTIONS = {
+    dashboard: {
+      title: 'Dashboard General',
+      folder: null,
+      page: null
+    },
     comedor: {
       title: 'Gestión de Comedor',
       folder: 'galeriacomedor',
@@ -46,8 +51,29 @@
     }
   };
 
+  // Secciones planeadas para próximas etapas (placeholder "Próximamente").
+  // Cada entrada define el título y subtítulo que se muestran en el topbar.
+  const PROXIMAMENTE = {
+    publicaciones_todas:    { title: 'Todas las publicaciones',    subtitle: 'Vista unificada de todas las publicaciones del sistema',                  icon: '📂' },
+    publicaciones_crear:    { title: 'Crear publicación',          subtitle: 'Formulario inteligente único para todas las categorías',                 icon: '➕' },
+    biblioteca:             { title: 'Biblioteca',                 subtitle: 'Gestión del catálogo y recursos de la biblioteca escolar',               icon: '📚' },
+    reservas:               { title: 'Reservas',                   subtitle: 'Reservas de libros, salones y equipos',                                  icon: '📅' },
+    alertas:                { title: 'Alertas',                    subtitle: 'Configuración de alertas urgentes y de emergencia',                      icon: '🚨' },
+    popup_principal:        { title: 'Popup Principal',            subtitle: 'Configura qué se muestra en el popup del portal público',                icon: '💬' },
+    notificaciones:         { title: 'Notificaciones',             subtitle: 'Envío y bandeja de notificaciones a usuarios',                           icon: '📲' },
+    usuarios:               { title: 'Usuarios',                   subtitle: 'Gestión de cuentas administrativas y de personal',                       icon: '👥' },
+    roles:                  { title: 'Roles y permisos',           subtitle: 'Definición de roles (Director, Maestro, Bibliotecario, etc.)',          icon: '🛡️' },
+    configuracion:          { title: 'Configuración del portal',   subtitle: 'Parámetros generales del portal PCBSystem',                              icon: '⚙️' },
+    idioma_tema:            { title: 'Idioma y tema visual',       subtitle: 'Preferencias de idioma y modo claro/oscuro por defecto',                 icon: '🌐' },
+    exportar:               { title: 'Exportar datos',             subtitle: 'Descarga de datos en JSON, CSV o copias de seguridad',                   icon: '📤' },
+    reporte_actividad:      { title: 'Actividad del sistema',      subtitle: 'Auditoría y registro de eventos administrativos',                        icon: '📊' },
+    reporte_publicaciones:  { title: 'Publicaciones más vistas',   subtitle: 'Métricas de visualización por publicación',                              icon: '🔥' },
+    reporte_servicios:      { title: 'Servicios más usados',       subtitle: 'Estadísticas de uso por módulo y servicio',                              icon: '🚀' },
+    historial:              { title: 'Historial de cambios',       subtitle: 'Bitácora de cambios y versiones de contenido',                           icon: '📜' }
+  };
+
   // State
-  let currentSection = 'comedor';
+  let currentSection = 'dashboard';
   let contentData = {};
   let imageToDelete = null;
   let recToEditIndex = null;
@@ -127,7 +153,8 @@
   function init() {
     loadContentData();
     setupEventListeners();
-    renderGallery();
+    // Arrancar en Dashboard General (Centro de Control unificado).
+    switchSection('dashboard');
   }
 
   // Load content data from localStorage and JSON file
@@ -220,6 +247,11 @@
         const section = btn.dataset.section;
         switchSection(section);
       });
+    });
+
+    // Botones de acceso rápido del Dashboard General
+    document.querySelectorAll('.dash-quick-btn[data-goto]').forEach(btn => {
+      btn.addEventListener('click', () => switchSection(btn.dataset.goto));
     });
 
     // Add image button
@@ -332,6 +364,8 @@
 
   // Switch section
   function switchSection(section) {
+    // Si la sección no está registrada en SECTIONS ni en PROXIMAMENTE, ignorar.
+    if (!SECTIONS[section] && !PROXIMAMENTE[section]) return;
     currentSection = section;
 
     // Update nav buttons
@@ -340,8 +374,10 @@
     });
 
     // Update title & subtitle
-    sectionTitle.textContent = SECTIONS[section].title;
+    const meta = SECTIONS[section] || PROXIMAMENTE[section];
+    sectionTitle.textContent = meta.title;
     const subtitles = {
+      dashboard: 'Centro de Control Administrativo del PCBSystem',
       comedor: 'Administra las imágenes y menú del comedor escolar',
       promociones: 'Gestiona las promociones e inscripciones visibles en el sitio',
       avisos: 'Publicación y edición de avisos institucionales',
@@ -352,7 +388,7 @@
       anuncios_comunidad: 'Aprueba, rechaza o elimina los anuncios enviados por la comunidad'
     };
     const subtitleEl = document.getElementById('sectionSubtitle');
-    if (subtitleEl) subtitleEl.textContent = subtitles[section] || '';
+    if (subtitleEl) subtitleEl.textContent = subtitles[section] || (PROXIMAMENTE[section] ? PROXIMAMENTE[section].subtitle : '');
 
     // Show/hide topbar buttons
     const gallerySections = ['comedor', 'promociones', 'avisos'];
@@ -362,6 +398,9 @@
     // Fetch extra sections
     const talleresSection = document.getElementById('talleresSection');
     const certificacionesSection = document.getElementById('certificacionesSection');
+    const dashboardSection = document.getElementById('dashboardSection');
+    const proximamenteSection = document.getElementById('proximamenteSection');
+    const statsRow = document.getElementById('statsRow');
 
     // Hide all special sections
     botConfigSection.style.display = 'none';
@@ -370,10 +409,21 @@
     if (anunciosComunidadSection) anunciosComunidadSection.style.display = 'none';
     if (talleresSection) talleresSection.style.display = 'none';
     if (certificacionesSection) certificacionesSection.style.display = 'none';
+    if (dashboardSection) dashboardSection.style.display = 'none';
+    if (proximamenteSection) proximamenteSection.style.display = 'none';
     galleryGrid.style.display = 'none';
     emptyState.style.display = 'none';
 
-    if (section === 'bot') {
+    // El stats-row clásico se oculta en Dashboard (que tiene su propio resumen) y en placeholders.
+    if (statsRow) statsRow.style.display = (section === 'dashboard' || PROXIMAMENTE[section]) ? 'none' : 'grid';
+
+    if (section === 'dashboard') {
+      if (dashboardSection) dashboardSection.style.display = 'block';
+      renderDashboard();
+    } else if (PROXIMAMENTE[section]) {
+      renderProximamente(section);
+      if (proximamenteSection) proximamenteSection.style.display = 'block';
+    } else if (section === 'bot') {
       botConfigSection.style.display = 'block';
       renderBotConfig();
     } else if (section === 'novedades') {
@@ -401,6 +451,46 @@
     hideUploadForm();
     hideMenuEditor();
     updateStats();
+  }
+
+  // ── Renderizar placeholder "Próximamente" para módulos en construcción ──
+  function renderProximamente(section) {
+    const meta = PROXIMAMENTE[section];
+    if (!meta) return;
+    const iconEl  = document.getElementById('proxIcon');
+    const titleEl = document.getElementById('proxTitle');
+    const textEl  = document.getElementById('proxText');
+    if (iconEl)  iconEl.textContent = meta.icon || '🚧';
+    if (titleEl) titleEl.textContent = meta.title;
+    if (textEl)  textEl.textContent = meta.subtitle + ' — Disponible en una próxima etapa del Centro de Control Administrativo.';
+  }
+
+  // ── Renderizar Dashboard General ──
+  function renderDashboard() {
+    const data = contentData || {};
+    const promos    = (data.promociones || []).length;
+    const avisos    = (data.avisos || []).length;
+    const novedades = (data.novedades || []).length;
+    const talleres  = (typeof getTalleres === 'function' ? getTalleres() : []).length;
+    const certs     = (typeof getCertificaciones === 'function' ? getCertificaciones() : []).length;
+    const menu      = data.menu_comedor || {};
+    const menuItems = ((menu.desayuno || []).length) + ((menu.almuerzo || []).length);
+
+    // Avisos críticos = novedades marcadas como is_critical
+    const criticos  = (data.novedades || []).filter(n => n && (n.is_critical || n.isCritical)).length;
+    // Solicitudes pendientes ≈ anuncios de comunidad por aprobar (badge ya implementado)
+    const badgeEl   = document.getElementById('badgePendientes');
+    const pendN     = badgeEl ? parseInt(badgeEl.textContent, 10) || 0 : 0;
+
+    const setText = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+    setText('dashTotalPublicaciones',    promos + avisos + novedades + talleres + certs);
+    setText('dashAvisosCriticos',        criticos);
+    setText('dashPromocionesActivas',    promos);
+    setText('dashTalleresPublicados',    talleres);
+    setText('dashCertsDisponibles',      certs);
+    setText('dashMenuPublicado',         menuItems > 0 ? menuItems + ' items' : '—');
+    setText('dashSolicitudesPendientes', pendN);
+    setText('dashLastUpdate',            new Date().toLocaleString('es-PR'));
   }
 
   // Show upload form
@@ -956,6 +1046,7 @@
               <div>
                 <strong style="color:#2c3e50;">${news.title}</strong>
                 ${i === 0 ? '<span style="background:#2ecc71; color:white; padding:2px 6px; border-radius:4px; font-size:0.7rem; margin-left:5px;">ACTIVA</span>' : ''}
+                ${news.is_critical ? '<span style="background:#e74c3c; color:white; padding:2px 6px; border-radius:4px; font-size:0.7rem; margin-left:5px;">🚨 CRÍTICA</span>' : ''}
                 <p style="margin:0; color:#7f8c8d; font-size:0.9rem;">${news.message}</p>
                 <small style="color:#95a5a6;">${new Date(news.created_at).toLocaleDateString()} ${new Date(news.created_at).toLocaleTimeString()}</small>
               </div>
@@ -983,15 +1074,18 @@
       newsForm._bound = true;
       newsForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-        const title    = document.getElementById('newsTitle').value.trim();
-        const message  = document.getElementById('newsMessage').value.trim();
-        const imageUrl = document.getElementById('newsImage').value.trim();
+        const title      = document.getElementById('newsTitle').value.trim();
+        const message    = document.getElementById('newsMessage').value.trim();
+        const imageUrl   = document.getElementById('newsImage').value.trim();
+        const isCritical = !!document.getElementById('newsIsCritical')?.checked;
         if (!title || !message) { alert('⚠️ Título y mensaje son obligatorios.'); return; }
         try {
-          await window.novedadesDB.add({ title, message, imageUrl });
+          await window.novedadesDB.add({ title, message, imageUrl, isCritical });
           newsForm.reset();
           await renderNews();
-          alert('✅ Novedad publicada. Ya aparece en el popup para todos los visitantes.');
+          alert(isCritical
+            ? '✅ Novedad CRÍTICA publicada. Aparecerá siempre en el popup hasta que la elimines o la edites.'
+            : '✅ Novedad publicada. Aparecerá en el popup solo en la primera visita de cada usuario.');
         } catch (err) {
           alert('❌ Error al publicar: ' + err.message);
         }
@@ -1010,6 +1104,8 @@
       editNewsTitle.value    = news.title     || '';
       editNewsMessage.value  = news.message   || '';
       editNewsImageUrl.value = news.image_url || '';
+      const cb = document.getElementById('editNewsIsCritical');
+      if (cb) cb.checked = !!news.is_critical;
       editNewsModal.classList.add('active');
     } catch (err) {
       alert('❌ Error al cargar novedad: ' + err.message);
@@ -1022,6 +1118,8 @@
     editNewsTitle.value    = '';
     editNewsMessage.value  = '';
     editNewsImageUrl.value = '';
+    const cb = document.getElementById('editNewsIsCritical');
+    if (cb) cb.checked = false;
   }
 
   async function saveNewsEdit() {
@@ -1033,7 +1131,8 @@
       await window.novedadesDB.update(newsToEditId, {
         title,
         message,
-        imageUrl: editNewsImageUrl.value.trim()
+        imageUrl:   editNewsImageUrl.value.trim(),
+        isCritical: !!document.getElementById('editNewsIsCritical')?.checked
       });
       closeNewsModal();
       await renderNovedades();
@@ -1475,30 +1574,30 @@
         const colorBg   = a.rechazado ? '#fff0f0' : a.aprobado ? (caducado ? '#f5f5f5' : '#f0fff4') : '#fffbea';
         const colorBdr  = a.rechazado ? '#e74c3c' : a.aprobado ? (caducado ? '#aaa' : '#27ae60') : '#f39c12';
         return `
-        <div style="border-left:4px solid ${colorBdr};background:${colorBg};border-radius:10px;padding:1rem 1.1rem;margin-bottom:0.85rem;">
-          <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.5rem;">
-            <div style="flex:1;min-width:0;">
-              <div style="display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap;margin-bottom:0.3rem;">
-                <span style="font-weight:700;font-size:1rem;">${a.titulo}</span>
-                <span style="background:#e9ecef;padding:2px 8px;border-radius:99px;font-size:0.75rem;">${CAT_LABEL[a.categoria] || a.categoria}</span>
-                <span style="font-size:0.78rem;color:#666;">${estado}</span>
+        <div class="aac-card" style="border-left:4px solid ${colorBdr};background:${colorBg};">
+          <div class="aac-row">
+            <div class="aac-info">
+              <div class="aac-title-row">
+                <span class="aac-title">${a.titulo}</span>
+                <span class="aac-cat">${CAT_LABEL[a.categoria] || a.categoria}</span>
+                <span class="aac-status">${estado}</span>
               </div>
-              <p style="margin:0 0 0.4rem;color:#444;font-size:0.92rem;">${a.mensaje}</p>
-              <div style="font-size:0.78rem;color:#888;display:flex;gap:1rem;flex-wrap:wrap;">
+              <p class="aac-msg">${a.mensaje}</p>
+              <div class="aac-meta">
                 <span>👤 ${a.nombre_autor || 'Anónimo'}</span>
                 ${a.contacto ? `<span>📞 ${a.contacto}</span>` : ''}
                 <span>📅 ${new Date(a.created_at).toLocaleDateString()}</span>
                 ${a.fecha_caducidad ? `<span>⏰ Caduca: ${a.fecha_caducidad}</span>` : ''}
               </div>
             </div>
-            <div style="display:flex;gap:0.4rem;flex-shrink:0;flex-wrap:wrap;">
-              ${!a.aprobado && !a.rechazado ? `<button onclick="adminApp.aprobarAnuncio('${a.id}')" style="background:#27ae60;color:#fff;border:none;padding:5px 12px;border-radius:7px;cursor:pointer;font-size:0.85rem;">✅ Aprobar</button>` : ''}
-              ${!a.rechazado ? `<button onclick="adminApp.rechazarAnuncio('${a.id}')" style="background:#e67e22;color:#fff;border:none;padding:5px 12px;border-radius:7px;cursor:pointer;font-size:0.85rem;">❌ Rechazar</button>` : ''}
-              <button onclick="adminApp.editarAnuncio('${a.id}')" style="background:#6366f1;color:#fff;border:none;padding:5px 12px;border-radius:7px;cursor:pointer;font-size:0.85rem;">✏️</button>
-              <button onclick="adminApp.eliminarAnuncio('${a.id}')" style="background:#e74c3c;color:#fff;border:none;padding:5px 12px;border-radius:7px;cursor:pointer;font-size:0.85rem;">🗑️</button>
+            <div class="aac-actions">
+              ${!a.aprobado && !a.rechazado ? `<button class="aac-btn aac-btn-aprobar" onclick="adminApp.aprobarAnuncio('${a.id}')">✅ Aprobar</button>` : ''}
+              ${!a.rechazado ? `<button class="aac-btn aac-btn-rechazar" onclick="adminApp.rechazarAnuncio('${a.id}')">❌ Rechazar</button>` : ''}
+              <button class="aac-btn aac-btn-editar" onclick="adminApp.editarAnuncio('${a.id}')" aria-label="Editar">✏️</button>
+              <button class="aac-btn aac-btn-borrar" onclick="adminApp.eliminarAnuncio('${a.id}')" aria-label="Borrar">🗑️</button>
             </div>
           </div>
-          ${a.imagen_url ? `<img src="${a.imagen_url}" style="margin-top:0.6rem;max-height:100px;border-radius:8px;object-fit:cover;" onerror="this.style.display='none'">` : ''}
+          ${a.imagen_url ? `<img class="aac-img" src="${a.imagen_url}" onerror="this.style.display='none'">` : ''}
         </div>`;
       }).join('');
 

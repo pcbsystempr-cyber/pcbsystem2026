@@ -44,37 +44,118 @@
 
       <nav class="sidebar-nav">
         <div class="nav-group">
-          <div class="nav-group-label">Gestión de Contenido</div>
-          <button class="nav-btn active" data-section="comedor">
-            <span class="nav-icon">🍽️</span> Comedor
-          </button>
-          <button class="nav-btn" data-section="promociones">
-            <span class="nav-icon">📢</span> Promociones
-          </button>
-          <button class="nav-btn" data-section="avisos">
-            <span class="nav-icon">📋</span> Avisos
+          <div class="nav-group-label">Inicio</div>
+          <button class="nav-btn active" data-section="dashboard">
+            <span class="nav-icon">🏠</span> Dashboard General
           </button>
         </div>
+
         <div class="nav-group">
-          <div class="nav-group-label">Portal de Padres</div>
-          <button class="nav-btn" data-section="talleres">
-            <span class="nav-icon">🎓</span> Talleres para Padres
+          <div class="nav-group-label">Publicaciones</div>
+          <button class="nav-btn" data-section="publicaciones_todas">
+            <span class="nav-icon">📂</span> Todas las publicaciones
+            <span class="nav-soon">Próx.</span>
           </button>
-          <button class="nav-btn" data-section="certificaciones">
-            <span class="nav-icon">🏆</span> Certificaciones Online
-          </button>
-        </div>
-        <div class="nav-group">
-          <div class="nav-group-label">Comunicaciones</div>
-          <button class="nav-btn" data-section="bot">
-            <span class="nav-icon">🔔</span> Bot de Avisos
+          <button class="nav-btn" data-section="publicaciones_crear">
+            <span class="nav-icon">➕</span> Crear publicación
+            <span class="nav-soon">Próx.</span>
           </button>
           <button class="nav-btn" data-section="novedades">
             <span class="nav-icon">📣</span> Novedades
           </button>
+          <button class="nav-btn" data-section="avisos">
+            <span class="nav-icon">📋</span> Avisos críticos
+          </button>
           <button class="nav-btn" data-section="anuncios_comunidad">
             <span class="nav-icon">📌</span> Anuncios Comunidad
             <span id="badgePendientes" style="display:none;background:#e74c3c;color:#fff;border-radius:99px;padding:1px 7px;font-size:0.72rem;margin-left:6px;font-weight:700;">0</span>
+          </button>
+          <button class="nav-btn" data-section="promociones">
+            <span class="nav-icon">🏷️</span> Promociones
+          </button>
+        </div>
+
+        <div class="nav-group">
+          <div class="nav-group-label">Servicios Escolares</div>
+          <button class="nav-btn" data-section="comedor">
+            <span class="nav-icon">🍽️</span> Comedor
+          </button>
+          <button class="nav-btn" data-section="biblioteca">
+            <span class="nav-icon">📚</span> Biblioteca
+            <span class="nav-soon">Próx.</span>
+          </button>
+          <button class="nav-btn" data-section="reservas">
+            <span class="nav-icon">📅</span> Reservas
+            <span class="nav-soon">Próx.</span>
+          </button>
+          <button class="nav-btn" data-section="talleres">
+            <span class="nav-icon">🎓</span> Talleres para Padres
+          </button>
+          <button class="nav-btn" data-section="certificaciones">
+            <span class="nav-icon">🏆</span> Certificaciones
+          </button>
+        </div>
+
+        <div class="nav-group">
+          <div class="nav-group-label">Comunicación</div>
+          <button class="nav-btn" data-section="bot">
+            <span class="nav-icon">🔔</span> Bot de Avisos
+          </button>
+          <button class="nav-btn" data-section="alertas">
+            <span class="nav-icon">🚨</span> Alertas
+            <span class="nav-soon">Próx.</span>
+          </button>
+          <button class="nav-btn" data-section="popup_principal">
+            <span class="nav-icon">💬</span> Popup Principal
+            <span class="nav-soon">Próx.</span>
+          </button>
+          <button class="nav-btn" data-section="notificaciones">
+            <span class="nav-icon">📲</span> Notificaciones
+            <span class="nav-soon">Próx.</span>
+          </button>
+        </div>
+
+        <div class="nav-group">
+          <div class="nav-group-label">Administración</div>
+          <button class="nav-btn" data-section="usuarios">
+            <span class="nav-icon">👥</span> Usuarios
+            <span class="nav-soon">Próx.</span>
+          </button>
+          <button class="nav-btn" data-section="roles">
+            <span class="nav-icon">🛡️</span> Roles y permisos
+            <span class="nav-soon">Próx.</span>
+          </button>
+          <button class="nav-btn" data-section="configuracion">
+            <span class="nav-icon">⚙️</span> Configuración del portal
+            <span class="nav-soon">Próx.</span>
+          </button>
+          <button class="nav-btn" data-section="idioma_tema">
+            <span class="nav-icon">🌐</span> Idioma y tema visual
+            <span class="nav-soon">Próx.</span>
+          </button>
+          <button class="nav-btn" data-section="exportar">
+            <span class="nav-icon">📤</span> Exportar datos
+            <span class="nav-soon">Próx.</span>
+          </button>
+        </div>
+
+        <div class="nav-group">
+          <div class="nav-group-label">Reportes</div>
+          <button class="nav-btn" data-section="reporte_actividad">
+            <span class="nav-icon">📊</span> Actividad del sistema
+            <span class="nav-soon">Próx.</span>
+          </button>
+          <button class="nav-btn" data-section="reporte_publicaciones">
+            <span class="nav-icon">🔥</span> Publicaciones más vistas
+            <span class="nav-soon">Próx.</span>
+          </button>
+          <button class="nav-btn" data-section="reporte_servicios">
+            <span class="nav-icon">🚀</span> Servicios más usados
+            <span class="nav-soon">Próx.</span>
+          </button>
+          <button class="nav-btn" data-section="historial">
+            <span class="nav-icon">📜</span> Historial de cambios
+            <span class="nav-soon">Próx.</span>
           </button>
         </div>
       </nav>
@@ -93,21 +174,21 @@
     <main class="admin-main">
       <header class="admin-topbar">
         <div class="topbar-left">
-          <h1 id="sectionTitle">Gestión de Comedor</h1>
-          <p id="sectionSubtitle" style="font-size:0.8rem;color:var(--muted);margin-top:2px;">Administra las imágenes y menú del comedor escolar</p>
+          <h1 id="sectionTitle">Dashboard General</h1>
+          <p id="sectionSubtitle" style="font-size:0.8rem;color:var(--muted);margin-top:2px;">Centro de Control Administrativo del PCBSystem</p>
         </div>
         <div class="topbar-actions">
           <button class="btn btn-secondary" id="btnExportData" title="Exportar datos a JSON">💾 Exportar</button>
           <button class="btn btn-primary" id="btnEditMenu" style="display:none;">📝 Editar Menú</button>
-          <button class="btn btn-primary" id="btnAddImage">➕ Añadir Imagen</button>
+          <button class="btn btn-primary" id="btnAddImage" style="display:none;">➕ Añadir Imagen</button>
         </div>
       </header>
 
       <!-- ══ Content Area ══ -->
       <div class="admin-content">
 
-        <!-- Stats Row -->
-        <div class="stats-row">
+        <!-- Stats Row (visible en Dashboard y secciones existentes) -->
+        <div class="stats-row" id="statsRow">
           <div class="stat-card">
             <div class="stat-icon purple">🖼️</div>
             <div class="stat-info"><h3 id="statPromos">0</h3><p>Promociones</p></div>
@@ -123,6 +204,118 @@
           <div class="stat-card">
             <div class="stat-icon blue">🏆</div>
             <div class="stat-info"><h3 id="statCerts">0</h3><p>Certificaciones</p></div>
+          </div>
+        </div>
+
+        <!-- ══ DASHBOARD GENERAL ══ -->
+        <div id="dashboardSection" style="display:none;">
+          <!-- Resumen extendido -->
+          <div class="dash-grid">
+            <div class="dash-card">
+              <div class="dash-card-icon" style="background:rgba(102,126,234,0.12);color:#667eea;">📰</div>
+              <div class="dash-card-body">
+                <div class="dash-card-value" id="dashTotalPublicaciones">0</div>
+                <div class="dash-card-label">Publicaciones activas</div>
+              </div>
+            </div>
+            <div class="dash-card">
+              <div class="dash-card-icon" style="background:rgba(239,68,68,0.12);color:#ef4444;">🚨</div>
+              <div class="dash-card-body">
+                <div class="dash-card-value" id="dashAvisosCriticos">0</div>
+                <div class="dash-card-label">Avisos críticos</div>
+              </div>
+            </div>
+            <div class="dash-card">
+              <div class="dash-card-icon" style="background:rgba(245,158,11,0.12);color:#f59e0b;">🏷️</div>
+              <div class="dash-card-body">
+                <div class="dash-card-value" id="dashPromocionesActivas">0</div>
+                <div class="dash-card-label">Promociones activas</div>
+              </div>
+            </div>
+            <div class="dash-card">
+              <div class="dash-card-icon" style="background:rgba(16,185,129,0.12);color:#10b981;">🎓</div>
+              <div class="dash-card-body">
+                <div class="dash-card-value" id="dashTalleresPublicados">0</div>
+                <div class="dash-card-label">Talleres publicados</div>
+              </div>
+            </div>
+            <div class="dash-card">
+              <div class="dash-card-icon" style="background:rgba(59,130,246,0.12);color:#3b82f6;">🏆</div>
+              <div class="dash-card-body">
+                <div class="dash-card-value" id="dashCertsDisponibles">0</div>
+                <div class="dash-card-label">Certificaciones disponibles</div>
+              </div>
+            </div>
+            <div class="dash-card">
+              <div class="dash-card-icon" style="background:rgba(168,85,247,0.12);color:#a855f7;">📚</div>
+              <div class="dash-card-body">
+                <div class="dash-card-value" id="dashReservasBiblio">—</div>
+                <div class="dash-card-label">Reservas de biblioteca</div>
+              </div>
+            </div>
+            <div class="dash-card">
+              <div class="dash-card-icon" style="background:rgba(20,184,166,0.12);color:#14b8a6;">🍽️</div>
+              <div class="dash-card-body">
+                <div class="dash-card-value" id="dashMenuPublicado">—</div>
+                <div class="dash-card-label">Menú del comedor</div>
+              </div>
+            </div>
+            <div class="dash-card">
+              <div class="dash-card-icon" style="background:rgba(234,88,12,0.12);color:#ea580c;">📌</div>
+              <div class="dash-card-body">
+                <div class="dash-card-value" id="dashSolicitudesPendientes">0</div>
+                <div class="dash-card-label">Solicitudes pendientes</div>
+              </div>
+            </div>
+          </div>
+
+          <p class="dash-updated">🕒 Última actualización: <span id="dashLastUpdate">—</span></p>
+
+          <!-- Bloques inferiores -->
+          <div class="dash-bottom">
+            <div class="content-card dash-block">
+              <h3>⚡ Accesos rápidos</h3>
+              <div class="dash-quick">
+                <button class="dash-quick-btn" data-goto="novedades"><span>📣</span><span>Publicar novedad</span></button>
+                <button class="dash-quick-btn" data-goto="anuncios_comunidad"><span>📌</span><span>Aprobar anuncios</span></button>
+                <button class="dash-quick-btn" data-goto="comedor"><span>🍽️</span><span>Editar menú</span></button>
+                <button class="dash-quick-btn" data-goto="talleres"><span>🎓</span><span>Crear taller</span></button>
+                <button class="dash-quick-btn" data-goto="certificaciones"><span>🏆</span><span>Añadir certificación</span></button>
+                <button class="dash-quick-btn" data-goto="bot"><span>🔔</span><span>Configurar bot</span></button>
+                <a class="dash-quick-btn" href="excursiones/excursiones.html" style="text-decoration:none;"><span>📋</span><span>Formulario de Excursión</span></a>
+              </div>
+            </div>
+
+            <div class="content-card dash-block">
+              <h3>📋 Pendientes de aprobación</h3>
+              <div id="dashPendientesList" class="dash-list">
+                <div class="dash-empty">No hay pendientes en este momento.</div>
+              </div>
+            </div>
+
+            <div class="content-card dash-block">
+              <h3>🕘 Actividad reciente</h3>
+              <div id="dashActividadList" class="dash-list">
+                <div class="dash-empty">Aún no hay actividad registrada.</div>
+              </div>
+            </div>
+
+            <div class="content-card dash-block">
+              <h3>⚠️ Alertas importantes</h3>
+              <div id="dashAlertasList" class="dash-list">
+                <div class="dash-empty">Sin alertas activas.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══ PLACEHOLDER "Próximamente" (para módulos en construcción) ══ -->
+        <div id="proximamenteSection" style="display:none;">
+          <div class="content-card proximamente-card">
+            <div class="proximamente-icon" id="proxIcon">🚧</div>
+            <h3 id="proxTitle">Próximamente</h3>
+            <p id="proxText">Este módulo se está construyendo y se activará en una próxima etapa del Centro de Control Administrativo.</p>
+            <span class="proximamente-badge">En desarrollo</span>
           </div>
         </div>
 
@@ -399,6 +592,12 @@
                 <label class="form-label">URL Imagen (Opcional)</label>
                 <input type="text" id="newsImage" class="form-control" placeholder="https://...">
               </div>
+              <div style="flex:1 1 100%; display:flex; align-items:center; gap:0.5rem; padding:0.6rem 0.75rem; background:#fff8e1; border:1px solid #ffe082; border-radius:6px;">
+                <input type="checkbox" id="newsIsCritical" style="width:18px; height:18px; cursor:pointer;">
+                <label for="newsIsCritical" style="margin:0; cursor:pointer; font-size:0.88rem; color:#7c4a00;">
+                  🚨 <strong>Mensaje crítico</strong> — siempre visible en el popup (de lo contrario, solo se muestra en la primera visita).
+                </label>
+              </div>
               <button type="submit" class="btn btn-primary">📤 Publicar</button>
             </form>
             <ul id="newsList" style="list-style:none; padding:0;"></ul>
@@ -538,6 +737,12 @@
       <div class="form-group"><label class="form-label">Título</label><input type="text" id="editNewsTitle" class="form-control" placeholder="Título de la noticia..."></div>
       <div class="form-group"><label class="form-label">Mensaje</label><textarea id="editNewsMessage" class="form-control" rows="3" placeholder="Detalles de la noticia..." style="resize:vertical;"></textarea></div>
       <div class="form-group"><label class="form-label">URL de Imagen (opcional)</label><input type="text" id="editNewsImageUrl" class="form-control" placeholder="https://..."></div>
+      <div class="form-group" style="display:flex; align-items:center; gap:0.5rem; padding:0.6rem 0.75rem; background:#fff8e1; border:1px solid #ffe082; border-radius:6px;">
+        <input type="checkbox" id="editNewsIsCritical" style="width:18px; height:18px; cursor:pointer;">
+        <label for="editNewsIsCritical" style="margin:0; cursor:pointer; font-size:0.88rem; color:#7c4a00;">
+          🚨 <strong>Mensaje crítico</strong> — siempre visible en el popup.
+        </label>
+      </div>
       <div class="modal-actions">
         <button class="btn btn-primary" id="btnSaveNewsEdit">💾 Guardar Cambios</button>
         <button class="btn btn-secondary" id="btnCancelNewsEdit">Cancelar</button>
