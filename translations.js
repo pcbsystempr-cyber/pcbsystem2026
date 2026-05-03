@@ -413,6 +413,9 @@ const translations = {
     'Acceder a Impresión': 'Acceder a Impresión',
     'Referir Estudiante': 'Referir Estudiante',
     'Sistema de referencia para identificar estudiantes que necesitan apoyo.': 'Sistema de referencia para identificar estudiantes que necesitan apoyo.',
+    'Plan de Excursiones': 'Plan de Excursiones',
+    'Solicitud oficial de autorización para actividades curriculares y educativas fuera del plantel.': 'Solicitud oficial de autorización para actividades curriculares y educativas fuera del plantel.',
+    'Llenar formulario': 'Llenar formulario',
 
     // index.html — Portal de Padres
     'Recursos y herramientas para que los padres y tutores estén siempre informados y conectados con la escuela.': 'Recursos y herramientas para que los padres y tutores estén siempre informados y conectados con la escuela.',
@@ -1032,6 +1035,9 @@ const translations = {
     'Acceder a Impresión': 'Access Printing',
     'Referir Estudiante': 'Refer Student',
     'Sistema de referencia para identificar estudiantes que necesitan apoyo.': 'Referral system to identify students who need support.',
+    'Plan de Excursiones': 'Field Trip Plan',
+    'Solicitud oficial de autorización para actividades curriculares y educativas fuera del plantel.': 'Official authorization request for curricular and educational activities outside the school.',
+    'Llenar formulario': 'Fill Out Form',
 
     // index.html — Portal de Padres
     'Recursos y herramientas para que los padres y tutores estén siempre informados y conectados con la escuela.': 'Resources and tools for parents and guardians to stay informed and connected with the school.',
