@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Formulario de Excursión — PCBSystem</title>
+  <link rel="stylesheet" href="excursiones.css">
+  <!-- Librerías para exportación de PDF (CDN) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js" defer></script>
+</head>
+<body>
+
+  <!-- ════════ HEADER ════════ -->
+  <header class="exc-header">
+    <a href="../index.html" class="exc-back" title="Volver al inicio">←</a>
+    <div class="exc-header-title">
+      <h1>📋 Formulario de Excursión</h1>
+      <p>Solicitud Oficial de Autorización — Actividad Curricular o Educativa</p>
+    </div>
+    <div class="exc-header-actions">
+      <button class="exc-icon-btn" id="btnTheme" title="Cambiar tema" aria-label="Cambiar tema">
+        <span class="exc-theme-icon-light">🌙</span>
+        <span class="exc-theme-icon-dark">☀️</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ════════ BARRA DE PROGRESO ════════ -->
+  <div class="exc-progress-wrap">
+    <div class="exc-progress-bar"><div class="exc-progress-fill" id="progressFill"></div></div>
+    <span class="exc-progress-label"><span id="progressPct">0</span>% completo</span>
+  </div>
+
+  <!-- ════════ TOOLBAR ════════ -->
+  <div class="exc-toolbar">
+    <button type="button" class="exc-btn exc-btn-secondary" id="btnSaveDraft">💾 Guardar borrador</button>
+    <button type="button" class="exc-btn exc-btn-secondary" id="btnLoadDraft">📂 Cargar borrador</button>
+    <button type="button" class="exc-btn exc-btn-danger-soft" id="btnClearDraft">🗑️ Limpiar todo</button>
+    <span class="exc-toolbar-status" id="autosaveStatus"></span>
+  </div>
+
+  <!-- ════════ TABS ════════ -->
+  <nav class="exc-tabs" id="excTabs">
+    <button class="exc-tab active" data-tab="generales">1. Datos Generales</button>
+    <button class="exc-tab" data-tab="academico">2. Plan Académico</button>
+    <button class="exc-tab" data-tab="actividades">3. Actividades</button>
+    <button class="exc-tab" data-tab="noparticipan">4. No Participan</button>
+    <button class="exc-tab" data-tab="seguridad">5. Reglas Seguridad</button>
+    <button class="exc-tab" data-tab="estudiantes">6. Lista Estudiantes</button>
+    <button class="exc-tab" data-tab="evaluacion">7. Evaluación</button>
+    <button class="exc-tab" data-tab="exportar">8. Vista Previa &amp; PDF</button>
+  </nav>
+
+  <!-- ════════ MAIN ════════ -->
+  <main class="exc-main">
+
+    <!-- ── 1. DATOS GENERALES ── -->
+    <section class="exc-section active" id="tab-generales">
+      <div class="exc-card">
+        <h2>📝 Datos Generales de la Solicitud</h2>
+        <div class="exc-grid">
+          <div class="exc-field"><label>Fecha de la solicitud *</label><input type="date" data-field="fechaSolicitud"></div>
+          <div class="exc-field"><label>Tipo de actividad *</label><input type="text" data-field="tipoActividad" placeholder="Ej: Excursión educativa"></div>
+          <div class="exc-field"><label>Escuela</label><input type="text" data-field="escuela"></div>
+          <div class="exc-field">
+            <label>Programa</label>
+            <select data-field="programa">
+              <option value="Regular">Regular</option>
+              <option value="Título I">Título I</option>
+              <option value="Otro">Otro</option>
+            </select>
+          </div>
+          <div class="exc-field"><label>Municipio</label><input type="text" data-field="municipio"></div>
+          <div class="exc-field"><label>Código de escuela</label><input type="text" data-field="codigo"></div>
+          <div class="exc-field"><label>Teléfono</label><input type="tel" data-field="telefono"></div>
+          <div class="exc-field"><label>Correo electrónico</label><input type="email" data-field="correo"></div>
+          <div class="exc-field"><label>Cantidad de estudiantes</label><input type="number" data-field="cantEstudiantes" min="0" readonly title="Se calcula desde la Lista de Estudiantes"></div>
+          <div class="exc-field"><label>Cantidad de maestros</label><input type="number" data-field="cantMaestros" min="0"></div>
+          <div class="exc-field"><label>Cantidad de padres</label><input type="number" data-field="cantPadres" min="0"></div>
+          <div class="exc-field"><label>Cantidad de otros</label><input type="number" data-field="cantOtros" min="0"></div>
+          <div class="exc-field exc-col-2"><label>Lugar de la actividad *</label><input type="text" data-field="lugarActividad"></div>
+          <div class="exc-field"><label>Hora de salida *</label><input type="time" data-field="horaSalida"></div>
+          <div class="exc-field"><label>Hora de regreso *</label><input type="time" data-field="horaRegreso"></div>
+          <div class="exc-field"><label>Fecha de la actividad *</label><input type="date" data-field="fechaActividad"></div>
+          <div class="exc-field"><label>Lugar del almuerzo</label><input type="text" data-field="lugarAlmuerzo"></div>
+          <div class="exc-field exc-col-2"><label>Personalidad reconocida que participará</label><input type="text" data-field="personalidad"></div>
+        </div>
+
+        <h3 class="exc-sub">Propósito de la actividad *</h3>
+        <div class="exc-checkgroup">
+          <label><input type="checkbox" data-field="propConceptos"> Desarrollar conceptos y destrezas de la materia</label>
+          <label><input type="checkbox" data-field="propExperiencias"> Proveer experiencias educativas adicionales para enriquecer el aprendizaje</label>
+          <label><input type="checkbox" data-field="propValores"> Desarrollar valores y concienciar sobre temas sociales, culturales, éticos y ambientales</label>
+          <label><input type="checkbox" data-field="propOtros"> Otros</label>
+        </div>
+        <div class="exc-field"><label>Especifique (si marcó "Otros")</label><input type="text" data-field="propOtrosTexto"></div>
+
+        <h3 class="exc-sub">Fondos que costearán la actividad</h3>
+        <div class="exc-checkgroup">
+          <label><input type="checkbox" data-field="fondoPresupuesto"> Presupuesto escolar</label>
+          <label><input type="checkbox" data-field="fondoPrivados"> Privados</label>
+          <label><input type="checkbox" data-field="fondoPadres"> Padres</label>
+          <label><input type="checkbox" data-field="fondoAuspicio"> Organización o empresa auspiciadora</label>
+          <label><input type="checkbox" data-field="fondoNA"> N/A</label>
+        </div>
+
+        <h3 class="exc-sub">Transportación</h3>
+        <div class="exc-grid">
+          <div class="exc-field"><label>Cantidad de guaguas</label><input type="number" data-field="cantGuaguas" min="0" step="1"></div>
+          <div class="exc-field"><label>Costo por guagua ($)</label><input type="number" data-field="costoGuagua" min="0" step="0.01"></div>
+          <div class="exc-field"><label>Total transportación ($)</label><input type="number" data-field="totalTransporte" readonly></div>
+          <div class="exc-field exc-col-2"><label>Transportista</label><input type="text" data-field="transportista"></div>
+          <div class="exc-field"><label>Teléfonos del transportista</label><input type="text" data-field="telTransportista"></div>
+          <div class="exc-field"><label>Cantidad de boletos</label><input type="number" data-field="cantBoletos" min="0"></div>
+          <div class="exc-field"><label>Costo por boleto ($)</label><input type="number" data-field="costoBoleto" min="0" step="0.01"></div>
+          <div class="exc-field"><label>Total boletos ($)</label><input type="number" data-field="totalBoletos" readonly></div>
+        </div>
+
+        <h3 class="exc-sub">Solicitante y autorización</h3>
+        <div class="exc-grid">
+          <div class="exc-field"><label>Persona que solicita autorización *</label><input type="text" data-field="solicitante"></div>
+          <div class="exc-field"><label>Puesto *</label><input type="text" data-field="puesto"></div>
+          <div class="exc-field"><label>Nombre del director escolar</label><input type="text" data-field="director"></div>
+          <div class="exc-field"><label>Firma del director (texto / iniciales)</label><input type="text" data-field="firmaDirector" placeholder="Se mostrará como texto sobre línea de firma"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── 2. PLAN ACADÉMICO ── -->
+    <section class="exc-section" id="tab-academico">
+      <div class="exc-card">
+        <h2>📚 Plan Académico (Anejo 2)</h2>
+        <div class="exc-grid">
+          <div class="exc-field"><label>Persona que solicita</label><input type="text" data-field="acaSolicita"></div>
+          <div class="exc-field"><label>Grados *</label><input type="text" data-field="acaGrados" placeholder="Ej: 10, 11, 12"></div>
+          <div class="exc-field"><label>Cantidad de estudiantes impactados</label><input type="number" data-field="acaImpactados" readonly></div>
+          <div class="exc-field"><label>Materia *</label><input type="text" data-field="acaMateria"></div>
+          <div class="exc-field"><label>Fecha</label><input type="date" data-field="acaFecha"></div>
+          <div class="exc-field exc-col-2"><label>Lugar de la actividad</label><input type="text" data-field="acaLugar"></div>
+        </div>
+        <div class="exc-field"><label>Estándares e indicadores a desarrollarse</label><textarea rows="4" data-field="acaEstandares"></textarea></div>
+        <div class="exc-field"><label>Objetivo (conducta observable y medible) *</label><textarea rows="4" data-field="acaObjetivo"></textarea></div>
+      </div>
+    </section>
+
+    <!-- ── 3. ACTIVIDADES ── -->
+    <section class="exc-section" id="tab-actividades">
+      <div class="exc-card">
+        <h2>🎯 Actividades (Anejo 3)</h2>
+        <div class="exc-field"><label>Actividades antes de la actividad *</label><textarea rows="5" data-field="actAntes" placeholder="Describa las actividades preparatorias..."></textarea></div>
+        <div class="exc-field"><label>Actividades durante la actividad *</label><textarea rows="5" data-field="actDurante" placeholder="Describa lo que se hará el día de la actividad..."></textarea></div>
+        <div class="exc-field"><label>Actividades después de la actividad *</label><textarea rows="5" data-field="actDespues" placeholder="Describa el seguimiento posterior..."></textarea></div>
+      </div>
+    </section>
+
+    <!-- ── 4. NO PARTICIPAN ── -->
+    <section class="exc-section" id="tab-noparticipan">
+      <div class="exc-card">
+        <h2>👥 Plan para estudiantes que NO participarán (Anejo 4)</h2>
+        <p class="exc-help">Indique la actividad alterna, el lugar donde se llevará a cabo y el maestro o recurso que atenderá a los estudiantes.</p>
+        <div class="exc-table-wrap">
+          <table class="exc-table" id="tablaNoPart">
+            <thead>
+              <tr>
+                <th style="width:40%;">Actividad que se llevará a cabo</th>
+                <th style="width:30%;">Lugar (salón, biblioteca, etc.)</th>
+                <th style="width:25%;">Maestro o recurso</th>
+                <th style="width:5%;">—</th>
+              </tr>
+            </thead>
+            <tbody id="bodyNoPart"></tbody>
+          </table>
+        </div>
+        <button type="button" class="exc-btn exc-btn-secondary" id="btnAddNoPart">➕ Añadir fila</button>
+      </div>
+    </section>
+
+    <!-- ── 5. REGLAS DE SEGURIDAD ── -->
+    <section class="exc-section" id="tab-seguridad">
+      <div class="exc-card">
+        <h2>🛡️ Reglas de Seguridad (Anejo 5)</h2>
+        <p class="exc-help">Liste las 10 reglas de seguridad que se aplicarán durante la actividad.</p>
+        <div id="reglasSeguridadWrap"></div>
+      </div>
+    </section>
+
+    <!-- ── 6. LISTA DE ESTUDIANTES ── -->
+    <section class="exc-section" id="tab-estudiantes">
+      <div class="exc-card">
+        <h2>👨‍🎓 Lista de Estudiantes (Anejo 6)</h2>
+        <p class="exc-help">Total: <strong id="totalEstudiantesLabel">0</strong> estudiante(s). Se exportará en páginas de 30.</p>
+
+        <div class="exc-toolbar exc-toolbar-inline">
+          <button type="button" class="exc-btn exc-btn-primary" id="btnAddEstudiante">➕ Añadir estudiante</button>
+          <button type="button" class="exc-btn exc-btn-secondary" id="btnImportEstudiantes">📋 Importar (Excel/Sheets)</button>
+          <button type="button" class="exc-btn exc-btn-danger-soft" id="btnClearEstudiantes">🗑️ Vaciar lista</button>
+        </div>
+
+        <div class="exc-table-wrap">
+          <table class="exc-table" id="tablaEstudiantes">
+            <thead>
+              <tr>
+                <th style="width:50px;">#</th>
+                <th>Nombre del estudiante</th>
+                <th style="width:80px;">Grado</th>
+                <th style="width:80px;">Grupo</th>
+                <th>Encargado</th>
+                <th style="width:130px;">Teléfono</th>
+                <th style="width:60px;">—</th>
+              </tr>
+            </thead>
+            <tbody id="bodyEstudiantes"></tbody>
+          </table>
+        </div>
+
+        <!-- Modal importar -->
+        <div class="exc-import-box" id="importBox" style="display:none;">
+          <h4>Pegue los datos copiados de Excel o Google Sheets</h4>
+          <p class="exc-help">Formato esperado por columna (separadas por TAB o coma): <strong>Nombre, Grado, Grupo, Encargado, Teléfono</strong>. Una fila por estudiante.</p>
+          <textarea id="importTextarea" rows="8" placeholder="Juan Pérez	10	A	María Pérez	787-555-1234"></textarea>
+          <div class="exc-toolbar-inline">
+            <button type="button" class="exc-btn exc-btn-primary" id="btnDoImport">Importar</button>
+            <button type="button" class="exc-btn exc-btn-secondary" id="btnCancelImport">Cancelar</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── 7. EVALUACIÓN ── -->
+    <section class="exc-section" id="tab-evaluacion">
+      <div class="exc-card">
+        <h2>✅ Hoja de Evaluación de la Solicitud (Anejo 7)</h2>
+        <div class="exc-table-wrap">
+          <table class="exc-table" id="tablaEval">
+            <thead>
+              <tr>
+                <th>Criterio</th>
+                <th style="width:70px;">Cumple</th>
+                <th style="width:70px;">No cumple</th>
+                <th style="width:70px;">N/A</th>
+                <th>Comentarios</th>
+              </tr>
+            </thead>
+            <tbody id="bodyEval"></tbody>
+          </table>
+        </div>
+
+        <h3 class="exc-sub">Resultado de la evaluación</h3>
+        <div class="exc-checkgroup">
+          <label><input type="radio" name="evalResultado" value="autorizada" data-field="evalResultado"> ✅ Autorizada</label>
+          <label><input type="radio" name="evalResultado" value="no_autorizada" data-field="evalResultado"> ❌ No autorizada</label>
+        </div>
+        <div class="exc-field"><label>Comentarios generales</label><textarea rows="3" data-field="evalComentarios"></textarea></div>
+
+        <h3 class="exc-sub">Evaluador</h3>
+        <div class="exc-grid">
+          <div class="exc-field"><label>Nombre</label><input type="text" data-field="evalNombre"></div>
+          <div class="exc-field"><label>Puesto</label><input type="text" data-field="evalPuesto"></div>
+          <div class="exc-field"><label>Firma (texto)</label><input type="text" data-field="evalFirma"></div>
+          <div class="exc-field"><label>Fecha de evaluación</label><input type="date" data-field="evalFecha"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── 8. EXPORTAR ── -->
+    <section class="exc-section" id="tab-exportar">
+      <div class="exc-card">
+        <h2>📤 Vista Previa &amp; Exportación</h2>
+        <p class="exc-help">El PDF se generará en tamaño <strong>Legal (8.5 × 14 in)</strong> e incluirá: Anejo 1 (Solicitud) → Anejo 2 (Plan académico) → Anejo 3 (Actividades antes/durante) → Anejo 4 (Actividades después / No participantes) → Anejo 5 (Reglas de seguridad) → Anejo 6 (Lista de estudiantes, 30 por página) → Anejo 7 (Evaluación) → Anejo 8 (Permisos individuales) → Anejo 9 (Relevos individuales).</p>
+
+        <div class="exc-export-actions">
+          <button type="button" class="exc-btn exc-btn-secondary" id="btnPreview">👁️ Vista previa</button>
+          <button type="button" class="exc-btn exc-btn-secondary" id="btnPrint">🖨️ Imprimir</button>
+          <button type="button" class="exc-btn exc-btn-primary exc-btn-big" id="btnExportPDF">📥 Exportar formulario de excursión en PDF</button>
+          <a class="exc-btn exc-btn-ghost" href="../pdfs/Formulario-Excursion.pdf" target="_blank" download>📄 Descargar PDF base original</a>
+        </div>
+
+        <div id="pdfBaseStatus" class="exc-status"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Contenedor para vista previa / PDF (oculto, se inyecta al exportar) -->
+  <div id="pdfRoot" style="position:absolute; left:-9999px; top:0;"></div>
+
+  <!-- Toast -->
+  <div id="toast" class="exc-toast"></div>
+
+  <script src="excursiones.js" defer></script>
+</body>
+</html>
