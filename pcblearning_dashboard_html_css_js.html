@@ -1,0 +1,1503 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PCBLearning | Certificación Dashboard PCBSystem</title>
+  <style>
+    :root {
+      --bg: #020617;
+      --panel: rgba(15, 23, 42, 0.82);
+      --panel-soft: rgba(255, 255, 255, 0.06);
+      --panel-hover: rgba(34, 211, 238, 0.12);
+      --border: rgba(255, 255, 255, 0.12);
+      --border-cyan: rgba(103, 232, 249, 0.35);
+      --text: #f8fafc;
+      --muted: #94a3b8;
+      --cyan: #22d3ee;
+      --blue: #2563eb;
+      --green: #34d399;
+      --amber: #fbbf24;
+      --red: #fb7185;
+      --shadow: 0 24px 80px rgba(0, 0, 0, 0.35);
+      --radius-xl: 26px;
+      --radius-2xl: 34px;
+      --sidebar-width: 310px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at top left, rgba(34, 211, 238, 0.2), transparent 34%),
+        radial-gradient(circle at 85% 10%, rgba(124, 58, 237, 0.16), transparent 28%),
+        linear-gradient(135deg, #0f172a 0%, #020617 55%, #020617 100%);
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      overflow-x: hidden;
+    }
+
+    body.light-mode {
+      --bg: #eef2ff;
+      --panel: rgba(255, 255, 255, 0.9);
+      --panel-soft: rgba(15, 23, 42, 0.04);
+      --panel-hover: rgba(14, 165, 233, 0.12);
+      --border: rgba(15, 23, 42, 0.12);
+      --text: #0f172a;
+      --muted: #475569;
+      background:
+        radial-gradient(circle at top left, rgba(14, 165, 233, 0.18), transparent 34%),
+        radial-gradient(circle at 85% 10%, rgba(124, 58, 237, 0.12), transparent 28%),
+        linear-gradient(135deg, #f8fafc 0%, #eef2ff 100%);
+    }
+
+    button,
+    input {
+      font-family: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .orb {
+      position: fixed;
+      width: 170px;
+      height: 170px;
+      border-radius: 999px;
+      background: rgba(34, 211, 238, 0.12);
+      filter: blur(38px);
+      pointer-events: none;
+      animation: floatOrb 14s ease-in-out infinite alternate;
+      z-index: 0;
+    }
+
+    .orb:nth-child(1) { left: 8%; top: 13%; animation-delay: 0s; }
+    .orb:nth-child(2) { right: 12%; top: 18%; background: rgba(139, 92, 246, 0.13); animation-delay: 2s; }
+    .orb:nth-child(3) { left: 42%; bottom: 10%; background: rgba(16, 185, 129, 0.1); animation-delay: 4s; }
+    .orb:nth-child(4) { right: 6%; bottom: 16%; background: rgba(251, 191, 36, 0.09); animation-delay: 1s; }
+
+    @keyframes floatOrb {
+      0% { transform: translate3d(0, 0, 0) scale(0.85); }
+      50% { transform: translate3d(32px, -26px, 0) scale(1.08); }
+      100% { transform: translate3d(-22px, 32px, 0) scale(0.95); }
+    }
+
+    .app-shell {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      position: sticky;
+      top: 0;
+      width: var(--sidebar-width);
+      height: 100vh;
+      overflow-y: auto;
+      padding: 18px;
+      border-right: 1px solid var(--border);
+      background: rgba(2, 6, 23, 0.72);
+      backdrop-filter: blur(24px);
+    }
+
+    body.light-mode .sidebar {
+      background: rgba(255, 255, 255, 0.72);
+    }
+
+    .brand-card,
+    .glass-card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(24px);
+    }
+
+    .brand-card {
+      border-radius: var(--radius-2xl);
+      padding: 18px;
+      margin-bottom: 16px;
+    }
+
+    .brand-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .brand-logo,
+    .icon-box {
+      display: grid;
+      place-items: center;
+      border-radius: 18px;
+      background: linear-gradient(135deg, var(--cyan), var(--blue));
+      color: white;
+      box-shadow: 0 12px 40px rgba(34, 211, 238, 0.22);
+    }
+
+    .brand-logo {
+      width: 54px;
+      height: 54px;
+      font-size: 28px;
+    }
+
+    .brand-title {
+      font-size: 22px;
+      font-weight: 950;
+      line-height: 1;
+    }
+
+    .brand-subtitle {
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 5px;
+    }
+
+    .progress-label {
+      display: flex;
+      justify-content: space-between;
+      color: var(--muted);
+      font-size: 12px;
+      margin-bottom: 8px;
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 9px;
+      border-radius: 999px;
+      background: rgba(148, 163, 184, 0.18);
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--cyan), var(--blue));
+      transition: width 0.45s ease;
+    }
+
+    .sidebar-actions {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .btn {
+      border: 1px solid var(--border);
+      background: var(--panel-soft);
+      color: var(--text);
+      border-radius: 18px;
+      padding: 12px 14px;
+      font-weight: 800;
+      transition: 0.25s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      text-decoration: none;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      border-color: var(--border-cyan);
+      background: var(--panel-hover);
+    }
+
+    .btn-primary {
+      border: none;
+      background: linear-gradient(90deg, var(--cyan), var(--blue));
+      color: white;
+      box-shadow: 0 14px 42px rgba(37, 99, 235, 0.24);
+    }
+
+    .btn-danger {
+      color: #fecdd3;
+      background: rgba(244, 63, 94, 0.11);
+      border-color: rgba(244, 63, 94, 0.22);
+    }
+
+    .full-width {
+      width: 100%;
+    }
+
+    .side-group {
+      margin: 18px 0;
+    }
+
+    .side-title {
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 950;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      margin: 0 0 8px 8px;
+    }
+
+    .side-item {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      text-align: left;
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--muted);
+      border-radius: 18px;
+      padding: 11px 12px;
+      margin-bottom: 4px;
+      transition: 0.25s ease;
+    }
+
+    .side-item:hover,
+    .side-item.active {
+      color: var(--text);
+      background: rgba(34, 211, 238, 0.11);
+      border-color: rgba(103, 232, 249, 0.18);
+    }
+
+    .side-item-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .soon {
+      font-size: 10px;
+      color: var(--muted);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.09);
+      padding: 3px 7px;
+      white-space: nowrap;
+    }
+
+    .main {
+      flex: 1;
+      padding: 28px;
+      min-width: 0;
+    }
+
+    .hero {
+      border-radius: var(--radius-2xl);
+      padding: clamp(20px, 4vw, 34px);
+      margin-bottom: 22px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      width: 280px;
+      height: 280px;
+      right: -90px;
+      top: -120px;
+      background: radial-gradient(circle, rgba(34, 211, 238, 0.28), transparent 68%);
+      pointer-events: none;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      justify-content: space-between;
+      gap: 22px;
+      align-items: center;
+    }
+
+    .badge-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 13px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border-radius: 999px;
+      padding: 7px 10px;
+      background: rgba(34, 211, 238, 0.14);
+      border: 1px solid rgba(34, 211, 238, 0.18);
+      color: #cffafe;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    body.light-mode .badge {
+      color: #075985;
+    }
+
+    h1 {
+      font-size: clamp(31px, 5vw, 62px);
+      line-height: 0.95;
+      letter-spacing: -0.05em;
+      font-weight: 1000;
+      max-width: 880px;
+    }
+
+    .hero p {
+      color: var(--muted);
+      max-width: 820px;
+      margin-top: 14px;
+      font-size: 16px;
+      line-height: 1.7;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      min-width: 300px;
+    }
+
+    .image-preview {
+      display: none;
+      border-radius: var(--radius-2xl);
+      margin-bottom: 22px;
+      padding: 12px;
+      animation: slideDown 0.35s ease both;
+    }
+
+    .image-preview.active {
+      display: block;
+    }
+
+    .image-preview-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 8px 12px;
+      color: #cffafe;
+      font-size: 14px;
+      font-weight: 900;
+    }
+
+    body.light-mode .image-preview-header {
+      color: #075985;
+    }
+
+    .image-preview img {
+      width: 100%;
+      max-height: 440px;
+      object-fit: contain;
+      border-radius: 22px;
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(8, minmax(135px, 1fr));
+      gap: 12px;
+      margin-bottom: 22px;
+    }
+
+    .stat-card,
+    .module-card {
+      position: relative;
+      border: 1px solid var(--border);
+      background: var(--panel-soft);
+      color: var(--text);
+      box-shadow: 0 16px 50px rgba(0, 0, 0, 0.22);
+      backdrop-filter: blur(20px);
+      transition: 0.25s ease;
+    }
+
+    .stat-card {
+      border-radius: 24px;
+      padding: 16px;
+      text-align: left;
+      min-height: 140px;
+    }
+
+    .stat-card:hover,
+    .module-card:hover {
+      transform: translateY(-7px) scale(1.01);
+      background: var(--panel-hover);
+      border-color: var(--border-cyan);
+    }
+
+    .stat-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+
+    .stat-icon,
+    .module-icon {
+      display: grid;
+      place-items: center;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .stat-icon {
+      width: 48px;
+      height: 48px;
+      font-size: 24px;
+    }
+
+    .stat-value {
+      font-size: 26px;
+      line-height: 1;
+      font-weight: 1000;
+    }
+
+    .stat-label {
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 7px;
+      line-height: 1.35;
+    }
+
+    .content-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(340px, 0.9fr);
+      gap: 22px;
+    }
+
+    .section-card {
+      border-radius: var(--radius-2xl);
+      padding: 22px;
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+
+    .section-header h2,
+    .selected-card h2 {
+      font-size: 26px;
+      font-weight: 1000;
+      letter-spacing: -0.04em;
+    }
+
+    .section-header p {
+      color: var(--muted);
+      margin-top: 5px;
+      font-size: 14px;
+    }
+
+    .search-wrap {
+      position: relative;
+      min-width: 280px;
+    }
+
+    .search-wrap span {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted);
+    }
+
+    .search-wrap input {
+      width: 100%;
+      border: 1px solid var(--border);
+      background: rgba(0, 0, 0, 0.2);
+      color: var(--text);
+      border-radius: 18px;
+      padding: 13px 14px 13px 42px;
+      outline: none;
+      transition: 0.25s ease;
+    }
+
+    body.light-mode .search-wrap input {
+      background: rgba(255, 255, 255, 0.62);
+    }
+
+    .search-wrap input:focus {
+      border-color: var(--border-cyan);
+      box-shadow: 0 0 0 4px rgba(34, 211, 238, 0.12);
+    }
+
+    .modules-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .module-card {
+      border-radius: 26px;
+      padding: 17px;
+      overflow: hidden;
+      text-align: left;
+    }
+
+    .module-card.active {
+      border-color: rgba(103, 232, 249, 0.55);
+      background: rgba(34, 211, 238, 0.13);
+    }
+
+    .module-strip {
+      position: absolute;
+      inset: 0 0 auto 0;
+      height: 5px;
+    }
+
+    .gradient-dashboard { background: linear-gradient(90deg, #22d3ee, #2563eb); }
+    .gradient-publicaciones { background: linear-gradient(90deg, #a78bfa, #d946ef); }
+    .gradient-novedades { background: linear-gradient(90deg, #fcd34d, #f97316); }
+    .gradient-avisos { background: linear-gradient(90deg, #fb7185, #e11d48); }
+    .gradient-comedor { background: linear-gradient(90deg, #6ee7b7, #14b8a6); }
+    .gradient-biblioteca { background: linear-gradient(90deg, #bef264, #22c55e); }
+    .gradient-bot { background: linear-gradient(90deg, #7dd3fc, #6366f1); }
+    .gradient-usuarios { background: linear-gradient(90deg, #cbd5e1, #475569); }
+    .gradient-reportes { background: linear-gradient(90deg, #f9a8d4, #a855f7); }
+    .gradient-excursion { background: linear-gradient(90deg, #fde047, #f59e0b); }
+
+    .module-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      margin: 10px 0 14px;
+    }
+
+    .module-icon {
+      width: 54px;
+      height: 54px;
+      font-size: 28px;
+      color: white;
+      box-shadow: 0 14px 40px rgba(0, 0, 0, 0.18);
+    }
+
+    .module-title {
+      font-weight: 1000;
+      font-size: 18px;
+      margin-bottom: 5px;
+    }
+
+    .module-section {
+      color: #a5f3fc;
+      font-size: 12px;
+      margin-bottom: 12px;
+    }
+
+    body.light-mode .module-section {
+      color: #0369a1;
+    }
+
+    .module-goal {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.55;
+      min-height: 62px;
+    }
+
+    .module-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin-top: 14px;
+    }
+
+    .tag {
+      border-radius: 999px;
+      padding: 5px 8px;
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--text);
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .side-content {
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+
+    .selected-card,
+    .mission-card {
+      border-radius: var(--radius-2xl);
+      padding: 22px;
+    }
+
+    .selected-top {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      margin-bottom: 15px;
+    }
+
+    .selected-kicker {
+      font-size: 11px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: #a5f3fc;
+      font-weight: 900;
+      margin-bottom: 5px;
+    }
+
+    body.light-mode .selected-kicker {
+      color: #0369a1;
+    }
+
+    .selected-explanation,
+    .mission-text {
+      color: var(--muted);
+      line-height: 1.7;
+      margin-bottom: 16px;
+    }
+
+    .advantage-list {
+      display: grid;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .advantage-item {
+      display: flex;
+      gap: 10px;
+      border-radius: 18px;
+      border: 1px solid var(--border);
+      background: rgba(0, 0, 0, 0.16);
+      padding: 13px;
+      color: var(--text);
+      line-height: 1.5;
+      font-size: 14px;
+    }
+
+    body.light-mode .advantage-item {
+      background: rgba(255, 255, 255, 0.45);
+    }
+
+    .mission-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      text-align: center;
+    }
+
+    .mission-box {
+      border-radius: 18px;
+      background: rgba(0, 0, 0, 0.18);
+      padding: 15px 10px;
+      border: 1px solid var(--border);
+    }
+
+    body.light-mode .mission-box {
+      background: rgba(255, 255, 255, 0.44);
+    }
+
+    .mission-number {
+      font-size: 28px;
+      font-weight: 1000;
+      color: #a5f3fc;
+    }
+
+    body.light-mode .mission-number {
+      color: #0369a1;
+    }
+
+    .mission-label {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    .detail-panel {
+      position: fixed;
+      inset: 0 0 0 auto;
+      width: min(100%, 560px);
+      background: rgba(2, 6, 23, 0.95);
+      border-left: 1px solid var(--border-cyan);
+      box-shadow: -24px 0 80px rgba(0, 0, 0, 0.45);
+      backdrop-filter: blur(28px);
+      z-index: 80;
+      padding: 24px;
+      overflow-y: auto;
+      transform: translateX(110%);
+      transition: transform 0.35s cubic-bezier(.2,.8,.2,1);
+    }
+
+    body.light-mode .detail-panel {
+      background: rgba(255, 255, 255, 0.96);
+    }
+
+    .detail-panel.active {
+      transform: translateX(0);
+    }
+
+    .detail-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: flex-start;
+      margin-bottom: 18px;
+    }
+
+    .detail-title-row {
+      display: flex;
+      gap: 13px;
+      align-items: center;
+    }
+
+    .close-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--panel-soft);
+      color: var(--text);
+      font-size: 18px;
+    }
+
+    .detail-card {
+      border-radius: 24px;
+      padding: 18px;
+      border: 1px solid var(--border);
+      background: var(--panel-soft);
+      margin-bottom: 13px;
+    }
+
+    .detail-card h3 {
+      color: #a5f3fc;
+      margin-bottom: 8px;
+      font-size: 17px;
+    }
+
+    body.light-mode .detail-card h3 {
+      color: #0369a1;
+    }
+
+    .detail-card p,
+    .detail-card li {
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    .detail-card ul {
+      list-style: none;
+      display: grid;
+      gap: 9px;
+    }
+
+    .practice {
+      background: rgba(251, 191, 36, 0.12);
+      border-color: rgba(251, 191, 36, 0.26);
+    }
+
+    .practice h3 {
+      color: #fde68a;
+    }
+
+    body.light-mode .practice h3 {
+      color: #b45309;
+    }
+
+    .guide-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(2, 6, 23, 0.62);
+      backdrop-filter: blur(10px);
+      z-index: 70;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+    }
+
+    .guide-backdrop.active {
+      display: flex;
+      animation: fadeIn 0.25s ease both;
+    }
+
+    .guide-box {
+      width: min(100%, 680px);
+      border-radius: var(--radius-2xl);
+      border: 1px solid var(--border-cyan);
+      background: rgba(2, 6, 23, 0.94);
+      color: white;
+      padding: 26px;
+      box-shadow: var(--shadow);
+      animation: popIn 0.35s ease both;
+    }
+
+    .guide-box h2 {
+      font-size: 30px;
+      letter-spacing: -0.04em;
+      margin-bottom: 10px;
+    }
+
+    .guide-kicker {
+      color: #a5f3fc;
+      font-size: 11px;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      font-weight: 900;
+      margin-bottom: 8px;
+    }
+
+    .guide-text {
+      color: #cbd5e1;
+      line-height: 1.7;
+      margin-bottom: 20px;
+    }
+
+    .guide-actions {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 18px;
+    }
+
+    .mobile-topbar {
+      display: none;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      border-bottom: 1px solid var(--border);
+      background: rgba(2, 6, 23, 0.86);
+      backdrop-filter: blur(18px);
+      padding: 12px;
+    }
+
+    body.light-mode .mobile-topbar {
+      background: rgba(255, 255, 255, 0.86);
+    }
+
+    .mobile-menu {
+      display: none;
+      border-bottom: 1px solid var(--border);
+      background: var(--panel);
+      padding: 12px;
+    }
+
+    .mobile-menu.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes popIn {
+      from { opacity: 0; transform: translateY(22px) scale(0.96); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 1450px) {
+      .stats-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .modules-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 1100px) {
+      .sidebar { display: none; }
+      .mobile-topbar { display: flex; align-items: center; justify-content: space-between; }
+      .app-shell { display: block; }
+      .main { padding: 16px; }
+      .hero-content { flex-direction: column; align-items: flex-start; }
+      .hero-actions { justify-content: flex-start; min-width: 0; }
+      .content-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 780px) {
+      .stats-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .modules-grid { grid-template-columns: 1fr; }
+      .section-header { flex-direction: column; align-items: flex-start; }
+      .search-wrap { min-width: 0; width: 100%; }
+      .hero-actions { width: 100%; }
+      .hero-actions .btn { width: 100%; }
+      .mission-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="orb"></div>
+  <div class="orb"></div>
+  <div class="orb"></div>
+  <div class="orb"></div>
+
+  <div class="mobile-topbar">
+    <button class="btn" id="mobileMenuBtn">☰ Menú</button>
+    <strong>PCBLearning</strong>
+    <button class="btn" id="mobileGuideBtn">▶ Guía</button>
+  </div>
+  <div class="mobile-menu" id="mobileMenu"></div>
+
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand-card">
+        <div class="brand-row">
+          <div class="brand-logo">🏆</div>
+          <div>
+            <div class="brand-title">PCBLearning</div>
+            <div class="brand-subtitle">Certificación PCBSystem</div>
+          </div>
+        </div>
+        <div class="progress-label">
+          <span>Progreso</span>
+          <span id="sidebarProgressText">0%</span>
+        </div>
+        <div class="progress-track"><div class="progress-fill" id="sidebarProgressFill"></div></div>
+      </div>
+
+      <div class="sidebar-actions">
+        <button class="btn full-width" id="startGuideBtn">▶ Guía</button>
+        <button class="btn" id="toggleImageBtn">👁️</button>
+      </div>
+
+      <div id="sidebarNav"></div>
+
+      <div style="margin-top: 18px; display: grid; gap: 8px;">
+        <button class="btn full-width" id="themeBtn">🌙 Modo Oscuro</button>
+        <a class="btn full-width" href="#">← Volver al Sitio</a>
+        <button class="btn btn-danger full-width">🚪 Cerrar Sesión</button>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="hero glass-card">
+        <div class="hero-content">
+          <div>
+            <div class="badge-row">
+              <span class="badge">🎓 Módulo de aprendizaje</span>
+              <span class="badge">🖱️ Tutorial interactivo</span>
+              <span class="badge">✅ Sin codificar</span>
+            </div>
+            <h1>Certificación del Dashboard Administrativo</h1>
+            <p>Explora cada parte del panel, haz clic en módulos, aprende sus funciones y completa la ruta de entrenamiento del PCBSystem como una experiencia educativa de primera.</p>
+          </div>
+          <div class="hero-actions">
+            <button class="btn btn-primary" id="heroGuideBtn">✨ Ver guía automática</button>
+            <button class="btn" id="explainSelectionBtn">🖱️ Explicar selección</button>
+          </div>
+        </div>
+      </header>
+
+      <section class="image-preview glass-card" id="imagePreview">
+        <div class="image-preview-header">
+          <span>Imagen de referencia del Dashboard Administrativo</span>
+          <button class="close-btn" id="closeImageBtn">✕</button>
+        </div>
+        <img src="img/dashboard-admin.png" alt="Dashboard Administrativo PCBSystem" onerror="this.style.display='none'; document.getElementById('imageMissing').style.display='block';" />
+        <div id="imageMissing" style="display:none; color: var(--muted); padding: 24px; text-align:center;">
+          Coloca la imagen en <strong>img/dashboard-admin.png</strong> para verla aquí.
+        </div>
+      </section>
+
+      <section class="stats-grid" id="statsGrid"></section>
+
+      <section class="content-grid">
+        <div class="section-card glass-card">
+          <div class="section-header">
+            <div>
+              <h2>⚡ Mapa interactivo del Dashboard</h2>
+              <p>Haz clic en cualquier tarjeta para abrir la explicación educativa.</p>
+            </div>
+            <div class="search-wrap">
+              <span>🔎</span>
+              <input id="searchInput" type="search" placeholder="Buscar módulo..." />
+            </div>
+          </div>
+          <div class="modules-grid" id="modulesGrid"></div>
+        </div>
+
+        <div class="side-content">
+          <section class="selected-card glass-card" id="selectedCard"></section>
+
+          <section class="mission-card glass-card">
+            <h2>🧠 Misión educativa</h2>
+            <p class="mission-text">Este módulo convierte el dashboard en una experiencia de aprendizaje guiada para maestros, estudiantes colaboradores y personal escolar. La meta es certificar que el usuario domina la plataforma antes de administrar contenido real.</p>
+            <div class="mission-grid">
+              <div class="mission-box"><div class="mission-number">9</div><div class="mission-label">Lecciones</div></div>
+              <div class="mission-box"><div class="mission-number">0</div><div class="mission-label">Código requerido</div></div>
+              <div class="mission-box"><div class="mission-number">100%</div><div class="mission-label">Interactivo</div></div>
+            </div>
+          </section>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <aside class="detail-panel" id="detailPanel"></aside>
+
+  <div class="guide-backdrop" id="guideBackdrop">
+    <div class="guide-box">
+      <div style="display:flex; justify-content:space-between; gap:14px; align-items:flex-start;">
+        <div>
+          <div class="guide-kicker">Guía automática</div>
+          <h2 id="guideTitle">Bienvenido</h2>
+        </div>
+        <button class="close-btn" id="closeGuideBtn">✕</button>
+      </div>
+      <p class="guide-text" id="guideText"></p>
+      <div class="progress-label">
+        <span id="guideStepText">Paso 1 de 7</span>
+        <span id="guidePercentText">14%</span>
+      </div>
+      <div class="progress-track"><div class="progress-fill" id="guideProgressFill"></div></div>
+      <div class="guide-actions">
+        <button class="btn" id="prevGuideBtn">← Anterior</button>
+        <button class="btn btn-primary" id="nextGuideBtn">Siguiente →</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const modules = [
+      {
+        id: "dashboard",
+        title: "Dashboard General",
+        section: "Inicio",
+        icon: "📊",
+        level: "Base",
+        status: "Disponible",
+        gradient: "gradient-dashboard",
+        goal: "Entender el estado general del PCBSystem desde un solo centro de control.",
+        explanation: "El Dashboard General resume publicaciones activas, avisos críticos, promociones, talleres, certificaciones, reservas, menú del comedor y solicitudes pendientes. Es la primera pantalla que un administrador debe revisar al entrar.",
+        advantages: ["Permite ver el pulso del sistema en segundos.", "Evita buscar información módulo por módulo.", "Facilita explicar el estado del sistema al director o al equipo escolar."],
+        practice: "Observa las tarjetas superiores y explica cuál número representa contenido activo, cuál representa trabajo pendiente y cuál requiere seguimiento administrativo."
+      },
+      {
+        id: "publicaciones",
+        title: "Publicaciones",
+        section: "Publicaciones",
+        icon: "📰",
+        level: "Operador",
+        status: "Disponible",
+        gradient: "gradient-publicaciones",
+        goal: "Crear, editar y revisar información que aparece en el portal escolar.",
+        explanation: "Este módulo permite manejar novedades, avisos críticos, anuncios de comunidad y promociones. Sustituye la necesidad de editar código para cambiar información visible en la página.",
+        advantages: ["Actualiza contenido sin tocar HTML, CSS ni JavaScript.", "Centraliza los anuncios escolares.", "Permite mantener el portal vivo durante todo el semestre."],
+        practice: "Crea una publicación simulada para anunciar una actividad de CompuTec y clasifícala como novedad, aviso crítico o promoción."
+      },
+      {
+        id: "novedades",
+        title: "Novedades",
+        section: "Publicaciones",
+        icon: "📣",
+        level: "Operador",
+        status: "Disponible",
+        gradient: "gradient-novedades",
+        goal: "Publicar noticias y actualizaciones recientes de la escuela.",
+        explanation: "Las novedades comunican información fresca: logros, actividades, recordatorios y anuncios generales. El administrador puede publicarlas desde un formulario visual.",
+        advantages: ["Mantiene informada a la comunidad escolar.", "Reduce la dependencia de mensajes dispersos.", "Da presencia digital moderna a la escuela."],
+        practice: "Redacta una novedad de 3 líneas sobre una presentación del PCBSystem."
+      },
+      {
+        id: "avisos",
+        title: "Avisos críticos",
+        section: "Publicaciones",
+        icon: "🚨",
+        level: "Prioridad",
+        status: "Disponible",
+        gradient: "gradient-avisos",
+        goal: "Comunicar información urgente o de alta importancia.",
+        explanation: "Los avisos críticos se usan para mensajes que requieren atención inmediata, como cambios de horario, instrucciones especiales, seguridad o comunicados institucionales.",
+        advantages: ["Da prioridad visual a mensajes urgentes.", "Ayuda a evitar confusiones.", "Organiza la comunicación oficial."],
+        practice: "Decide si un mensaje debe ser novedad o aviso crítico y justifica tu decisión."
+      },
+      {
+        id: "comedor",
+        title: "Comedor",
+        section: "Servicios Escolares",
+        icon: "🍽️",
+        level: "Servicio",
+        status: "Disponible",
+        gradient: "gradient-comedor",
+        goal: "Actualizar el menú escolar sin editar código.",
+        explanation: "El módulo de comedor permite administrar los ítems del menú. Puede integrarse con conteo digital de estudiantes, estadísticas y control de almuerzo por grupo.",
+        advantages: ["El menú se puede actualizar diariamente.", "El personal no depende de un programador.", "Se puede conectar con estadísticas de uso y asistencia."],
+        practice: "Edita mentalmente un menú: desayuno, almuerzo y bebida. Luego verifica cuántos ítems aparecerían en la tarjeta superior."
+      },
+      {
+        id: "biblioteca",
+        title: "Biblioteca",
+        section: "Servicios Escolares",
+        icon: "📚",
+        level: "Próximo",
+        status: "Próx.",
+        gradient: "gradient-biblioteca",
+        goal: "Administrar recursos, reservas y solicitudes bibliotecarias.",
+        explanation: "La biblioteca digital permite organizar servicios como reservas de espacio, pedidos, recursos disponibles y solicitudes. Es una evolución del servicio bibliotecario tradicional.",
+        advantages: ["Moderniza la biblioteca escolar.", "Facilita reservas y seguimiento.", "Crea evidencia digital del uso de servicios."],
+        practice: "Describe qué información debe llenar un usuario para reservar un espacio en la biblioteca."
+      },
+      {
+        id: "bot",
+        title: "Bot de Avisos",
+        section: "Comunicación",
+        icon: "🤖",
+        level: "IA",
+        status: "Disponible",
+        gradient: "gradient-bot",
+        goal: "Configurar mensajes automáticos y orientación rápida para usuarios.",
+        explanation: "El Bot de Avisos ayuda a responder preguntas frecuentes, guiar usuarios y comunicar información de manera automatizada. Puede integrarse con instrucciones de uso del PCBSystem.",
+        advantages: ["Reduce preguntas repetidas.", "Da orientación 24/7 dentro del portal.", "Apoya el entrenamiento de maestros, estudiantes y personal."],
+        practice: "Escribe una respuesta automática para explicar dónde encontrar el menú del comedor."
+      },
+      {
+        id: "usuarios",
+        title: "Usuarios y permisos",
+        section: "Administración",
+        icon: "🛡️",
+        level: "Administrador",
+        status: "Próx.",
+        gradient: "gradient-usuarios",
+        goal: "Controlar quién puede entrar y qué puede modificar.",
+        explanation: "El área de usuarios, roles y permisos protege el sistema. Cada persona puede tener acceso según su función: director, maestro, bibliotecario, comedor, estudiante colaborador o administrador.",
+        advantages: ["Mejora la seguridad del sistema.", "Evita cambios no autorizados.", "Permite dividir responsabilidades por área."],
+        practice: "Asigna un rol correcto para: director, bibliotecaria, personal de comedor y estudiante colaborador."
+      },
+      {
+        id: "reportes",
+        title: "Reportes",
+        section: "Reportes",
+        icon: "📈",
+        level: "Análisis",
+        status: "Próx.",
+        gradient: "gradient-reportes",
+        goal: "Usar datos para tomar decisiones escolares.",
+        explanation: "Los reportes permiten analizar actividad del sistema, publicaciones más vistas, servicios más usados e historial de cambios. Esto convierte el PCBSystem en una herramienta de evidencia y toma de decisiones.",
+        advantages: ["Permite medir impacto real.", "Ayuda a preparar informes para dirección o región.", "Muestra qué servicios necesita más la comunidad escolar."],
+        practice: "Explica cómo usarías el reporte de publicaciones más vistas para mejorar la comunicación escolar."
+      },
+      {
+        id: "excursion",
+        title: "Formulario de Excursión",
+        section: "Accesos rápidos",
+        icon: "📋",
+        level: "Proceso digital",
+        status: "Disponible",
+        gradient: "gradient-excursion",
+        goal: "Digitalizar formularios escolares y reducir procesos en papel.",
+        explanation: "El acceso al Formulario de Excursión permite completar información desde el sistema y preparar documentos exportables. Es una muestra de cómo PCBSystem puede transformar procesos administrativos reales.",
+        advantages: ["Reduce errores de transcripción.", "Acelera procesos escolares.", "Permite guardar evidencia digital."],
+        practice: "Identifica qué datos no pueden faltar en un formulario de excursión escolar."
+      }
+    ];
+
+    const sidebar = [
+      { label: "Dashboard General", icon: "🏠", target: "dashboard", group: "Inicio" },
+      { label: "Todas las publicaciones", icon: "📂", target: "publicaciones", group: "Publicaciones" },
+      { label: "Crear publicación", icon: "➕", target: "publicaciones", group: "Publicaciones", soon: true },
+      { label: "Novedades", icon: "📣", target: "novedades", group: "Publicaciones" },
+      { label: "Avisos críticos", icon: "📋", target: "avisos", group: "Publicaciones" },
+      { label: "Anuncios Comunidad", icon: "📌", target: "publicaciones", group: "Publicaciones" },
+      { label: "Promociones", icon: "🏷️", target: "publicaciones", group: "Publicaciones" },
+      { label: "Comedor", icon: "🍽️", target: "comedor", group: "Servicios Escolares" },
+      { label: "Biblioteca", icon: "📚", target: "biblioteca", group: "Servicios Escolares", soon: true },
+      { label: "Reservas", icon: "📅", target: "biblioteca", group: "Servicios Escolares", soon: true },
+      { label: "Talleres para Padres", icon: "🎓", target: "publicaciones", group: "Servicios Escolares" },
+      { label: "Certificaciones", icon: "🏆", target: "publicaciones", group: "Servicios Escolares" },
+      { label: "Bot de Avisos", icon: "🔔", target: "bot", group: "Comunicación" },
+      { label: "Alertas", icon: "🚨", target: "avisos", group: "Comunicación", soon: true },
+      { label: "Popup Principal", icon: "💬", target: "bot", group: "Comunicación", soon: true },
+      { label: "Notificaciones", icon: "📲", target: "bot", group: "Comunicación", soon: true },
+      { label: "Usuarios", icon: "👥", target: "usuarios", group: "Administración", soon: true },
+      { label: "Roles y permisos", icon: "🛡️", target: "usuarios", group: "Administración", soon: true },
+      { label: "Configuración", icon: "⚙️", target: "usuarios", group: "Administración", soon: true },
+      { label: "Idioma y tema visual", icon: "🌐", target: "usuarios", group: "Administración", soon: true },
+      { label: "Exportar datos", icon: "📤", target: "reportes", group: "Administración", soon: true },
+      { label: "Actividad del sistema", icon: "📊", target: "reportes", group: "Reportes", soon: true },
+      { label: "Publicaciones más vistas", icon: "🔥", target: "reportes", group: "Reportes", soon: true },
+      { label: "Servicios más usados", icon: "🚀", target: "reportes", group: "Reportes", soon: true },
+      { label: "Historial de cambios", icon: "📜", target: "reportes", group: "Reportes", soon: true }
+    ];
+
+    const statCards = [
+      { label: "Publicaciones activas", value: "3", icon: "📰", target: "publicaciones" },
+      { label: "Avisos críticos", value: "0", icon: "🚨", target: "avisos" },
+      { label: "Promociones activas", value: "3", icon: "🏷️", target: "publicaciones" },
+      { label: "Talleres publicados", value: "0", icon: "🎓", target: "publicaciones" },
+      { label: "Certificaciones", value: "0", icon: "🏆", target: "publicaciones" },
+      { label: "Reservas biblioteca", value: "—", icon: "📚", target: "biblioteca" },
+      { label: "Menú comedor", value: "4 ítems", icon: "🍽️", target: "comedor" },
+      { label: "Solicitudes pendientes", value: "0", icon: "📌", target: "dashboard" }
+    ];
+
+    const guideSteps = [
+      { title: "Bienvenido a PCBLearning", text: "Este módulo enseña el Dashboard Administrativo del PCBSystem como una certificación interactiva. Puedes seguir la guía automática o explorar libremente.", target: "dashboard" },
+      { title: "Lee las métricas superiores", text: "Las tarjetas superiores muestran el estado del sistema: publicaciones, avisos, promociones, comedor, reservas y solicitudes.", target: "dashboard" },
+      { title: "Explora los accesos rápidos", text: "Los accesos rápidos son atajos para publicar novedades, aprobar anuncios, editar menú, crear talleres, añadir certificaciones y configurar el bot.", target: "excursion" },
+      { title: "Aprende publicaciones", text: "Aquí se administra el contenido visible del portal escolar sin tocar código.", target: "publicaciones" },
+      { title: "Domina el comedor", text: "El menú del comedor puede actualizarse desde el panel, convirtiendo una página estática en un servicio dinámico.", target: "comedor" },
+      { title: "Comprende seguridad y roles", text: "Usuarios, roles y permisos controlan quién puede modificar información. Esto protege el sistema.", target: "usuarios" },
+      { title: "Cierra con reportes", text: "Los reportes permiten medir impacto, preparar evidencia y demostrar uso real del PCBSystem.", target: "reportes" }
+    ];
+
+    let selectedId = "dashboard";
+    let completed = JSON.parse(localStorage.getItem("pcblearning_completed") || "[]");
+    let guideStep = 0;
+
+    const $ = (id) => document.getElementById(id);
+
+    function getSelected() {
+      return modules.find((m) => m.id === selectedId) || modules[0];
+    }
+
+    function groupSidebar() {
+      return sidebar.reduce((acc, item) => {
+        if (!acc[item.group]) acc[item.group] = [];
+        acc[item.group].push(item);
+        return acc;
+      }, {});
+    }
+
+    function renderSidebar(targetEl) {
+      const grouped = groupSidebar();
+      targetEl.innerHTML = Object.entries(grouped).map(([group, items]) => `
+        <div class="side-group">
+          <div class="side-title">${group}</div>
+          ${items.map(item => `
+            <button class="side-item ${item.target === selectedId ? "active" : ""}" data-target="${item.target}">
+              <span class="side-item-left"><span>${item.icon}</span><span>${item.label}</span></span>
+              ${item.soon ? `<span class="soon">Próx.</span>` : ""}
+            </button>
+          `).join("")}
+        </div>
+      `).join("");
+
+      targetEl.querySelectorAll(".side-item").forEach(btn => {
+        btn.addEventListener("click", () => {
+          selectModule(btn.dataset.target, true);
+          $("mobileMenu").classList.remove("active");
+        });
+      });
+    }
+
+    function renderStats() {
+      $("statsGrid").innerHTML = statCards.map((card, index) => `
+        <button class="stat-card" data-target="${card.target}" style="animation: popIn .35s ease both; animation-delay: ${index * 35}ms">
+          <div class="stat-top">
+            <div class="stat-icon">${card.icon}</div>
+            <span style="color: rgba(165,243,252,.55);">✦</span>
+          </div>
+          <div class="stat-value">${card.value}</div>
+          <div class="stat-label">${card.label}</div>
+        </button>
+      `).join("");
+
+      $("statsGrid").querySelectorAll(".stat-card").forEach(btn => {
+        btn.addEventListener("click", () => selectModule(btn.dataset.target, true));
+      });
+    }
+
+    function renderModules(filter = "") {
+      const q = filter.trim().toLowerCase();
+      const filtered = modules.filter(m => !q || m.title.toLowerCase().includes(q) || m.section.toLowerCase().includes(q) || m.explanation.toLowerCase().includes(q));
+
+      $("modulesGrid").innerHTML = filtered.map((module, index) => {
+        const done = completed.includes(module.id);
+        return `
+          <button class="module-card ${module.id === selectedId ? "active" : ""}" data-target="${module.id}" style="animation: popIn .35s ease both; animation-delay:${index * 35}ms">
+            <div class="module-strip ${module.gradient}"></div>
+            <div class="module-top">
+              <div class="module-icon ${module.gradient}">${module.icon}</div>
+              <span>${done ? "✅" : "🖱️"}</span>
+            </div>
+            <div class="module-title">${module.title}</div>
+            <div class="module-section">${module.section}</div>
+            <div class="module-goal">${module.goal}</div>
+            <div class="module-tags">
+              <span class="tag">${module.level}</span>
+              <span class="tag">${module.status}</span>
+            </div>
+          </button>
+        `;
+      }).join("");
+
+      $("modulesGrid").querySelectorAll(".module-card").forEach(btn => {
+        btn.addEventListener("click", () => selectModule(btn.dataset.target, true));
+      });
+    }
+
+    function renderSelectedCard() {
+      const m = getSelected();
+      $("selectedCard").innerHTML = `
+        <div class="selected-top">
+          <div class="module-icon ${m.gradient}">${m.icon}</div>
+          <div>
+            <div class="selected-kicker">Selección actual</div>
+            <h2>${m.title}</h2>
+          </div>
+        </div>
+        <p class="selected-explanation">${m.explanation}</p>
+        <div class="advantage-list">
+          ${m.advantages.slice(0, 2).map(a => `<div class="advantage-item"><span>✅</span><span>${a}</span></div>`).join("")}
+        </div>
+        <button class="btn btn-primary full-width" id="openDetailFromCard">Abrir explicación completa</button>
+      `;
+      $("openDetailFromCard").addEventListener("click", openDetailPanel);
+    }
+
+    function renderDetailPanel() {
+      const m = getSelected();
+      const done = completed.includes(m.id);
+      $("detailPanel").innerHTML = `
+        <div class="detail-header">
+          <div class="detail-title-row">
+            <div class="module-icon ${m.gradient}">${m.icon}</div>
+            <div>
+              <div class="selected-kicker">PCBLearning</div>
+              <h2 style="font-size:30px; line-height:1;">${m.title}</h2>
+            </div>
+          </div>
+          <button class="close-btn" id="closeDetailBtn">✕</button>
+        </div>
+
+        <div class="badge-row">
+          <span class="badge">${m.section}</span>
+          <span class="badge">Nivel: ${m.level}</span>
+          <span class="badge">${m.status}</span>
+        </div>
+
+        <div class="detail-card">
+          <h3>📘 Objetivo de aprendizaje</h3>
+          <p>${m.goal}</p>
+        </div>
+        <div class="detail-card">
+          <h3>✨ Explicación</h3>
+          <p>${m.explanation}</p>
+        </div>
+        <div class="detail-card">
+          <h3>⚡ Ventajas</h3>
+          <ul>${m.advantages.map(a => `<li>✅ ${a}</li>`).join("")}</ul>
+        </div>
+        <div class="detail-card practice">
+          <h3>🖱️ Mini práctica de certificación</h3>
+          <p>${m.practice}</p>
+        </div>
+        <button class="btn btn-primary full-width" id="completeLessonBtn">${done ? "Lección completada" : "Marcar como completada"}</button>
+      `;
+      $("closeDetailBtn").addEventListener("click", closeDetailPanel);
+      $("completeLessonBtn").addEventListener("click", () => toggleComplete(m.id));
+    }
+
+    function openDetailPanel() {
+      renderDetailPanel();
+      $("detailPanel").classList.add("active");
+    }
+
+    function closeDetailPanel() {
+      $("detailPanel").classList.remove("active");
+    }
+
+    function updateProgress() {
+      const progress = Math.round((completed.length / modules.length) * 100);
+      $("sidebarProgressText").textContent = progress + "%";
+      $("sidebarProgressFill").style.width = progress + "%";
+    }
+
+    function selectModule(id, open = true) {
+      selectedId = id;
+      renderAll(false);
+      if (open) openDetailPanel();
+    }
+
+    function toggleComplete(id) {
+      if (completed.includes(id)) {
+        completed = completed.filter(x => x !== id);
+      } else {
+        completed.push(id);
+      }
+      localStorage.setItem("pcblearning_completed", JSON.stringify(completed));
+      renderAll(false);
+      renderDetailPanel();
+    }
+
+    function renderGuide() {
+      const step = guideSteps[guideStep];
+      const percent = Math.round(((guideStep + 1) / guideSteps.length) * 100);
+      $("guideTitle").textContent = step.title;
+      $("guideText").textContent = step.text;
+      $("guideStepText").textContent = `Paso ${guideStep + 1} de ${guideSteps.length}`;
+      $("guidePercentText").textContent = percent + "%";
+      $("guideProgressFill").style.width = percent + "%";
+      $("prevGuideBtn").disabled = guideStep === 0;
+      $("nextGuideBtn").textContent = guideStep === guideSteps.length - 1 ? "Finalizar guía" : "Siguiente →";
+      selectedId = step.target;
+      renderAll(false);
+    }
+
+    function openGuide() {
+      $("guideBackdrop").classList.add("active");
+      renderGuide();
+    }
+
+    function closeGuide() {
+      $("guideBackdrop").classList.remove("active");
+    }
+
+    function nextGuide() {
+      if (guideStep >= guideSteps.length - 1) {
+        closeGuide();
+        return;
+      }
+      guideStep += 1;
+      renderGuide();
+    }
+
+    function prevGuide() {
+      guideStep = Math.max(0, guideStep - 1);
+      renderGuide();
+    }
+
+    function renderAll(includeStats = true) {
+      renderSidebar($("sidebarNav"));
+      renderSidebar($("mobileMenu"));
+      if (includeStats) renderStats();
+      renderModules($("searchInput").value || "");
+      renderSelectedCard();
+      updateProgress();
+    }
+
+    function initEvents() {
+      $("startGuideBtn").addEventListener("click", openGuide);
+      $("heroGuideBtn").addEventListener("click", openGuide);
+      $("mobileGuideBtn").addEventListener("click", openGuide);
+      $("closeGuideBtn").addEventListener("click", closeGuide);
+      $("nextGuideBtn").addEventListener("click", nextGuide);
+      $("prevGuideBtn").addEventListener("click", prevGuide);
+      $("explainSelectionBtn").addEventListener("click", openDetailPanel);
+      $("toggleImageBtn").addEventListener("click", () => $("imagePreview").classList.toggle("active"));
+      $("closeImageBtn").addEventListener("click", () => $("imagePreview").classList.remove("active"));
+      $("searchInput").addEventListener("input", (e) => renderModules(e.target.value));
+      $("mobileMenuBtn").addEventListener("click", () => $("mobileMenu").classList.toggle("active"));
+      $("themeBtn").addEventListener("click", () => {
+        document.body.classList.toggle("light-mode");
+        $("themeBtn").textContent = document.body.classList.contains("light-mode") ? "🌙 Modo Oscuro" : "☀️ Modo Claro";
+      });
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") {
+          closeDetailPanel();
+          closeGuide();
+        }
+      });
+    }
+
+    renderAll(true);
+    initEvents();
+    setTimeout(openGuide, 450);
+  </script>
+</body>
+</html>
