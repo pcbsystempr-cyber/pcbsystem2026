@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="es" id="htmlRoot">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PCBLearning – Centro de Capacitación y Certificaciones | PCB</title>
+  <link rel="icon" type="image/png" href="LOGO6.png">
+  <link rel="apple-touch-icon" href="LOGO6.png">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="dark-mode-fix-v2.css?v=2">
+  <link rel="stylesheet" href="dropdown-fix.css">
+  <script src="translations.js"></script>
+  <style>
+    /* ── Hero PCBLearning ── */
+    .pcbl-hero {
+      position: relative;
+      min-height: 70vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 5rem 1.5rem 4rem;
+      background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0c4a6e 100%);
+      overflow: hidden;
+      color: #f1f5f9;
+    }
+    .pcbl-hero::before, .pcbl-hero::after {
+      content: ""; position: absolute; border-radius: 50%; pointer-events: none;
+    }
+    .pcbl-hero::before {
+      width: 480px; height: 480px; top: -120px; left: -120px;
+      background: radial-gradient(circle, rgba(139,92,246,0.35) 0%, transparent 70%);
+    }
+    .pcbl-hero::after {
+      width: 540px; height: 540px; bottom: -160px; right: -140px;
+      background: radial-gradient(circle, rgba(56,189,248,0.30) 0%, transparent 70%);
+    }
+    .pcbl-hero .pcbl-hero-inner { position: relative; z-index: 2; max-width: 980px; }
+    .pcbl-hero .pcbl-badge {
+      display: inline-block; padding: 0.45rem 1.1rem; border-radius: 50px;
+      background: rgba(255,255,255,0.08); border: 1px solid rgba(167,139,250,0.45);
+      color: #c4b5fd; font-size: 0.85rem; font-weight: 700; letter-spacing: 0.06em;
+      text-transform: uppercase; margin-bottom: 1.4rem;
+    }
+    .pcbl-hero h1 {
+      font-size: clamp(2.4rem, 5vw, 4rem); font-weight: 900; line-height: 1.1;
+      margin: 0 0 1.2rem;
+      background: linear-gradient(90deg, #a78bfa, #38bdf8, #f472b6);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .pcbl-hero p.subtitle {
+      font-size: 1.2rem; color: rgba(241,245,249,0.78); max-width: 720px;
+      margin: 0 auto 2rem; line-height: 1.65;
+    }
+    .pcbl-hero-actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+    .pcbl-btn-primary {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.95rem 2rem; border-radius: 50px;
+      background: linear-gradient(135deg, #7c3aed, #2563eb);
+      color: #fff; font-weight: 700; text-decoration: none;
+      box-shadow: 0 8px 28px rgba(124,58,237,0.45);
+      transition: transform 0.25s, box-shadow 0.25s;
+    }
+    .pcbl-btn-primary:hover { transform: translateY(-3px); box-shadow: 0 12px 36px rgba(124,58,237,0.6); }
+    .pcbl-btn-ghost {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.95rem 2rem; border-radius: 50px;
+      background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.18);
+      color: #f1f5f9; font-weight: 700; text-decoration: none;
+      transition: background 0.25s, border-color 0.25s;
+    }
+    .pcbl-btn-ghost:hover { background: rgba(255,255,255,0.12); border-color: rgba(167,139,250,0.6); }
+    .pcbl-stats {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 1.5rem; margin-top: 3rem;
+    }
+    .pcbl-stat { text-align: center; }
+    .pcbl-stat .num {
+      font-size: 2.2rem; font-weight: 900; color: #38bdf8;
+      text-shadow: 0 0 20px rgba(56,189,248,0.4);
+    }
+    .pcbl-stat .lbl { font-size: 0.85rem; color: rgba(241,245,249,0.65); text-transform: uppercase; letter-spacing: 0.08em; }
+
+    /* ── Sección categorías ── */
+    .pcbl-cat-card {
+      position: relative; padding: 2rem 1.6rem; border-radius: 18px;
+      background: #fff; border: 1px solid rgba(0,0,0,0.06);
+      box-shadow: 0 6px 24px rgba(15,23,42,0.06);
+      transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+      overflow: hidden;
+    }
+    .pcbl-cat-card::before {
+      content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 4px;
+      background: linear-gradient(90deg, var(--c1, #7c3aed), var(--c2, #2563eb));
+    }
+    .pcbl-cat-card:hover { transform: translateY(-6px); box-shadow: 0 16px 40px rgba(15,23,42,0.12); }
+    .pcbl-cat-icon {
+      width: 56px; height: 56px; border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.8rem; margin-bottom: 1rem;
+      background: linear-gradient(135deg, var(--c1, #7c3aed), var(--c2, #2563eb));
+      color: #fff; box-shadow: 0 6px 18px rgba(124,58,237,0.35);
+    }
+    .pcbl-cat-card h3 { font-size: 1.2rem; margin: 0 0 0.6rem; color: #0f172a; }
+    .pcbl-cat-card p { color: #64748b; font-size: 0.95rem; line-height: 1.55; margin: 0 0 1.2rem; }
+    .pcbl-cat-link {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      color: var(--c1, #7c3aed); font-weight: 700; text-decoration: none;
+      font-size: 0.92rem; transition: gap 0.2s;
+    }
+    .pcbl-cat-link:hover { gap: 0.7rem; }
+
+    /* Dark mode */
+    body.dark-mode .pcbl-cat-card { background: #1e293b; border-color: rgba(255,255,255,0.08); }
+    body.dark-mode .pcbl-cat-card h3 { color: #f1f5f9; }
+    body.dark-mode .pcbl-cat-card p { color: #94a3b8; }
+
+    /* ── Featured AI section ── */
+    .pcbl-ai-feature {
+      position: relative; border-radius: 24px; padding: 3rem 2.5rem;
+      background: linear-gradient(135deg, #4338ca 0%, #0891b2 100%);
+      color: #fff; overflow: hidden; box-shadow: 0 18px 50px rgba(67,56,202,0.4);
+    }
+    .pcbl-ai-feature::before {
+      content: ""; position: absolute; top: -80px; right: -80px;
+      width: 280px; height: 280px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,255,255,0.18) 0%, transparent 70%);
+    }
+    .pcbl-ai-feature h2 { font-size: 2rem; margin: 0 0 1rem; position: relative; z-index: 2; }
+    .pcbl-ai-feature p { font-size: 1.05rem; line-height: 1.7; opacity: 0.92; position: relative; z-index: 2; max-width: 720px; }
+    .pcbl-ai-pillars {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem; margin-top: 2rem; position: relative; z-index: 2;
+    }
+    .pcbl-pillar {
+      background: rgba(255,255,255,0.1); backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.18); border-radius: 14px; padding: 1.2rem;
+    }
+    .pcbl-pillar .ico { font-size: 1.6rem; margin-bottom: 0.5rem; }
+    .pcbl-pillar h4 { margin: 0 0 0.3rem; font-size: 1rem; }
+    .pcbl-pillar p { font-size: 0.85rem; opacity: 0.85; margin: 0; }
+
+    /* ── Certificaciones grid ── */
+    .pcbl-certs-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
+    .pcbl-cert-card {
+      background: #fff; border-radius: 16px; padding: 1.5rem; box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+      border: 1px solid rgba(0,0,0,0.05); transition: transform 0.25s, box-shadow 0.25s;
+      display: flex; flex-direction: column;
+    }
+    .pcbl-cert-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(0,0,0,0.12); }
+    .pcbl-cert-badge {
+      display: inline-block; padding: 0.3rem 0.8rem; border-radius: 50px;
+      background: linear-gradient(135deg, #f59e0b, #ef4444); color: #fff;
+      font-size: 0.75rem; font-weight: 700; margin-bottom: 0.8rem; align-self: flex-start;
+    }
+    .pcbl-cert-card h3 { margin: 0 0 0.6rem; font-size: 1.15rem; color: #0f172a; }
+    .pcbl-cert-card p.desc { color: #64748b; font-size: 0.9rem; line-height: 1.55; flex-grow: 1; }
+    .pcbl-cert-meta { font-size: 0.85rem; color: #475569; margin: 0.8rem 0; line-height: 1.8; }
+    .pcbl-cert-meta strong { color: #0f172a; }
+    body.dark-mode .pcbl-cert-card { background: #1e293b; border-color: rgba(255,255,255,0.08); }
+    body.dark-mode .pcbl-cert-card h3 { color: #f1f5f9; }
+    body.dark-mode .pcbl-cert-card p.desc, body.dark-mode .pcbl-cert-meta { color: #94a3b8; }
+    body.dark-mode .pcbl-cert-meta strong { color: #f1f5f9; }
+
+    .pcbl-empty {
+      text-align: center; padding: 3rem 1rem; background: rgba(124,58,237,0.05);
+      border: 2px dashed rgba(124,58,237,0.25); border-radius: 16px; color: #64748b;
+    }
+    body.dark-mode .pcbl-empty { background: rgba(124,58,237,0.1); color: #94a3b8; }
+
+    /* ── Estacionamiento mapa ── */
+    .pcbl-park-map {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 1.5rem;
+    }
+    @media (max-width: 768px) { .pcbl-park-map { grid-template-columns: 1fr; } }
+    .pcbl-park-svg {
+      background: #f1f5f9; border-radius: 14px; padding: 1rem;
+      border: 1px solid rgba(0,0,0,0.08);
+    }
+    body.dark-mode .pcbl-park-svg { background: #0f172a; border-color: rgba(255,255,255,0.08); }
+    .pcbl-park-rules { display: flex; flex-direction: column; gap: 0.8rem; }
+    .pcbl-park-rule {
+      display: flex; gap: 0.8rem; align-items: flex-start;
+      padding: 0.9rem 1rem; background: rgba(124,58,237,0.06);
+      border-left: 3px solid #7c3aed; border-radius: 8px;
+    }
+    body.dark-mode .pcbl-park-rule { background: rgba(124,58,237,0.12); }
+    .pcbl-park-rule .icn { font-size: 1.3rem; }
+    .pcbl-park-rule p { margin: 0; font-size: 0.92rem; line-height: 1.5; }
+
+    /* ── Eval cards ── */
+    .pcbl-eval-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+    @media (max-width: 768px) { .pcbl-eval-grid { grid-template-columns: 1fr; } }
+    .pcbl-eval-card {
+      padding: 1.8rem; border-radius: 16px; color: #fff; position: relative; overflow: hidden;
+    }
+    .pcbl-eval-card.formativa { background: linear-gradient(135deg, #10b981, #059669); }
+    .pcbl-eval-card.sumativa { background: linear-gradient(135deg, #f59e0b, #d97706); }
+    .pcbl-eval-card h3 { margin: 0 0 0.8rem; font-size: 1.4rem; }
+    .pcbl-eval-card ul { margin: 0; padding-left: 1.2rem; line-height: 1.8; }
+    .pcbl-eval-card li { font-size: 0.95rem; }
+  </style>
+</head>
+
+<body>
+  <!-- Popup de selección de tema -->
+  <div id="themePopup" class="theme-popup">
+    <div class="theme-popup-content">
+      <h2 data-translate="🎨 Selecciona tu tema preferido">🎨 Selecciona tu tema preferido</h2>
+      <p data-translate="Elige cómo quieres ver el sitio web">Elige cómo quieres ver el sitio web</p>
+      <div class="theme-buttons">
+        <button class="theme-btn theme-btn-light" id="btnLightMode" data-translate="☀️ Modo Claro">☀️ Modo Claro</button>
+        <button class="theme-btn theme-btn-dark" id="btnDarkMode" data-translate="🌙 Modo Oscuro">🌙 Modo Oscuro</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      function hidePopup() { document.getElementById('themePopup').classList.add('hidden'); }
+      function setLightMode() { document.body.classList.remove('dark-mode'); localStorage.setItem('theme', 'light'); hidePopup(); }
+      function setDarkMode() { document.body.classList.add('dark-mode'); localStorage.setItem('theme', 'dark'); hidePopup(); }
+      function checkTheme() {
+        const t = localStorage.getItem('theme');
+        if (t === 'dark') { document.body.classList.add('dark-mode'); hidePopup(); }
+        else if (t === 'light') { hidePopup(); }
+      }
+      checkTheme();
+      document.addEventListener('DOMContentLoaded', function () {
+        const bL = document.getElementById('btnLightMode'); const bD = document.getElementById('btnDarkMode');
+        if (bL) bL.addEventListener('click', setLightMode);
+        if (bD) bD.addEventListener('click', setDarkMode);
+      });
+    })();
+  </script>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <div class="logo-area">
+        <img src="LOGO6.png" alt="Logo Escuela" class="logo-image">
+        <div class="logo-text">
+          <span class="logo-title" data-translate="Escuela Superior Vocacional">Escuela Superior Vocacional</span>
+          <span class="logo-subtitle">Pablo Colón Berdecia</span>
+        </div>
+      </div>
+      <button class="hamburger-menu" id="hamburgerBtn" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+      <button class="menu-toggle" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+      <nav class="main-nav">
+        <ul>
+          <li><a href="index.html#inicio" data-translate="Inicio">Inicio</a></li>
+          <li><a href="index.html#servicios" data-translate="Servicios">Servicios</a></li>
+          <li><a href="index.html#contacto" data-translate="Contacto">Contacto</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Sidebar Menu -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+  <div class="sidebar-menu" id="sidebarMenu">
+    <div class="sidebar-header">
+      <h3 data-translate="Menú">Menú</h3>
+      <button class="sidebar-close" id="closeSidebar">&times;</button>
+    </div>
+    <div class="sidebar-content">
+      <a href="index.html" class="sidebar-item sidebar-link"><span class="sidebar-icon">🏠</span><span class="sidebar-text" data-translate="Inicio">Inicio</span><span class="sidebar-arrow">›</span></a>
+      <a href="quienes-somos.html" class="sidebar-item sidebar-link"><span class="sidebar-icon">🏫</span><span class="sidebar-text" data-translate="Quiénes Somos">Quiénes Somos</span><span class="sidebar-arrow">›</span></a>
+      <div class="sidebar-item" id="servicesToggle"><span class="sidebar-icon">💻</span><span class="sidebar-text" data-translate="Servicios Digitales">Servicios Digitales</span><span class="sidebar-arrow">›</span></div>
+      <div class="theme-options" id="servicesOptions" style="display: none;">
+        <a href="matricula.html" class="theme-option"><span>📝</span> Matrícula Online</a>
+        <a href="solicitudes.html" class="theme-option"><span>📄</span> Solicitud de Documentos</a>
+        <a href="orientacion.html" class="theme-option"><span>🧠</span> Orientación</a>
+        <a href="biblioteca.html" class="theme-option"><span>📚</span> Biblioteca</a>
+        <a href="comedor.html" class="theme-option"><span>🍽️</span> Comedor</a>
+        <a href="padres.html" class="theme-option"><span>👨‍👩‍👧</span> Portal de Padres</a>
+        <a href="seguridad.html" class="theme-option"><span>🛡️</span> Seguridad</a>
+      </div>
+      <a href="participacion-comunitaria.html" class="sidebar-item sidebar-link"><span class="sidebar-icon">🎓</span><span class="sidebar-text" data-translate="Vida Estudiantil">Vida Estudiantil</span><span class="sidebar-arrow">›</span></a>
+      <a href="normas-reglamentos.html" class="sidebar-item sidebar-link"><span class="sidebar-icon">📋</span><span class="sidebar-text" data-translate="Normas">Normas</span><span class="sidebar-arrow">›</span></a>
+      <div style="border-top: 1px solid rgba(255,255,255,0.1); margin: 1rem 0;"></div>
+      <div class="sidebar-item" id="themeToggle"><span class="sidebar-icon">🎨</span><span class="sidebar-text" data-translate="Cambiar Tema">Cambiar Tema</span><span class="sidebar-arrow">›</span></div>
+      <div class="theme-options" id="themeOptions" style="display: none;">
+        <button class="theme-option" id="selectLightTheme"><span>☀️</span> Modo Claro</button>
+        <button class="theme-option" id="selectDarkTheme"><span>🌙</span> Modo Oscuro</button>
+      </div>
+      <div class="sidebar-item" id="languageToggle"><span class="sidebar-icon">🌐</span><span class="sidebar-text" data-translate="Cambiar Idioma">Cambiar Idioma</span><span class="sidebar-arrow">›</span></div>
+      <div class="theme-options" id="languageOptions" style="display: none;">
+        <button class="theme-option" id="selectSpanish"><span>🇵🇷</span> Español</button>
+        <button class="theme-option" id="selectEnglish"><span>🇺🇸</span> English</button>
+      </div>
+      <div style="border-top: 1px solid rgba(255,255,255,0.1); margin: 1rem 0;"></div>
+      <a href="admin.html" class="sidebar-item sidebar-link"><span class="sidebar-icon">⚙️</span><span class="sidebar-text" data-translate="Dashboard Admin">Dashboard Admin</span><span class="sidebar-arrow">›</span></a>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const $ = id => document.getElementById(id);
+      const open = () => { $('sidebarMenu').classList.add('active'); $('sidebarOverlay').classList.add('active'); };
+      const close = () => { $('sidebarMenu').classList.remove('active'); $('sidebarOverlay').classList.remove('active'); const tO = $('themeOptions'); const lO = $('languageOptions'); if (tO) tO.style.display = 'none'; if (lO) lO.style.display = 'none'; };
+      $('hamburgerBtn')?.addEventListener('click', open);
+      $('closeSidebar')?.addEventListener('click', close);
+      $('sidebarOverlay')?.addEventListener('click', close);
+      $('servicesToggle')?.addEventListener('click', () => { const e = $('servicesOptions'); e.style.display = e.style.display === 'block' ? 'none' : 'block'; });
+      $('themeToggle')?.addEventListener('click', () => { const e = $('themeOptions'); e.style.display = e.style.display === 'block' ? 'none' : 'block'; const l = $('languageOptions'); if (l) l.style.display = 'none'; });
+      $('languageToggle')?.addEventListener('click', () => { const e = $('languageOptions'); e.style.display = e.style.display === 'block' ? 'none' : 'block'; const t = $('themeOptions'); if (t) t.style.display = 'none'; });
+      $('selectLightTheme')?.addEventListener('click', () => { document.body.classList.remove('dark-mode'); localStorage.setItem('theme', 'light'); close(); });
+      $('selectDarkTheme')?.addEventListener('click', () => { document.body.classList.add('dark-mode'); localStorage.setItem('theme', 'dark'); close(); });
+      $('selectSpanish')?.addEventListener('click', () => { localStorage.setItem('language', 'es'); document.getElementById('htmlRoot')?.setAttribute('lang', 'es'); if (typeof translatePage === 'function') translatePage('es'); close(); });
+      $('selectEnglish')?.addEventListener('click', () => { localStorage.setItem('language', 'en'); document.getElementById('htmlRoot')?.setAttribute('lang', 'en'); if (typeof translatePage === 'function') translatePage('en'); close(); });
+    })();
+  </script>
+
+  <!-- ══ HERO ══ -->
+  <section class="pcbl-hero">
+    <div class="pcbl-hero-inner">
+      <span class="pcbl-badge" data-translate="Plataforma Oficial de Capacitación">Plataforma Oficial de Capacitación</span>
+      <h1 data-translate="PCBLearning">PCBLearning</h1>
+      <p class="subtitle" data-translate="Centro integral de capacitación y certificación para maestros, estudiantes y personal escolar. Domina los procesos escolares, las herramientas digitales y la transformación educativa con inteligencia artificial ética.">
+        Centro integral de capacitación y certificación para maestros, estudiantes y personal escolar. Domina los procesos escolares, las herramientas digitales y la transformación educativa con inteligencia artificial ética.
+      </p>
+      <div class="pcbl-hero-actions">
+        <a href="pcblearning-main/index.html" class="pcbl-btn-primary" data-translate="🚀 Acceder al Dashboard">
+          🚀 Acceder al Dashboard
+        </a>
+        <a href="#categorias" class="pcbl-btn-ghost" data-translate="📚 Explorar capacitaciones">
+          📚 Explorar capacitaciones
+        </a>
+      </div>
+      <div class="pcbl-stats">
+        <div class="pcbl-stat"><div class="num" id="statCertCount">0</div><div class="lbl" data-translate="Certificaciones">Certificaciones</div></div>
+        <div class="pcbl-stat"><div class="num">9</div><div class="lbl" data-translate="Categorías">Categorías</div></div>
+        <div class="pcbl-stat"><div class="num">100%</div><div class="lbl" data-translate="Gratuito">Gratuito</div></div>
+        <div class="pcbl-stat"><div class="num">24/7</div><div class="lbl" data-translate="Disponible">Disponible</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ CATEGORÍAS DE CAPACITACIÓN ══ -->
+  <section id="categorias" class="section">
+    <div class="container">
+      <div class="section-header">
+        <h2 data-translate="🎯 Categorías de Capacitación">🎯 Categorías de Capacitación</h2>
+        <p data-translate="Recursos organizados por área para que cada miembro de la comunidad escolar encuentre exactamente lo que necesita.">
+          Recursos organizados por área para que cada miembro de la comunidad escolar encuentre exactamente lo que necesita.
+        </p>
+      </div>
+      <div class="grid-3">
+        <article class="pcbl-cat-card" style="--c1:#7c3aed;--c2:#2563eb;">
+          <div class="pcbl-cat-icon">🎓</div>
+          <h3 data-translate="Preparación de Facultad">Preparación de Facultad</h3>
+          <p data-translate="Procesos escolares fundamentales: planificación, manejo del salón, evaluación auténtica y desarrollo profesional continuo.">
+            Procesos escolares fundamentales: planificación, manejo del salón, evaluación auténtica y desarrollo profesional continuo.
+          </p>
+          <a href="#procesos" class="pcbl-cat-link" data-translate="Ver procesos →">Ver procesos →</a>
+        </article>
+
+        <article class="pcbl-cat-card" style="--c1:#0891b2;--c2:#06b6d4;">
+          <div class="pcbl-cat-icon">📊</div>
+          <h3 data-translate="Cómo Someter Notas">Cómo Someter Notas</h3>
+          <p data-translate="Guía paso a paso del proceso oficial para registrar y someter calificaciones en el sistema del Departamento de Educación.">
+            Guía paso a paso del proceso oficial para registrar y someter calificaciones en el sistema del Departamento de Educación.
+          </p>
+          <a href="https://informacionestudiantil.dde.pr/public/home.html" target="_blank" rel="noopener" class="pcbl-cat-link" data-translate="Ir al sistema →">Ir al sistema →</a>
+        </article>
+
+        <article class="pcbl-cat-card" style="--c1:#dc2626;--c2:#f59e0b;">
+          <div class="pcbl-cat-icon">📋</div>
+          <h3 data-translate="D14 Electrónica">D14 Electrónica</h3>
+          <p data-translate="Acceso directo al sistema oficial para crear, completar y someter el formulario D14 electrónico requerido por el DEPR.">
+            Acceso directo al sistema oficial para crear, completar y someter el formulario D14 electrónico requerido por el DEPR.
+          </p>
+          <a href="https://de14.dde.pr/DE14/Account.aspx/LogOn?ReturnUrl=%2fde14" target="_blank" rel="noopener" class="pcbl-cat-link" data-translate="Crear D14 →">Crear D14 →</a>
+        </article>
+
+        <article class="pcbl-cat-card" style="--c1:#059669;--c2:#10b981;">
+          <div class="pcbl-cat-icon">📄</div>
+          <h3 data-translate="Documentos Normativos">Documentos Normativos</h3>
+          <p data-translate="Cartas circulares, manuales del DEPR, normativas oficiales y recursos legales actualizados para el personal docente.">
+            Cartas circulares, manuales del DEPR, normativas oficiales y recursos legales actualizados para el personal docente.
+          </p>
+          <a href="https://profeicalderon.blogspot.com/" target="_blank" rel="noopener" class="pcbl-cat-link" data-translate="Ver documentos →">Ver documentos →</a>
+        </article>
+
+        <article class="pcbl-cat-card" style="--c1:#db2777;--c2:#ec4899;">
+          <div class="pcbl-cat-icon">📤</div>
+          <h3 data-translate="Hoja de Salida">Hoja de Salida</h3>
+          <p data-translate="Procedimiento oficial para completar la hoja de salida al finalizar el día escolar o ante una salida temprana autorizada.">
+            Procedimiento oficial para completar la hoja de salida al finalizar el día escolar o ante una salida temprana autorizada.
+          </p>
+          <a href="#hoja-salida" class="pcbl-cat-link" data-translate="Ver instrucciones →">Ver instrucciones →</a>
+        </article>
+
+        <article class="pcbl-cat-card" style="--c1:#6366f1;--c2:#8b5cf6;">
+          <div class="pcbl-cat-icon">🅿️</div>
+          <h3 data-translate="Normas de Estacionamiento">Normas de Estacionamiento</h3>
+          <p data-translate="Mapa del estacionamiento, áreas asignadas y mejores prácticas para estacionar correctamente en el plantel.">
+            Mapa del estacionamiento, áreas asignadas y mejores prácticas para estacionar correctamente en el plantel.
+          </p>
+          <a href="#estacionamiento" class="pcbl-cat-link" data-translate="Ver mapa →">Ver mapa →</a>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ PROCESOS ESCOLARES (Preparación Facultad) ══ -->
+  <section id="procesos" class="section section-alt">
+    <div class="container">
+      <div class="section-header">
+        <h2 data-translate="🎓 Preparación de Facultad — Procesos Escolares">🎓 Preparación de Facultad — Procesos Escolares</h2>
+        <p data-translate="Domina los procesos clave que sostienen una facultad eficiente y comprometida con la excelencia académica.">
+          Domina los procesos clave que sostienen una facultad eficiente y comprometida con la excelencia académica.
+        </p>
+      </div>
+      <div class="grid-3">
+        <article class="card service-card">
+          <div class="service-icon">🗓️</div>
+          <h3 data-translate="Planificación Diaria">Planificación Diaria</h3>
+          <p data-translate="Estructura tu plan de clases siguiendo los estándares del DEPR, con objetivos medibles y actividades alineadas a Mapa Curricular.">
+            Estructura tu plan de clases siguiendo los estándares del DEPR, con objetivos medibles y actividades alineadas a Mapa Curricular.
+          </p>
+        </article>
+        <article class="card service-card">
+          <div class="service-icon">👥</div>
+          <h3 data-translate="Manejo del Salón">Manejo del Salón</h3>
+          <p data-translate="Estrategias probadas para crear un ambiente de aprendizaje seguro, inclusivo y productivo desde el primer día.">
+            Estrategias probadas para crear un ambiente de aprendizaje seguro, inclusivo y productivo desde el primer día.
+          </p>
+        </article>
+        <article class="card service-card">
+          <div class="service-icon">📈</div>
+          <h3 data-translate="Desarrollo Profesional">Desarrollo Profesional</h3>
+          <p data-translate="Identifica oportunidades de crecimiento, lleva tu portafolio profesional y mantente al día con las certificaciones requeridas.">
+            Identifica oportunidades de crecimiento, lleva tu portafolio profesional y mantente al día con las certificaciones requeridas.
+          </p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ HOJA DE SALIDA ══ -->
+  <section id="hoja-salida" class="section">
+    <div class="container">
+      <div class="section-header">
+        <h2 data-translate="📤 Hoja de Salida — Procedimiento Oficial">📤 Hoja de Salida — Procedimiento Oficial</h2>
+        <p data-translate="Cómo completar correctamente la hoja de salida al finalizar tu jornada o ante una salida temprana autorizada.">
+          Cómo completar correctamente la hoja de salida al finalizar tu jornada o ante una salida temprana autorizada.
+        </p>
+      </div>
+      <div class="grid-2">
+        <article class="card service-card">
+          <div class="service-icon">✅</div>
+          <h3 data-translate="Pasos para Salida Regular">Pasos para Salida Regular</h3>
+          <ol style="padding-left: 1.2rem; line-height: 1.9; color: var(--text-soft);">
+            <li data-translate="Confirma que tu salón quedó organizado y cerrado.">Confirma que tu salón quedó organizado y cerrado.</li>
+            <li data-translate="Registra tu hora de salida en el sistema oficial de la oficina.">Registra tu hora de salida en el sistema oficial de la oficina.</li>
+            <li data-translate="Firma la hoja de asistencia diaria del personal.">Firma la hoja de asistencia diaria del personal.</li>
+            <li data-translate="Reporta cualquier incidente del día al personal de seguridad.">Reporta cualquier incidente del día al personal de seguridad.</li>
+          </ol>
+        </article>
+        <article class="card service-card">
+          <div class="service-icon">⚠️</div>
+          <h3 data-translate="Salida Temprana Autorizada">Salida Temprana Autorizada</h3>
+          <ol style="padding-left: 1.2rem; line-height: 1.9; color: var(--text-soft);">
+            <li data-translate="Solicita autorización por escrito al director con al menos 24 horas de anticipación.">Solicita autorización por escrito al director con al menos 24 horas de anticipación.</li>
+            <li data-translate="Coordina con un maestro sustituto o asignación de cubierta para tu grupo.">Coordina con un maestro sustituto o asignación de cubierta para tu grupo.</li>
+            <li data-translate="Completa la hoja de salida indicando hora exacta y motivo aprobado.">Completa la hoja de salida indicando hora exacta y motivo aprobado.</li>
+            <li data-translate="Entrega copia de la autorización en la oficina antes de salir.">Entrega copia de la autorización en la oficina antes de salir.</li>
+          </ol>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ ESTACIONAMIENTO ══ -->
+  <section id="estacionamiento" class="section section-alt">
+    <div class="container">
+      <div class="section-header">
+        <h2 data-translate="🅿️ Normas del Estacionamiento">🅿️ Normas del Estacionamiento</h2>
+        <p data-translate="Mapa visual del estacionamiento del plantel y las normas para estacionar correctamente, garantizando seguridad y orden.">
+          Mapa visual del estacionamiento del plantel y las normas para estacionar correctamente, garantizando seguridad y orden.
+        </p>
+      </div>
+
+      <div class="pcbl-park-map">
+        <!-- Mapa SVG -->
+        <div class="pcbl-park-svg">
+          <svg viewBox="0 0 400 320" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block;" aria-label="Mapa del estacionamiento">
+            <!-- Edificio escolar -->
+            <rect x="20" y="20" width="360" height="50" rx="6" fill="#475569"/>
+            <text x="200" y="50" text-anchor="middle" fill="#fff" font-size="14" font-weight="700" font-family="Arial">🏫 ESCUELA P.C.B.</text>
+
+            <!-- Carriles -->
+            <rect x="20" y="80" width="360" height="20" fill="#cbd5e1"/>
+            <text x="200" y="95" text-anchor="middle" fill="#0f172a" font-size="10" font-weight="700" font-family="Arial">CARRIL DE ENTRADA →</text>
+
+            <!-- Espacios de estacionamiento — Maestros (verde) -->
+            <g>
+              <rect x="20"  y="110" width="42" height="60" fill="#10b981" stroke="#fff" stroke-width="2"/>
+              <rect x="64"  y="110" width="42" height="60" fill="#10b981" stroke="#fff" stroke-width="2"/>
+              <rect x="108" y="110" width="42" height="60" fill="#10b981" stroke="#fff" stroke-width="2"/>
+              <rect x="152" y="110" width="42" height="60" fill="#10b981" stroke="#fff" stroke-width="2"/>
+              <text x="107" y="145" text-anchor="middle" fill="#fff" font-size="11" font-weight="700" font-family="Arial">MAESTROS</text>
+            </g>
+            <!-- Visitantes (azul) -->
+            <g>
+              <rect x="200" y="110" width="42" height="60" fill="#3b82f6" stroke="#fff" stroke-width="2"/>
+              <rect x="244" y="110" width="42" height="60" fill="#3b82f6" stroke="#fff" stroke-width="2"/>
+              <text x="243" y="145" text-anchor="middle" fill="#fff" font-size="11" font-weight="700" font-family="Arial">VISITANTES</text>
+            </g>
+            <!-- Accesibilidad (morado) -->
+            <g>
+              <rect x="292" y="110" width="42" height="60" fill="#8b5cf6" stroke="#fff" stroke-width="2"/>
+              <text x="313" y="145" text-anchor="middle" fill="#fff" font-size="14" font-weight="700" font-family="Arial">♿</text>
+            </g>
+            <!-- Reservado dirección (rojo) -->
+            <g>
+              <rect x="338" y="110" width="42" height="60" fill="#ef4444" stroke="#fff" stroke-width="2"/>
+              <text x="359" y="138" text-anchor="middle" fill="#fff" font-size="9" font-weight="700" font-family="Arial">DIR.</text>
+              <text x="359" y="152" text-anchor="middle" fill="#fff" font-size="9" font-weight="700" font-family="Arial">ESC.</text>
+            </g>
+
+            <!-- Carril central -->
+            <rect x="20" y="180" width="360" height="30" fill="#94a3b8"/>
+            <line x1="40" y1="195" x2="80" y2="195" stroke="#fff" stroke-width="3" stroke-dasharray="8,6"/>
+            <line x1="120" y1="195" x2="160" y2="195" stroke="#fff" stroke-width="3" stroke-dasharray="8,6"/>
+            <line x1="200" y1="195" x2="240" y2="195" stroke="#fff" stroke-width="3" stroke-dasharray="8,6"/>
+            <line x1="280" y1="195" x2="320" y2="195" stroke="#fff" stroke-width="3" stroke-dasharray="8,6"/>
+
+            <!-- Fila inferior — Estudiantes / Personal (amarillo) -->
+            <g>
+              <rect x="20"  y="220" width="42" height="60" fill="#f59e0b" stroke="#fff" stroke-width="2"/>
+              <rect x="64"  y="220" width="42" height="60" fill="#f59e0b" stroke="#fff" stroke-width="2"/>
+              <rect x="108" y="220" width="42" height="60" fill="#f59e0b" stroke="#fff" stroke-width="2"/>
+              <rect x="152" y="220" width="42" height="60" fill="#f59e0b" stroke="#fff" stroke-width="2"/>
+              <rect x="196" y="220" width="42" height="60" fill="#f59e0b" stroke="#fff" stroke-width="2"/>
+              <rect x="240" y="220" width="42" height="60" fill="#f59e0b" stroke="#fff" stroke-width="2"/>
+              <rect x="284" y="220" width="42" height="60" fill="#f59e0b" stroke="#fff" stroke-width="2"/>
+              <rect x="328" y="220" width="42" height="60" fill="#f59e0b" stroke="#fff" stroke-width="2"/>
+              <text x="200" y="255" text-anchor="middle" fill="#0f172a" font-size="11" font-weight="700" font-family="Arial">PERSONAL ESCOLAR</text>
+            </g>
+
+            <!-- Salida -->
+            <rect x="20" y="290" width="360" height="20" fill="#cbd5e1"/>
+            <text x="200" y="305" text-anchor="middle" fill="#0f172a" font-size="10" font-weight="700" font-family="Arial">← CARRIL DE SALIDA</text>
+          </svg>
+          <div style="display:flex;flex-wrap:wrap;gap:0.6rem;justify-content:center;margin-top:0.8rem;font-size:0.78rem;">
+            <span><span style="display:inline-block;width:14px;height:14px;background:#10b981;border-radius:3px;vertical-align:middle;"></span> Maestros</span>
+            <span><span style="display:inline-block;width:14px;height:14px;background:#3b82f6;border-radius:3px;vertical-align:middle;"></span> Visitantes</span>
+            <span><span style="display:inline-block;width:14px;height:14px;background:#8b5cf6;border-radius:3px;vertical-align:middle;"></span> Accesible ♿</span>
+            <span><span style="display:inline-block;width:14px;height:14px;background:#ef4444;border-radius:3px;vertical-align:middle;"></span> Dirección</span>
+            <span><span style="display:inline-block;width:14px;height:14px;background:#f59e0b;border-radius:3px;vertical-align:middle;"></span> Personal</span>
+          </div>
+        </div>
+
+        <!-- Reglas -->
+        <div class="pcbl-park-rules">
+          <div class="pcbl-park-rule"><span class="icn">🚦</span><p data-translate="Respeta las áreas asignadas según tu rol (maestros, visitantes, personal o accesible).">Respeta las áreas asignadas según tu rol (maestros, visitantes, personal o accesible).</p></div>
+          <div class="pcbl-park-rule"><span class="icn">📐</span><p data-translate="Estaciona dentro de las líneas, completamente paralelo, sin invadir el espacio adyacente.">Estaciona dentro de las líneas, completamente paralelo, sin invadir el espacio adyacente.</p></div>
+          <div class="pcbl-park-rule"><span class="icn">🏃</span><p data-translate="Reduce la velocidad a un máximo de 10 mph dentro del estacionamiento.">Reduce la velocidad a un máximo de 10 mph dentro del estacionamiento.</p></div>
+          <div class="pcbl-park-rule"><span class="icn">♿</span><p data-translate="Los espacios accesibles son exclusivos para personas con permiso de impedimento visible.">Los espacios accesibles son exclusivos para personas con permiso de impedimento visible.</p></div>
+          <div class="pcbl-park-rule"><span class="icn">🚸</span><p data-translate="En las horas de entrada y salida, ceda el paso a los estudiantes y peatones.">En las horas de entrada y salida, ceda el paso a los estudiantes y peatones.</p></div>
+          <div class="pcbl-park-rule"><span class="icn">🔒</span><p data-translate="Asegure su vehículo, no deje objetos de valor visibles y reporte cualquier incidente a seguridad.">Asegure su vehículo, no deje objetos de valor visibles y reporte cualquier incidente a seguridad.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ EVALUACIONES FORMATIVAS Y SUMATIVAS ══ -->
+  <section id="evaluaciones" class="section">
+    <div class="container">
+      <div class="section-header">
+        <h2 data-translate="📝 Evaluaciones Formativas y Sumativas">📝 Evaluaciones Formativas y Sumativas</h2>
+        <p data-translate="Domina ambas modalidades de evaluación para medir el aprendizaje real de tus estudiantes y guiar tu enseñanza con datos.">
+          Domina ambas modalidades de evaluación para medir el aprendizaje real de tus estudiantes y guiar tu enseñanza con datos.
+        </p>
+      </div>
+      <div class="pcbl-eval-grid">
+        <div class="pcbl-eval-card formativa">
+          <div style="font-size:2.2rem;margin-bottom:0.5rem;">🌱</div>
+          <h3 data-translate="Evaluación Formativa">Evaluación Formativa</h3>
+          <p style="opacity:0.95;margin:0 0 1rem;" data-translate="Para guiar el aprendizaje durante el proceso. No se traduce en nota final.">
+            Para guiar el aprendizaje durante el proceso. No se traduce en nota final.
+          </p>
+          <ul>
+            <li data-translate="Usa preguntas abiertas, exit tickets y observación directa.">Usa preguntas abiertas, exit tickets y observación directa.</li>
+            <li data-translate="Da retroalimentación inmediata y específica.">Da retroalimentación inmediata y específica.</li>
+            <li data-translate="Ajusta tu plan según lo que detectes en clase.">Ajusta tu plan según lo que detectes en clase.</li>
+            <li data-translate="Involucra a los estudiantes en autoevaluación y coevaluación.">Involucra a los estudiantes en autoevaluación y coevaluación.</li>
+          </ul>
+        </div>
+        <div class="pcbl-eval-card sumativa">
+          <div style="font-size:2.2rem;margin-bottom:0.5rem;">🏆</div>
+          <h3 data-translate="Evaluación Sumativa">Evaluación Sumativa</h3>
+          <p style="opacity:0.95;margin:0 0 1rem;" data-translate="Para medir el dominio al finalizar una unidad o periodo. Genera nota oficial.">
+            Para medir el dominio al finalizar una unidad o periodo. Genera nota oficial.
+          </p>
+          <ul>
+            <li data-translate="Diseña pruebas alineadas a los objetivos y estándares trabajados.">Diseña pruebas alineadas a los objetivos y estándares trabajados.</li>
+            <li data-translate="Combina tipos: selección múltiple, respuesta corta, ensayo, proyecto.">Combina tipos: selección múltiple, respuesta corta, ensayo, proyecto.</li>
+            <li data-translate="Comunica criterios de evaluación con rúbrica antes de la prueba.">Comunica criterios de evaluación con rúbrica antes de la prueba.</li>
+            <li data-translate="Analiza resultados para identificar brechas y planificar refuerzo.">Analiza resultados para identificar brechas y planificar refuerzo.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ CERTIFICACIONES ONLINE (dinámicas desde admin) ══ -->
+  <section id="certificaciones" class="section section-alt">
+    <div class="container">
+      <div class="section-header">
+        <h2 data-translate="🏆 Certificaciones Online">🏆 Certificaciones Online</h2>
+        <p data-translate="Certificaciones recomendadas según tu rol y nivel de preparación. Catálogo gestionado por el administrador escolar.">
+          Certificaciones recomendadas según tu rol y nivel de preparación. Catálogo gestionado por el administrador escolar.
+        </p>
+      </div>
+
+      <!-- Filtros por rol -->
+      <div style="display:flex;gap:0.6rem;flex-wrap:wrap;justify-content:center;margin-bottom:2rem;">
+        <button class="pcbl-cert-filter active" data-filter="todos" style="padding:0.5rem 1.2rem;border-radius:50px;border:2px solid #7c3aed;background:#7c3aed;color:#fff;font-weight:700;cursor:pointer;font-family:inherit;font-size:0.88rem;">🌐 Todos</button>
+        <button class="pcbl-cert-filter" data-filter="principiante" style="padding:0.5rem 1.2rem;border-radius:50px;border:2px solid #10b981;background:transparent;color:#10b981;font-weight:700;cursor:pointer;font-family:inherit;font-size:0.88rem;">🟢 Principiante</button>
+        <button class="pcbl-cert-filter" data-filter="intermedio" style="padding:0.5rem 1.2rem;border-radius:50px;border:2px solid #f59e0b;background:transparent;color:#f59e0b;font-weight:700;cursor:pointer;font-family:inherit;font-size:0.88rem;">🟡 Intermedio</button>
+        <button class="pcbl-cert-filter" data-filter="avanzado" style="padding:0.5rem 1.2rem;border-radius:50px;border:2px solid #ef4444;background:transparent;color:#ef4444;font-weight:700;cursor:pointer;font-family:inherit;font-size:0.88rem;">🔴 Avanzado</button>
+      </div>
+
+      <div class="pcbl-certs-grid" id="pcblCertsGrid">
+        <!-- Renderizado dinámicamente desde localStorage -->
+      </div>
+
+      <div class="pcbl-empty" id="pcblCertsEmpty" style="display:none;">
+        <div style="font-size:3rem;margin-bottom:0.5rem;">📚</div>
+        <h3 style="margin:0 0 0.5rem;" data-translate="Aún no hay certificaciones publicadas">Aún no hay certificaciones publicadas</h3>
+        <p style="margin:0;" data-translate="El administrador puede agregar certificaciones desde el Dashboard Admin → sección 🏆 Certificaciones.">
+          El administrador puede agregar certificaciones desde el Dashboard Admin → sección 🏆 Certificaciones.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ IA ÉTICA — TRANSFORMACIÓN EDUCATIVA ══ -->
+  <section id="ia-etica" class="section">
+    <div class="container">
+      <div class="pcbl-ai-feature">
+        <div style="font-size:3rem;margin-bottom:0.5rem;position:relative;z-index:2;">🤖✨</div>
+        <h2 data-translate="Sé Parte de la Transformación Educativa con IA Ética">Sé Parte de la Transformación Educativa con IA Ética</h2>
+        <p data-translate="La inteligencia artificial bien utilizada multiplica el impacto del maestro: ahorra tiempo, personaliza el aprendizaje y abre puertas que antes parecían imposibles. Pero su poder exige responsabilidad: úsala con ética, transparencia y siempre poniendo al estudiante primero.">
+          La inteligencia artificial bien utilizada multiplica el impacto del maestro: ahorra tiempo, personaliza el aprendizaje y abre puertas que antes parecían imposibles. Pero su poder exige responsabilidad: úsala con ética, transparencia y siempre poniendo al estudiante primero.
+        </p>
+        <div class="pcbl-ai-pillars">
+          <div class="pcbl-pillar">
+            <div class="ico">🛡️</div>
+            <h4 data-translate="Privacidad">Privacidad</h4>
+            <p data-translate="Nunca compartas datos personales de estudiantes con herramientas de IA externas.">Nunca compartas datos personales de estudiantes con herramientas de IA externas.</p>
+          </div>
+          <div class="pcbl-pillar">
+            <div class="ico">🔍</div>
+            <h4 data-translate="Transparencia">Transparencia</h4>
+            <p data-translate="Comunica cuándo usas IA en tus materiales y enseña a los estudiantes a hacerlo igual.">Comunica cuándo usas IA en tus materiales y enseña a los estudiantes a hacerlo igual.</p>
+          </div>
+          <div class="pcbl-pillar">
+            <div class="ico">⚖️</div>
+            <h4 data-translate="Equidad">Equidad</h4>
+            <p data-translate="Verifica los resultados de la IA: detecta sesgos y corrige imprecisiones culturales.">Verifica los resultados de la IA: detecta sesgos y corrige imprecisiones culturales.</p>
+          </div>
+          <div class="pcbl-pillar">
+            <div class="ico">💡</div>
+            <h4 data-translate="Pensamiento Crítico">Pensamiento Crítico</h4>
+            <p data-translate="La IA es asistente, no sustituto. El criterio del maestro siempre debe prevalecer.">La IA es asistente, no sustituto. El criterio del maestro siempre debe prevalecer.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ CTA — DASHBOARD DE CERTIFICACIÓN PCBLEARNING ══ -->
+  <section class="section section-alt">
+    <div class="container">
+      <div style="background: linear-gradient(135deg, #1e1b4b, #0c4a6e); border-radius: 24px; padding: 3rem 2rem; text-align: center; color: #fff; box-shadow: 0 18px 50px rgba(30,27,75,0.4);">
+        <div style="font-size: 3.5rem; margin-bottom: 1rem;">🎓</div>
+        <h2 style="font-size: 2rem; margin: 0 0 1rem; color: #fff;" data-translate="Accede al Dashboard de Certificación PCBLearning">Accede al Dashboard de Certificación PCBLearning</h2>
+        <p style="font-size: 1.1rem; opacity: 0.85; max-width: 720px; margin: 0 auto 2rem; line-height: 1.65;" data-translate="Ingresa al sistema completo de certificaciones internas de la escuela. Sigue tu progreso, descarga tus diplomas y conviértete en un agente de cambio educativo certificado.">
+          Ingresa al sistema completo de certificaciones internas de la escuela. Sigue tu progreso, descarga tus diplomas y conviértete en un agente de cambio educativo certificado.
+        </p>
+        <a href="pcblearning-main/index.html" class="pcbl-btn-primary" style="font-size: 1.1rem; padding: 1.1rem 2.4rem;" data-translate="🚀 Entrar al Dashboard PCBLearning">
+          🚀 Entrar al Dashboard PCBLearning
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <p>&copy; <script>document.write(new Date().getFullYear());</script> Escuela Superior Vocacional Pablo Colón Berdecia. Todos los derechos reservados.</p>
+    </div>
+  </footer>
+
+  <!-- ══ SCRIPT: Carga dinámica de certificaciones desde localStorage ══ -->
+  <script>
+    (function () {
+      const NIVEL_MAP = { principiante: '🟢 Principiante', intermedio: '🟡 Intermedio', avanzado: '🔴 Avanzado', todos: '🔵 Todos los niveles' };
+      const FORMATO_MAP = { enlinea: '🌐 En línea', grabado: '🎥 Grabado', hibrido: '🔀 Híbrido' };
+      let allCerts = [];
+      let activeFilter = 'todos';
+
+      function loadCerts() {
+        try { allCerts = JSON.parse(localStorage.getItem('pcb_certificaciones') || '[]'); }
+        catch (e) { allCerts = []; }
+        renderCerts();
+      }
+
+      function renderCerts() {
+        const grid = document.getElementById('pcblCertsGrid');
+        const empty = document.getElementById('pcblCertsEmpty');
+        if (!grid) return;
+        const filtered = activeFilter === 'todos' ? allCerts : allCerts.filter(c => (c.nivel || '') === activeFilter);
+        if (!filtered.length) {
+          grid.innerHTML = '';
+          if (empty) empty.style.display = 'block';
+          document.getElementById('statCertCount').textContent = allCerts.length;
+          return;
+        }
+        if (empty) empty.style.display = 'none';
+        document.getElementById('statCertCount').textContent = allCerts.length;
+        grid.innerHTML = filtered.map(c => {
+          const meta = [];
+          if (c.proveedor) meta.push('<div><strong>Plataforma:</strong> ' + escape(c.proveedor) + '</div>');
+          if (c.duracion) meta.push('<div><strong>Duración:</strong> ' + escape(c.duracion) + '</div>');
+          if (c.nivel) meta.push('<div><strong>Nivel:</strong> ' + (NIVEL_MAP[c.nivel] || escape(c.nivel)) + '</div>');
+          if (c.formato) meta.push('<div><strong>Formato:</strong> ' + (FORMATO_MAP[c.formato] || escape(c.formato)) + '</div>');
+          if (c.precio) meta.push('<div><strong>Precio:</strong> ' + escape(c.precio) + '</div>');
+          const img = c.imagen ? '<img src="' + escape(c.imagen) + '" alt="" style="width:100%;height:140px;object-fit:cover;border-radius:10px;margin-bottom:0.8rem;">' : '';
+          const link = c.enlace ? '<a href="' + escape(c.enlace) + '" target="_blank" rel="noopener" class="btn btn-secondary btn-small" style="margin-top:0.8rem;">🔗 Acceder</a>' : '';
+          return '<article class="pcbl-cert-card">' + img +
+            '<span class="pcbl-cert-badge">' + (c.duracion ? escape(c.duracion) : 'Online') + '</span>' +
+            '<h3>' + escape(c.nombre || 'Sin título') + '</h3>' +
+            (c.descripcion ? '<p class="desc">' + escape(c.descripcion) + '</p>' : '<p class="desc"></p>') +
+            (meta.length ? '<div class="pcbl-cert-meta">' + meta.join('') + '</div>' : '') +
+            link + '</article>';
+        }).join('');
+      }
+
+      function escape(s) {
+        return String(s).replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]));
+      }
+
+      document.addEventListener('DOMContentLoaded', function () {
+        loadCerts();
+        document.querySelectorAll('.pcbl-cert-filter').forEach(btn => {
+          btn.addEventListener('click', function () {
+            activeFilter = this.dataset.filter;
+            document.querySelectorAll('.pcbl-cert-filter').forEach(b => {
+              const c = b.style.borderColor;
+              b.style.background = 'transparent';
+              b.style.color = c;
+            });
+            this.style.background = this.style.borderColor;
+            this.style.color = '#fff';
+            renderCerts();
+          });
+        });
+        // Auto-refrescar al volver de admin (si cambia el localStorage)
+        window.addEventListener('storage', function (e) { if (e.key === 'pcb_certificaciones') loadCerts(); });
+      });
+    })();
+  </script>
+
+  <script src="script.js"></script>
+</body>
+
+</html>
