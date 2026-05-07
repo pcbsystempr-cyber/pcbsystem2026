@@ -657,7 +657,7 @@
           <div class="service-icon">📰</div>
           <h3 data-translate="Avisos y Actividades">Avisos y Actividades</h3>
           <p data-translate="Publica avisos importantes, actividades escolares y eventos de la comunidad.">Publica avisos importantes, actividades escolares y eventos de la comunidad.</p>
-          <a href="#" onclick="event.preventDefault();showProntoPopup()" class="btn btn-secondary btn-small" data-translate="Publicar anuncio">
+          <a href="#" onclick="event.preventDefault();abrirModalAnuncio('avisos')" class="btn btn-secondary btn-small" data-translate="Publicar anuncio">
             Publicar anuncio
           </a>
         </article>
@@ -666,7 +666,7 @@
           <div class="service-icon">🔍</div>
           <h3 data-translate="Objetos Perdidos">Objetos Perdidos</h3>
           <p data-translate="Reporta o reclama objetos perdidos dentro del plantel escolar.">Reporta o reclama objetos perdidos dentro del plantel escolar.</p>
-          <a href="#" onclick="event.preventDefault();showProntoPopup()" class="btn btn-secondary btn-small" data-translate="Reportar objeto">
+          <a href="#" onclick="event.preventDefault();abrirModalAnuncio('objetos_perdidos')" class="btn btn-secondary btn-small" data-translate="Reportar objeto">
             Reportar objeto
           </a>
         </article>
@@ -675,7 +675,7 @@
           <div class="service-icon">💰</div>
           <h3 data-translate="Recaudaciones y Promociones">Recaudaciones y Promociones</h3>
           <p data-translate="Comparte campañas de recaudación de fondos y promociones de la escuela.">Comparte campañas de recaudación de fondos y promociones de la escuela.</p>
-          <a href="#" onclick="event.preventDefault();showProntoPopup()" class="btn btn-secondary btn-small" data-translate="Publicar promoción">
+          <a href="#" onclick="event.preventDefault();abrirModalAnuncio('recaudaciones')" class="btn btn-secondary btn-small" data-translate="Publicar promoción">
             Publicar promoción
           </a>
         </article>
@@ -2301,11 +2301,15 @@
     };
 
     // ── Modal de anuncio público ──
-    window.abrirModalAnuncio = function() {
+    window.abrirModalAnuncio = function(categoria) {
       const m = document.getElementById('modalAnuncio');
       m.style.display = 'flex';
       document.getElementById('anuncioMsg').style.display = 'none';
       clearAnuncioImage();
+      if (categoria) {
+        const sel = document.getElementById('anuncioCategoria');
+        if (sel) sel.value = categoria;
+      }
     };
     window.cerrarModalAnuncio = function() {
       document.getElementById('modalAnuncio').style.display = 'none';
