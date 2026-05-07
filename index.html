@@ -357,7 +357,7 @@
         <a href="solicitudes.html" class="theme-option">
           <span>📄</span> Solicitud de Documentos
         </a>
-        <a href="https://pcbsystempr-cyber.github.io/Servicio-Tecnico/" class="theme-option">
+        <a href="https://pcbsystempr-cyber.github.io/Servicio-Tecnico/" target="_self" class="theme-option">
           <span>🔧</span> Servicios Técnicos
         </a>
         <!-- <a href="enfermeria.html" class="theme-option">
@@ -592,8 +592,8 @@
           </a>
         </article>
 
-        <!-- Apoyo socioemocional -->
-        <article class="card">
+        <!-- Apoyo socioemocional (oculto: se muestra en Servicios al Estudiante) -->
+        <article class="card" style="display:none;">
           <div class="card-icon">💚</div>
           <h3 data-translate="Apoyo socioemocional">Apoyo socioemocional</h3>
           <p
@@ -637,6 +637,47 @@
           <h3 data-translate="Fotos">Fotos</h3>
           <p data-translate="Reservación de fotos formales.">Reservación de fotos formales.</p>
           <a href="#" class="btn btn-secondary btn-small" onclick="event.preventDefault();showProntoPopup()" data-translate="Reservar">Reservar</a>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- PUBLICAR ANUNCIO EN LA COMUNIDAD -->
+  <section id="publicar-anuncio" class="section section-alt">
+    <div class="container">
+      <div class="section-header">
+        <h2 data-translate="📢 ¡Publica tu anuncio en la comunidad!">📢 ¡Publica tu anuncio en la comunidad!</h2>
+        <p data-translate="Comparte avisos, actividades, objetos perdidos, recaudaciones y promociones con toda la escuela. Tu anuncio será visible tras la aprobación del administrador.">
+          Comparte avisos, actividades, objetos perdidos, recaudaciones y promociones con toda la escuela. Tu anuncio será visible tras la aprobación del administrador.
+        </p>
+      </div>
+
+      <div class="grid-3">
+        <article class="card service-card">
+          <div class="service-icon">📰</div>
+          <h3 data-translate="Avisos y Actividades">Avisos y Actividades</h3>
+          <p data-translate="Publica avisos importantes, actividades escolares y eventos de la comunidad.">Publica avisos importantes, actividades escolares y eventos de la comunidad.</p>
+          <a href="#" onclick="event.preventDefault();showProntoPopup()" class="btn btn-secondary btn-small" data-translate="Publicar anuncio">
+            Publicar anuncio
+          </a>
+        </article>
+
+        <article class="card service-card">
+          <div class="service-icon">🔍</div>
+          <h3 data-translate="Objetos Perdidos">Objetos Perdidos</h3>
+          <p data-translate="Reporta o reclama objetos perdidos dentro del plantel escolar.">Reporta o reclama objetos perdidos dentro del plantel escolar.</p>
+          <a href="#" onclick="event.preventDefault();showProntoPopup()" class="btn btn-secondary btn-small" data-translate="Reportar objeto">
+            Reportar objeto
+          </a>
+        </article>
+
+        <article class="card service-card">
+          <div class="service-icon">💰</div>
+          <h3 data-translate="Recaudaciones y Promociones">Recaudaciones y Promociones</h3>
+          <p data-translate="Comparte campañas de recaudación de fondos y promociones de la escuela.">Comparte campañas de recaudación de fondos y promociones de la escuela.</p>
+          <a href="#" onclick="event.preventDefault();showProntoPopup()" class="btn btn-secondary btn-small" data-translate="Publicar promoción">
+            Publicar promoción
+          </a>
         </article>
       </div>
     </div>
@@ -1014,8 +1055,7 @@
           <h3 data-translate="Power DE">Power DE</h3>
           <p data-translate="Portal de información estudiantil del Departamento de Educación.">Portal de información
             estudiantil del Departamento de Educación.</p>
-          <a href="https://informacionestudiantil.dde.pr/public/create_multi_student_account.html"
-            class="btn btn-secondary btn-small" target="_blank" rel="noopener" data-translate="Acceder a Power DE">
+          <a href="https://informacionestudiantil.dde.pr/public/create_multi_student_account.html" target="_self" class="btn btn-secondary btn-small" target="_blank" rel="noopener" data-translate="Acceder a Power DE">
             Acceder a Power DE
           </a>
         </article>
@@ -1026,7 +1066,7 @@
           <h3 data-translate="Calcular IGS">Calcular IGS</h3>
           <p data-translate="Calculadora de Índice General de Solicitud.">Calculadora de Índice General de Solicitud.
           </p>
-          <a href="https://admisiones.upr.edu/calculadora-igs/" class="btn btn-secondary btn-small" target="_blank"
+          <a href="https://admisiones.upr.edu/calculadora-igs/" target="_self" class="btn btn-secondary btn-small" target="_blank"
             rel="noopener" data-translate="Calcular ahora">
             Calcular ahora
           </a>
@@ -1130,6 +1170,16 @@
           <p data-translate="Solicitud oficial de autorización para actividades curriculares y educativas fuera del plantel.">Solicitud oficial de autorización para actividades curriculares y educativas fuera del plantel.</p>
           <a href="excursiones/excursiones.html" class="btn btn-secondary btn-small" data-translate="Llenar formulario">
             Llenar formulario
+          </a>
+        </article>
+
+        <!-- PCBLearning -->
+        <article class="card service-card">
+          <div class="service-icon">🎓</div>
+          <h3 data-translate="PCBLearning">PCBLearning</h3>
+          <p data-translate="Plataforma de certificaciones para maestros, estudiantes y personal escolar en el uso eficiente del sistema y otras certificaciones de la escuela.">Plataforma de certificaciones para maestros, estudiantes y personal escolar en el uso eficiente del sistema y otras certificaciones de la escuela.</p>
+          <a href="PCBLearning.html" class="btn btn-secondary btn-small" data-translate="Acceder a PCBLearning">
+            Acceder a PCBLearning
           </a>
         </article>
       </div>

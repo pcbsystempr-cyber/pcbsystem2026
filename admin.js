@@ -254,6 +254,14 @@
       btn.addEventListener('click', () => switchSection(btn.dataset.goto));
     });
 
+    // Abrir el portal PCBLearning en una pestaña nueva
+    const navOpenPcbLearning = document.getElementById('navOpenPcbLearning');
+    if (navOpenPcbLearning) {
+      navOpenPcbLearning.addEventListener('click', () => {
+        window.open('PCBLearning.html', '_blank', 'noopener');
+      });
+    }
+
     // Add image button
     btnAddImage.addEventListener('click', showUploadForm);
     btnCancelUpload.addEventListener('click', hideUploadForm);
@@ -384,7 +392,7 @@
       bot: 'Selecciona qué avisos muestra el bot flotante del sitio',
       novedades: 'La novedad más reciente aparecerá en el popup del portal',
       talleres: 'Crea y edita talleres para padres — visibles en talleres-padres.html',
-      certificaciones: 'Crea y edita certificaciones online — visibles en certificaciones-padres.html',
+      certificaciones: 'Crea y edita certificaciones online — visibles en PCBLearning.html y certificaciones-padres.html',
       anuncios_comunidad: 'Aprueba, rechaza o elimina los anuncios enviados por la comunidad'
     };
     const subtitleEl = document.getElementById('sectionSubtitle');
